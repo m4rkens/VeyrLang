@@ -1,0 +1,31 @@
+{
+  "mode": "interactive",
+  "granularity": "fine",
+  "parallelization": false,
+  "commit_docs": true,
+  "model_profile": "inherit",
+  "workflow": {
+    "research": true,
+    "plan_check": true,
+    "verifier": true,
+    "nyquist_validation": true,
+    "auto_advance": false,
+    "_auto_chain_active": false
+  },
+  "plan_review": {
+    "source_grounding": true
+  },
+  "ship": {
+    "pr_body_sections": []
+  },
+  "veyr_policy": {
+    "initialization_auto_only": true,
+    "explicit_lifecycle_commands_required": true,
+    "explicit_stage_commit_approval_required": true,
+    "sensitive_file_review_required": true,
+    "planning_docs_trackable": true,
+    "subagents_require_explicit_request": true,
+    "fresh_lifecycle": true,
+    "import_previous_run_artifacts": false
+  }
+}
