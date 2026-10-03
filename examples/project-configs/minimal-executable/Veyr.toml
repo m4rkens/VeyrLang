@@ -1,0 +1,13 @@
+[package]
+name = "minimal-executable"
+version = "0.1.0"
+edition = "2026"
+
+[targets.app]
+kind = "executable"
+root = "src/main.vyr"
+
+[profiles.dev]
+opt-level = 0
+debug = true
+analyze = true

@@ -1,0 +1,32 @@
+[package]
+name = "library-and-tools"
+version = "0.1.0"
+edition = "2026"
+
+[workspace]
+members = ["libs/*", "tools/*"]
+
+[targets.core]
+kind = "staticlib"
+root = "libs/core/src/lib.vyr"
+
+[targets.cli]
+kind = "executable"
+root = "tools/cli/src/main.vyr"
+dependencies = ["core"]
+
+[targets.plugin]
+kind = "sharedlib"
+root = "libs/plugin/src/lib.vyr"
+abi = "c"
+
+[profiles.dev]
+opt-level = 0
+debug = true
+analyze = true
+
+[profiles.release]
+opt-level = 3
+debug = false
+analyze = true
+lto = "thin"

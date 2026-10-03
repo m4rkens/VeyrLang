@@ -1,0 +1,33 @@
+[package]
+name = "gpu-playground"
+version = "0.1.0"
+edition = "2026"
+
+[targets.window]
+kind = "executable"
+root = "src/window_main.vyr"
+
+[features]
+default = ["vulkan"]
+opengl = []
+vulkan = []
+dx12 = []
+metal = []
+
+[platform.'cfg(os = "windows")'.native]
+libs = ["user32", "gdi32", "kernel32"]
+
+[platform.'cfg(os = "linux")'.native]
+libs = ["dl", "pthread"]
+
+[bindgen.vulkan]
+tool = "veyr-gpu-bindgen"
+input = "extern/vulkan/vk.xml"
+output = "generated/vulkan/raw"
+api = "vulkan"
+mode = "raw"
+
+[resources.shaders]
+input = "shaders"
+output = ".veyr/generated/shaders"
+compiler = "glslang"

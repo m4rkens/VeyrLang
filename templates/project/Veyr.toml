@@ -1,0 +1,31 @@
+# Veyr project manifest template.
+# This file documents the intended Veyr project/build system.
+# It is not consumed by the early C++ compiler implementation until the `veyr` CLI exists.
+
+[package]
+name = "my-veyr-project"
+version = "0.1.0"
+edition = "2026"
+license = "Apache-2.0"
+
+[paths]
+source = "src"
+tests = "tests"
+resources = "resources"
+
+[targets.app]
+kind = "executable"
+root = "src/main.vyr"
+
+[profiles.dev]
+opt-level = 0
+debug = true
+analyze = true
+overflow-checks = true
+
+[profiles.release]
+opt-level = 3
+debug = false
+analyze = true
+overflow-checks = true
+lto = "thin"

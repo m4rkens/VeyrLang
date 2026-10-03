@@ -1,0 +1,17 @@
+<area>: <imperative summary under 72 chars>
+
+GSD:
+- Phase: 
+- Stage: <discussion|planning|execution|verification|gap-fix|n/a>
+
+Why:
+- 
+
+What:
+- 
+
+Guardrails:
+- 
+
+Verified:
+- 

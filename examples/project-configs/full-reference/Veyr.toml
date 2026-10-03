@@ -1,0 +1,440 @@
+# Veyr.full.example.toml — full reference manifest example.
+#
+# Purpose:
+#   This file is a documentation/reference example for the intended shape of Veyr.toml.
+#   It intentionally shows many future-facing sections in one place.
+#
+# Important guardrail:
+#   This file is NOT an implementation checklist.
+#   A field appearing here does NOT mean the current milestone must implement it.
+#   Milestones may implement only the subset justified by their design probes.
+#
+# Suggested use:
+#   - Use this file to discuss manifest semantics.
+#   - Copy small relevant fragments into real example projects.
+#   - Do not use it as a real project manifest.
+#
+# Canonical manifest name for real projects:
+#   Veyr.toml
+
+[package]
+name = "full-reference-example"
+version = "0.1.0"
+edition = "2026"
+language-version = ">=0.1.0"
+description = "Kitchen-sink reference example for the future Veyr project manifest."
+license = "Apache-2.0"
+authors = ["Example Author <dev@example.invalid>"]
+readme = "README.md"
+homepage = "https://example.invalid/veyr-full-reference"
+repository = "https://example.invalid/veyr/full-reference"
+documentation = "https://example.invalid/veyr/full-reference/docs"
+keywords = ["veyr", "systems", "graphics", "ffi", "tooling"]
+categories = ["systems-programming", "graphics", "developer-tools"]
+publish = false
+
+[workspace]
+members = [
+  "apps/*",
+  "libs/*",
+  "tools/*",
+  "examples/*",
+]
+exclude = [
+  "extern/*",
+  "third_party/*",
+  "scratch/*",
+]
+default-members = ["apps/main", "libs/core"]
+
+[tools]
+cli = "veyr"
+compiler = "veyrc"
+compiler-library = "veyrcore"
+formatter = "veyrfmt"
+lsp = "veyr-lsp"
+analyzer = "veyr-analyze"
+docs = "veyr-doc"
+test-runner = "veyr-test"
+package-manager = "veyr-pkg"
+bindgen = "veyr-bindgen"
+gpu-bindgen = "veyr-gpu-bindgen"
+
+[tools.required]
+veyr = ">=0.1.0"
+veyrc = ">=0.1.0"
+veyrfmt = ">=0.1.0"
+"veyr-lsp" = ">=0.1.0"
+
+[paths]
+source = "src"
+tests = "tests"
+benches = "benches"
+examples = "examples"
+tools = "tools"
+docs = "docs"
+resources = "resources"
+shaders = "shaders"
+extern = "extern"
+generated = ".veyr/generated"
+bindings = ".veyr/generated/bindings"
+cache = ".veyr/cache"
+build = ".veyr/build"
+artifacts = "target"
+
+[build]
+default-targets = ["app", "core"]
+default-profile = "dev"
+resolver = "v1"
+incremental = true
+warnings-as-errors = true
+color = "auto"
+diagnostics-format = "human"
+
+[build.env]
+# Build-time environment requirements should be explicit.
+# Real manifests should avoid relying on undeclared host state.
+VEYR_EXAMPLE_MODE = "reference-only"
+
+[targets.app]
+kind = "executable"
+root = "src/app/main.vyr"
+artifact-name = "veyr-example-app"
+platforms = ["windows", "linux", "macos"]
+features = ["default", "cli"]
+resources = ["assets"]
+
+[targets.app.entry]
+function = "main"
+mode = "process-exit-code"
+
+[targets.core]
+kind = "staticlib"
+root = "src/core/lib.vyr"
+artifact-name = "veyr_example_core"
+platforms = ["windows", "linux", "macos"]
+public-api = "veyr"
+
+[targets.shared]
+kind = "sharedlib"
+root = "src/shared/lib.vyr"
+artifact-name = "veyr_example_shared"
+platforms = ["windows", "linux", "macos"]
+public-api = "veyr"
+exports = ["src/shared/exports.vyr"]
+
+[targets.plugin]
+kind = "plugin"
+root = "src/plugin/lib.vyr"
+artifact-name = "veyr_example_plugin"
+platforms = ["windows", "linux", "macos"]
+abi = "c"
+exports = ["src/plugin/c_exports.vyr"]
+
+[targets.window_demo]
+kind = "executable"
+root = "src/window_demo/main.vyr"
+artifact-name = "window-demo"
+platforms = ["windows", "linux", "macos"]
+features = ["windowing"]
+resources = ["assets"]
+
+[targets.gpu_demo]
+kind = "executable"
+root = "src/gpu_demo/main.vyr"
+artifact-name = "gpu-demo"
+platforms = ["windows", "linux", "macos"]
+features = ["windowing", "gpu", "vulkan"]
+resources = ["assets", "shaders"]
+
+[targets.test_core]
+kind = "test"
+root = "tests/core_tests.vyr"
+targets = ["core"]
+features = ["test-support"]
+
+[targets.bench_parser]
+kind = "bench"
+root = "benches/parser_bench.vyr"
+targets = ["core"]
+features = ["bench-support"]
+
+[targets.manifest_tool]
+kind = "tool"
+root = "tools/manifest_tool/main.vyr"
+artifact-name = "veyr-manifest-tool"
+
+[targets.example_cli]
+kind = "example"
+root = "examples/cli/main.vyr"
+artifact-name = "example-cli"
+
+[dependencies]
+# Registry dependency.
+# package-name = "^1.2.3"
+
+# Path dependency.
+# local-core = { path = "../local-core" }
+
+# Git dependency pinned to an immutable revision.
+# Do not use floating branches like main/master/latest for reproducible builds.
+# external-lib = { git = "https://example.invalid/external-lib.git", rev = "0123456789abcdef0123456789abcdef01234567" }
+
+[dependencies.veyr-std]
+version = "0.1.0"
+default-features = true
+features = ["filesystem", "process", "time"]
+
+[dependencies.veyr-platform]
+version = "0.1.0"
+features = ["windows", "linux", "macos"]
+
+[dependencies.veyr-window]
+version = "0.1.0"
+optional = true
+features = ["native-handles"]
+
+[dependencies.veyr-gpu]
+version = "0.1.0"
+optional = true
+features = ["vulkan", "opengl"]
+
+[dev-dependencies]
+veyr-test-support = "0.1.0"
+veyr-snapshot = "0.1.0"
+
+[build-dependencies]
+veyr-bindgen-support = "0.1.0"
+
+[features]
+default = ["cli"]
+cli = []
+windowing = ["dep:veyr-window"]
+gpu = ["dep:veyr-gpu", "windowing"]
+vulkan = ["gpu", "veyr-gpu/vulkan"]
+opengl = ["gpu", "veyr-gpu/opengl"]
+dx12 = ["gpu", "veyr-gpu/dx12"]
+metal = ["gpu", "veyr-gpu/metal"]
+security-tools = []
+code-analysis = []
+simracing-tools = []
+test-support = []
+bench-support = []
+
+[profiles.dev]
+opt-level = 0
+debug = true
+strip = false
+analyze = true
+overflow-checks = true
+panic = "abort"
+lto = false
+incremental = true
+
+[profiles.test]
+inherits = "dev"
+opt-level = 0
+debug = true
+analyze = true
+coverage = false
+
+[profiles.release]
+opt-level = 3
+debug = false
+strip = "symbols"
+analyze = true
+overflow-checks = true
+panic = "abort"
+lto = "thin"
+incremental = false
+
+[profiles.ci]
+inherits = "dev"
+warnings-as-errors = true
+analyze = true
+diagnostics-format = "json"
+
+[profiles.analyzer]
+inherits = "dev"
+codegen = false
+analyze = true
+extra-checks = true
+
+[analyzer]
+enabled = true
+must-use = "error"
+leak-check = "planned"
+use-after-move = "error"
+use-after-free = "planned"
+double-free = "planned"
+dangerous-aliasing = "planned"
+ffi-boundary-audit = "warn"
+
+[formatter]
+line-width = 100
+indent = "spaces"
+indent-width = 2
+newline = "lf"
+
+[lsp]
+enabled = true
+diagnostics = true
+semantic-tokens = true
+inlay-hints = true
+formatting = true
+
+[tests]
+framework = "veyr-test"
+discover = true
+parallel = true
+snapshot-dir = "tests/snapshots"
+
+[benchmarks]
+framework = "veyr-bench"
+output = ".veyr/bench-results"
+
+[docs]
+output = "target/doc"
+include-private = false
+
+[package.registry]
+default = "veyr-official"
+
+[registries.veyr-official]
+index = "https://example.invalid/veyr/index"
+
+[resources.assets]
+input = "resources/assets"
+output = ".veyr/generated/assets"
+mode = "copy"
+
+[resources.shaders]
+input = "shaders"
+output = ".veyr/generated/shaders"
+compiler = "glslang"
+languages = ["glsl", "hlsl"]
+profiles = ["dev", "release"]
+
+[resources.shaders.targets.vulkan]
+format = "spirv"
+stage-detection = "extension"
+
+[resources.shaders.targets.dx12]
+format = "dxil"
+planned = true
+
+[resources.shaders.targets.metal]
+format = "metallib"
+planned = true
+
+[bindgen.c]
+tool = "veyr-bindgen"
+mode = "raw"
+input = ["extern/example/example.h"]
+include-dirs = ["extern/example/include"]
+output = ".veyr/generated/bindings/c/example"
+namespace = "example.raw"
+
+[bindgen.vulkan]
+tool = "veyr-gpu-bindgen"
+api = "vulkan"
+mode = "raw"
+input = "extern/vulkan/vk.xml"
+output = ".veyr/generated/bindings/vulkan/raw"
+namespace = "gpu.vulkan.raw"
+
+[bindgen.opengl]
+tool = "veyr-gpu-bindgen"
+api = "opengl"
+mode = "loader"
+input = "extern/opengl/gl.xml"
+output = ".veyr/generated/bindings/opengl/raw"
+namespace = "gpu.opengl.raw"
+
+[native]
+# Global native settings shared by targets unless overridden.
+include-dirs = []
+link-dirs = []
+libs = []
+frameworks = []
+defines = []
+
+[platform.'cfg(os = "windows")']
+source-roots = ["src/platform/windows"]
+artifact-suffix-executable = ".exe"
+artifact-suffix-sharedlib = ".dll"
+artifact-suffix-staticlib = ".lib"
+path-style = "windows"
+newline = "crlf-compatible"
+
+[platform.'cfg(os = "windows")'.native]
+libs = ["kernel32", "user32", "gdi32", "shell32"]
+link-args = []
+
+[platform.'cfg(os = "windows")'.targets.window_demo.native]
+libs = ["user32", "gdi32"]
+
+[platform.'cfg(os = "windows")'.targets.gpu_demo.native]
+libs = ["user32", "gdi32", "vulkan-1"]
+
+[platform.'cfg(os = "linux")']
+source-roots = ["src/platform/linux"]
+artifact-suffix-executable = ""
+artifact-suffix-sharedlib = ".so"
+artifact-suffix-staticlib = ".a"
+path-style = "posix"
+newline = "lf"
+
+[platform.'cfg(os = "linux")'.native]
+libs = ["dl", "pthread", "m"]
+link-args = []
+
+[platform.'cfg(os = "linux")'.targets.window_demo.native]
+libs = ["X11", "dl", "pthread"]
+
+[platform.'cfg(os = "linux")'.targets.gpu_demo.native]
+libs = ["vulkan", "X11", "dl", "pthread"]
+
+[platform.'cfg(os = "macos")']
+source-roots = ["src/platform/macos"]
+artifact-suffix-executable = ""
+artifact-suffix-sharedlib = ".dylib"
+artifact-suffix-staticlib = ".a"
+path-style = "posix"
+newline = "lf"
+status = "future-tier-2"
+
+[platform.'cfg(os = "macos")'.native]
+frameworks = ["Foundation", "Cocoa", "QuartzCore", "Metal"]
+libs = []
+link-args = []
+
+[platform.'cfg(os = "macos")'.targets.window_demo.native]
+frameworks = ["Cocoa", "QuartzCore"]
+
+[platform.'cfg(os = "macos")'.targets.gpu_demo.native]
+frameworks = ["Cocoa", "QuartzCore", "Metal"]
+
+[platform.'cfg(target_arch = "x86_64")']
+word-size = 64
+
+[platform.'cfg(target_arch = "aarch64")']
+word-size = 64
+
+[platform.'cfg(freestanding)']
+status = "research"
+std = false
+allocator = "explicit"
+
+[platform.'cfg(wasm)']
+status = "research"
+std = "limited"
+
+[package.metadata]
+owner = "Veyr project"
+manifest-kind = "reference-example"
+canonical = false
+notes = [
+  "Do not implement every field just because it is shown here.",
+  "Promote fields into real milestones only when a design probe requires them.",
+]

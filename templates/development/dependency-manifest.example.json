@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "document_kind": "conan-configuration-example",
+  "description": "Documentation only, not executable Conan input or generated state. Referenced files are illustrative and require owner-reviewed implementation.",
+  "package_manager": {
+    "name": "Conan",
+    "major_version": 2
+  },
+  "conan": {
+    "recipe": "conanfile.py",
+    "example_requires": ["llvm/23.1.2"],
+    "version_policy": "Use exact versions for all direct requirements in the Conan recipe; resolve transitive dependencies and record recipe/package revisions with Conan-native mechanisms.",
+    "llvm_recipe_policy": "Prefer a suitable existing recipe for LLVM 23.1.2; otherwise maintain one narrow project-owned Conan recipe.",
+    "platform_inputs": {
+      "windows-x86_64-msvc": {
+        "host_profile": "conan/profiles/windows-x86_64-clangcl",
+        "build_profile": "conan/profiles/windows-x86_64-clangcl",
+        "lockfile": "conan/locks/windows-x86_64-clangcl.lock"
+      },
+      "linux-x86_64-gnu": {
+        "host_profile": "conan/profiles/linux-x86_64-clang",
+        "build_profile": "conan/profiles/linux-x86_64-clang",
+        "lockfile": "conan/locks/linux-x86_64-clang.lock"
+      }
+    }
+  },
+  "ownership": "Conan 2 owns dependency resolution, acquisition, source builds, package storage, package identity, and dependency locking; the Python wrapper only orchestrates Conan and the native build tools.",
+  "build_policy": "A long first LLVM source build is acceptable. Reuse compatible Conan cache state; quiet builds continue while liveness checks show progress.",
+  "platform_policy": "Windows x86_64 and Linux x86_64 are Tier 1; macOS is deferred Tier 2. These profiles illustrate native builds."
+}

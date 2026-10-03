@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "document_kind": "wrapper-environment-receipt-example",
+  "description": "Documentation only. A future machine-local receipt may record tool and selected Conan input identities; it is neither a Conan package lockfile nor the future language-level Veyr.lock.",
+  "host_triplet": "windows-x86_64-msvc",
+  "target_triplet": "windows-x86_64-msvc",
+  "tools": {
+    "python": {"version": "<exact-version>", "path": "<absolute-path>"},
+    "conan": {"version": "<exact-2.x-version>", "path": "<absolute-path>"},
+    "cmake": {"version": "<exact-version>", "path": "<absolute-path>"},
+    "ninja": {"version": "<exact-version>", "path": "<absolute-path>"},
+    "clang": {"version": "<exact-version>", "path": "<absolute-path-to-clang-cl>", "frontend": "MSVC"}
+  },
+  "selected_conan_inputs": {
+    "host_profile": "conan/profiles/windows-x86_64-clangcl",
+    "build_profile": "conan/profiles/windows-x86_64-clangcl",
+    "profile_configuration_identity": "<reviewed-profile-configuration-revision-or-digest>",
+    "lockfile": "conan/locks/windows-x86_64-clangcl.lock",
+    "lockfile_sha256": "<sha256-of-selected-conan-native-lockfile>"
+  }
+}

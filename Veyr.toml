@@ -1,0 +1,69 @@
+# Veyr.toml — starter-pack manifest sketch.
+#
+# This file documents the intended Veyr project/build manifest format.
+# It is NOT consumed by the early C++/CMake compiler implementation until the `veyr` CLI exists.
+# Keep it as a canonical project-system design artifact and update docs/project-system/VEYR_TOML.md with any semantic changes.
+
+[package]
+name = "veyr-starter-pack"
+version = "0.4.0"
+edition = "2026"
+license = "Apache-2.0"
+description = "Design starter pack for the Veyr programming language."
+
+[workspace]
+members = [
+  "examples/project-configs/minimal-executable",
+  "examples/project-configs/library-and-tools",
+  "examples/project-configs/gpu-playground",
+]
+
+[tools]
+cli = "veyr"
+compiler = "veyrc"
+compiler-library = "veyrcore"
+lsp = "veyr-lsp"
+formatter = "veyrfmt"
+analyzer = "veyr-analyze"
+docs = "veyr-doc"
+bindgen = "veyr-bindgen"
+gpu-bindgen = "veyr-gpu-bindgen"
+
+[paths]
+source = "src"
+tests = "tests"
+resources = "resources"
+cache = ".veyr"
+
+[targets.example]
+kind = "executable"
+root = "src/main.vyr"
+description = "Example target shape only; this starter pack has no implementation source yet."
+
+[profiles.dev]
+opt-level = 0
+debug = true
+analyze = true
+overflow-checks = true
+
+[profiles.release]
+opt-level = 3
+debug = false
+analyze = true
+overflow-checks = true
+lto = "thin"
+
+# Starter-pack note:
+# Git commit policy and phase workflow are repository policy, not language semantics.
+# See docs/development/COMMIT_POLICY.md and docs/development/GIT_WORKFLOW.md.
+
+
+[platform.'cfg(os = "windows")'.native]
+libs = ["user32", "kernel32"]
+
+[platform.'cfg(os = "linux")'.native]
+libs = ["dl", "pthread"]
+
+[platform.'cfg(os = "macos")'.native]
+frameworks = ["Cocoa", "Metal", "QuartzCore"]
+libs = []
