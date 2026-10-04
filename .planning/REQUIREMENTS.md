@@ -23,7 +23,7 @@ Here v1 means the first walking-skeleton milestone, not a stable language releas
 - [ ] **BUILD-11**: Contributor can run an include-style guardrail through a build/check target and CTest entry that rejects quoted or relative Veyr-owned includes.
 - [ ] **BUILD-12**: Contributor can reuse compatible Conan packages on repeat workflows and configure/build from prepared dependencies with network acquisition disabled; generated package/build/cache state remains untracked.
 - [ ] **BUILD-13**: Contributor can choose documented supported Debug/Release compiler/dependency combinations that preserve platform runtime and ABI compatibility.
-- [ ] **BUILD-14**: Contributor can follow a Windows/Linux CI validation path using the same reviewed dependency/profile configuration as local development, with platform-specific checks explicitly gated.
+- [ ] **BUILD-14**: Contributor can follow a Windows/Linux CI validation path using shared reviewed developer commands and dependency/profile policy, with independently observed developer and CI toolchain identities and platform-specific checks explicitly gated.
 
 ### Source management
 

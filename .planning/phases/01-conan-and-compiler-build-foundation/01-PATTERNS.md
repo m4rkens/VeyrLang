@@ -20,8 +20,12 @@ Canonical policy documents provide contracts; JSON development templates and Vey
 | Infrastructure test harness | REQUIREMENTS.md BUILD-10; AGENTS.md | Conan GoogleTest/GoogleMock; foundation-only assertions |
 | Owned-header checker | docs/development/INCLUDE_POLICY.md | Angle owned includes; reject quoted/relative owned includes; build and CTest reachability |
 | Command supervision/clean | AGENT_STEP_AND_COMMAND_POLICY.md; committed D-02/D-12 | Credible liveness after quiet checkpoint; no duplicate retries; scoped clean |
-| CI matrix/cold path | CI_MATRIX_POLICY.md; PLAT_06; committed D-13–D-16 | Same native profiles/entry point, four combinations, cache optimization only |
+| CI matrix/cold path | CI_MATRIX_POLICY.md; PLAT_06; committed D-13–D-16 plus dated owner clarification | Shared commands/dependency policy, independently reviewed developer/CI identities, four combinations, cache optimization only |
 | Wrapper receipts vs package state | docs/project-system/VEYR_TOML.md; Conan architecture | Tool/input identity only, no graph duplication or future Veyr.lock semantics |
+
+## Owner-approved baseline clarification — 2026-10-04
+
+Linux developer candidate is the observed Omarchy/Arch x86_64 host recorded in 01-01-HOST-INVENTORY.json, not a required Ubuntu developer host. Ubuntu 24.04 Linux CI, Windows developer and Windows CI identities remain independently pending. Keep Linux tool expectations separate from Windows candidates and unknown CI identities. Shared Conan recipe/dependency/profile policy and Python commands do not imply identical installed tools or compatible native packages. Conan 2.33.0 is required and missing; LLVM backend remains 23.1.2; macOS stays deferred. No new provisioning, cache or host-management framework is introduced. Original starter inventory above is historical; this correction creates no implementation.
 
 ## Integration and Conflict Notes
 
@@ -31,4 +35,3 @@ Platform impact:
 - Windows: Runtime/toolchain-specific profiles and structured path/process handling.
 - Linux: Explicit compiler/standard-library ABI selection and equivalent wrapper semantics.
 - macOS future: No implementation now; platform-gated profiles and standard build boundaries remain extensible.
-

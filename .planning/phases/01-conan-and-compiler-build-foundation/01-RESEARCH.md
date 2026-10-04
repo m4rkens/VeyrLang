@@ -91,7 +91,7 @@ The canonical exclusions remain: macOS implementation, cross-compilation bring-u
 | BUILD-11 | Contributor can run an include-style guardrail through a build/check target and CTest entry that rejects quoted or relative Veyr-owned includes. |
 | BUILD-12 | Contributor can reuse compatible Conan packages on repeat workflows and configure/build from prepared dependencies with network acquisition disabled; generated package/build/cache state remains untracked. |
 | BUILD-13 | Contributor can choose documented supported Debug/Release compiler/dependency combinations that preserve platform runtime and ABI compatibility. |
-| BUILD-14 | Contributor can follow a Windows/Linux CI validation path using the same reviewed dependency/profile configuration as local development, with platform-specific checks explicitly gated. |
+| BUILD-14 | Contributor can follow Windows/Linux CI using shared reviewed command/dependency/profile policy with independently observed developer and CI toolchain identities. |
 
 Research support: BUILD-01/08/09 use target-oriented CMake with native LLVM exports; BUILD-02/03/04/12 use Conan recipes, options, profiles, locks and cache; BUILD-05/07/13 use exact host baselines plus runtime checks; BUILD-06 uses thin operation chaining; BUILD-10/11 use infrastructure tests/include enforcement; BUILD-14 uses four native CI combinations.
 
@@ -105,29 +105,40 @@ Research support: BUILD-01/08/09 use target-oriented CMake with native LLVM expo
 | Conan | Recipes, dependency closure, source download/build, package identities/revisions/cache and locks |
 | LLVM Conan recipe | Exact upstream source/options, standard Conan CMake helpers, install native exports, test_package |
 | CMake | Veyr targets, LLVM CONFIG discovery/compatibility checks, Ninja presets, CTest/include target |
-| GitHub Actions | Same profiles and entry point, separate bootstrap/native stages, cache optimization and four-platform/configuration evidence |
+| GitHub Actions | Shared commands/dependency policy, independently reviewed CI identities, separate bootstrap/native stages, cache optimization and four configuration results |
 | Future Veyr project system | Deferred; Veyr.toml and Veyr.lock are not compiler dependency inputs |
 
 ## Standard Stack
 
-[PROPOSED] Exact candidate host-tool versions selected for the Phase 1 baseline:
+[OWNER-APPROVED CANDIDATE CORRECTION: 2026-10-04] The observed Omarchy/Arch x86_64 host is the Linux developer baseline candidate. This supersedes the earlier proposed Ubuntu developer assumption and shared host-tool pins; it does not approve installed Conan, package readiness or ABI compatibility. Source evidence is the unchanged 01-01-HOST-INVENTORY.json. Original D-07/D-14 discussion text above remains historical: shared commands and dependency/profile policy do not imply identical developer/CI toolchain identities.
 
-| Tool/dependency | Candidate pin | Qualification |
-|---|---|---|
-| Python | 3.13.15 | Host interpreter; not the interpreter running this planning session |
-| Conan | 2.33.0 | Conan 2 package authority |
-| CMake | 3.31.8 | Ninja generator; no dependence on CMake 4-only presets |
-| Ninja | 1.13.2 | Native executor |
-| Clang/clang-cl host compiler | 20.1.8 | Separate from the LLVM backend library version |
-| Backend library | LLVM 23.1.2 | Proposed local reference llvm/23.1.2@veyr/m1 |
-| Tests | gtest/1.18.0 | GoogleMock enabled; static package and matching runtime |
-| Git, Linux / Windows | 2.55.0 / 2.55.0.windows.5 | Candidate platform baseline |
+| Tool/dependency | Linux developer candidate / observation | Windows developer candidate (uninspected) | Qualification |
+|---|---|---|---|
+| Python | 3.14.7 | 3.13.15 | Exact interpreter per environment |
+| Conan | 2.33.0 required; missing | 2.33.0 | Conan 2 package authority; no installed readiness claim |
+| CMake | 4.4.3 | 3.31.8 | Ninja generator; keep shared build semantics |
+| Ninja | 1.13.2 | 1.13.2 | Native executor |
+| Clang/clang-cl host compiler | 22.1.8 | 20.1.8 | Separate from LLVM backend 23.1.2 |
+| GCC/libstdc++ toolchain | 16.2.1 | Not applicable | Linux compiler.libcxx=libstdc++11 ABI mode |
+| libc / linker | glibc 2.44 / GNU Binutils 2.47 | Actual CRT/linker pending | Native ABI/link/run remains unproven |
+| Git | 2.55.0 | 2.55.0.windows.5 | Exact environment identity |
+| Backend library | LLVM 23.1.2 | LLVM 23.1.2 | Proposed local reference llvm/23.1.2@veyr/m1 |
+| Tests | gtest/1.18.0 | gtest/1.18.0 | GoogleMock enabled; static package and matching runtime |
 
-[CITED] Release/version identities were checked against official sources during the interrupted research: [Python](https://www.python.org/downloads/release/python-31315/), [Conan PyPI metadata](https://pypi.org/pypi/conan/2.33.0/json), [CMake](https://github.com/Kitware/CMake/releases/tag/v3.31.8), [Ninja](https://github.com/ninja-build/ninja/releases/tag/v1.13.2), [host Clang](https://github.com/llvm/llvm-project/releases/tag/llvmorg-20.1.8), [LLVM releases](https://github.com/llvm/llvm-project/releases), [GoogleTest index](https://raw.githubusercontent.com/conan-io/conan-center-index/master/recipes/gtest/config.yml). These establish identity/availability, not successful integration.
+| Environment | Identity evidence / gate |
+|---|---|
+| Linux developer | Omarchy 4.0.4 / Arch x86_64; observed tool identities above; Conan missing |
+| Windows developer | Independently pending until actual Windows x86_64 host inspection; retain candidate identities |
+| Linux GitHub Actions | Ubuntu 24.04; exact CI toolchain independently pending until workflow observation |
+| Windows GitHub Actions | Windows-2022 runner family; exact CI toolchain independently pending until workflow observation |
 
-[PROPOSED] Linux baseline: Ubuntu 24.04 x86_64, Clang 20.1.8, explicitly selected GCC 14.2.0 libstdc++ toolchain and Conan libcxx=libstdc++11. Record actual libc/linker identities before baseline acceptance. Windows baseline: Windows x86_64, clang-cl 20.1.8, VS 2022 17.14.37710.0, SDK 10.0.26100.0 and v143 dynamic runtime. Candidate Debug runtime identity is 14.44.35211; the exact installed VCToolsVersion must be read and reviewed before enforcing a complete runtime/toolset pin. Do not treat the redistributable version as the toolset/header version.
+No Ubuntu developer host is required. Selecting Omarchy candidate policy does not mean packages are ready; missing Conan still blocks package operations. CI shares commands, dependency references/options and reviewed profile policy, not assumed installed tool or native ABI identity. macOS remains deferred.
 
-[CITED] Current inspected runner inventories expose these tool/runtime candidates, but images change and must be checked during execution: [Windows 2022 inventory](https://raw.githubusercontent.com/actions/runner-images/main/images/windows/Windows2022-Readme.md), [Ubuntu 24.04 inventory](https://raw.githubusercontent.com/actions/runner-images/main/images/ubuntu/Ubuntu2404-Readme.md). Use named runner families, not a moving latest alias. Required host-tool installation stays conventional and outside any Veyr provisioning framework.
+[CITED: original candidate research] Release/version identities were checked against official sources during the interrupted research: [Python](https://www.python.org/downloads/release/python-31315/), [Conan PyPI metadata](https://pypi.org/pypi/conan/2.33.0/json), [CMake](https://github.com/Kitware/CMake/releases/tag/v3.31.8), [Ninja](https://github.com/ninja-build/ninja/releases/tag/v1.13.2), [host Clang](https://github.com/llvm/llvm-project/releases/tag/llvmorg-20.1.8), [LLVM releases](https://github.com/llvm/llvm-project/releases), [GoogleTest index](https://raw.githubusercontent.com/conan-io/conan-center-index/master/recipes/gtest/config.yml). These preserve the original documentary findings, not evidence for the new Omarchy observations or successful integration.
+
+[OWNER-SELECTED CANDIDATE] Linux developer baseline: observed Omarchy/Arch x86_64, Clang 22.1.8, explicitly selected GCC/libstdc++ 16.2.1 toolchain, Conan libcxx=libstdc++11, glibc 2.44 and Binutils 2.47. Exact paths are observed prerequisites, not a normalized SDK. Conan 2.33.0 is required and missing. [PROPOSED; INDEPENDENTLY PENDING] Windows baseline: Windows x86_64, clang-cl 20.1.8, VS 2022 17.14.37710.0, SDK 10.0.26100.0 and v143 dynamic runtime. Candidate Debug runtime identity is 14.44.35211; the exact installed VCToolsVersion must be read and reviewed before enforcing a complete runtime/toolset pin. Do not treat the redistributable version as the toolset/header version.
+
+[CITED: original documentary research only] Public runner inventories informed earlier candidates: [Windows 2022 inventory](https://raw.githubusercontent.com/actions/runner-images/main/images/windows/Windows2022-Readme.md), [Ubuntu 24.04 inventory](https://raw.githubusercontent.com/actions/runner-images/main/images/ubuntu/Ubuntu2404-Readme.md). These are not observed Veyr workflow execution evidence or proof of developer identity. Both CI toolchain identities remain independently pending until actual workflow observations. Use named runner families, not a moving latest alias; any authorized prerequisite installation stays conventional and outside a Veyr provisioning framework.
 
 ## Package Legitimacy Audit
 
@@ -160,8 +171,8 @@ Research support: BUILD-01/08/09 use target-oriented CMake with native LLVM expo
 
 | Native combination | Veyr / GoogleTest | LLVM candidate | Required proof |
 |---|---|---|---|
-| Linux Debug | Debug, Clang 20, libstdc++11 ABI | Release, same compiler/libcxx | Headers, symbols, allocation/destruction and executable link/run |
-| Linux Release | Release, same ABI | Same compatible Release LLVM | Native link/run and package reuse |
+| Linux developer Debug | Debug, Clang 22, GCC 16.2.1/libstdc++11 ABI | Release, same selected environment compiler/libcxx | Headers, symbols, allocation/destruction and executable link/run; unproven |
+| Linux developer Release | Release, same selected developer ABI | Same compatible Release LLVM | Native link/run and package reuse; unproven |
 | Windows Debug | Debug, v143 dynamic Debug CRT (/MDd) | Release optimization, dynamic Debug CRT | Matching CRT, iterator level and exported LLVM ABI settings |
 | Windows Release | Release, v143 dynamic Release CRT (/MD) | Release optimization, dynamic Release CRT | Matching CRT/iterator level and native link/run |
 
@@ -195,7 +206,7 @@ Research support: BUILD-01/08/09 use target-oriented CMake with native LLVM expo
 
 ### CI capacity and evidence
 
-[PROPOSED] GitHub Actions: pull_request, push main, workflow_dispatch; Windows-2022 and Ubuntu-24.04 × Debug/Release. Separate bootstrap validation and native configure/build/test stages logically. Restore Conan homes only as optimization; manual cache-disabled cold setup remains available. Cache keys include actual profiles, recipes/locks, configuration and tool/runtime baseline; avoid concurrent cache writes.
+[PROPOSED] GitHub Actions: pull_request, push main, workflow_dispatch; Windows-2022 and Ubuntu-24.04 × Debug/Release. Ubuntu CI identity is separately observed when its workflow exists; Omarchy developer evidence does not satisfy it. Windows CI evidence does not replace native Windows developer inspection. Share commands/dependency policy, but select each reviewed environment's exact Conan/tool inputs. Separate bootstrap validation and native configure/build/test stages logically. Restore Conan homes only as optimization; manual cache-disabled cold setup remains available. Cache keys include actual environment identities, profiles, recipes/locks, configuration and tool/runtime baseline; avoid concurrent cache writes.
 
 [CITED] GitHub-hosted jobs have a six-hour hard job limit. Standard public runners provide finite CPU, memory and disk; private runner allocation differs. Long LLVM builds are allowed by policy, but this external hard limit still applies. Cold-build wall time, peak disk/memory and compiler/link parallelism must be measured rather than promised. [Actions limits](https://docs.github.com/en/actions/reference/limits), [hosted runners](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
 
@@ -234,7 +245,7 @@ python scripts/dev.py all --profile linux-x86_64-clang --config Release
 ## Assumptions and Open Questions
 
 1. Optimized LLVM with Windows Debug CRT is a candidate, not an established support claim. Recipe test_package and Veyr/native tests must prove it.
-2. Windows exact VCToolsVersion and Linux libc/linker identity need actual host evidence before the strict tool baseline is fully accepted. Candidate pins above do not conceal this gap.
+2. Windows exact VCToolsVersion/CRT/SDK/linker remains pending native inspection. Omarchy Linux developer identities are recorded, but Conan is missing and ABI remains unproven. Ubuntu and Windows CI identities remain independently pending; candidate selection does not establish readiness.
 3. Record official 23.1.2 source digest and Conan recipe revisions during authorized source/lock work; do not invent hashes/revisions during planning.
 4. Cold build capacity and useful parallelism require measurement on the selected CI account/runners. Capacity failure requires owner review.
 5. External LLVM providers must prove the same compatibility contract; provider selection is not permission for fallback.
@@ -265,4 +276,3 @@ Primary source links above preserve the documentary findings gathered before int
 - Scope: fresh Phase 1 only; no imported prior-run logs, code, plans or outcomes.
 - Research gate: documentary capture complete; native compatibility, exact host observations and CI capacity remain required execution checkpoints.
 - Next incomplete step: interactive confirmation of the proposed plan/wave breakdown, then executable PLAN.md writing and inline plan review.
-

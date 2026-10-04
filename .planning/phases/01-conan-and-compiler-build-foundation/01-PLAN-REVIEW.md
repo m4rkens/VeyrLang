@@ -4,8 +4,14 @@
 **Scope:** Eight written Phase 1 plans, approved breakdown, canonical discussion and BUILD-01–14
 **Method:** Inline planner/checker/source-grounding review; no independent sub-agent review
 **Result:** PASS for planning structure, coverage and executable dependency contracts
-**Owner completed-planning review:** Pending
-**Execution/phase acceptance:** Not started; no native test/build/CI results claimed
+**Original owner completed-planning review:** Pending at this snapshot; original plans were later reviewed and committed in f4d8335. This bounded correction awaits owner review.
+**Original execution/phase acceptance:** Not started at this snapshot; current Task 2 position is in STATE.md. No native build/ABI/CI acceptance is claimed.
+
+## Owner-approved bounded correction review — 2026-10-04
+
+The earlier structural PASS remains a historical planning result. This bounded update selects observed Omarchy/Arch x86_64 developer candidate identities in Plan 01-01 and requires independently observed Ubuntu 24.04 and Windows CI identities in Plan 01-08. Windows developer candidates remain unchanged and actual native evidence remains pending. Conan 2.33.0 is required and missing; LLVM backend remains 23.1.2. Candidate selection and package/prerequisite/native ABI readiness are explicitly separate.
+
+D-07/D-14 are clarified by the dated owner direction: exact policy applies to each selected environment; shared commands and dependency/profile policy do not require identical developer/CI host identities. Committed 01-CONTEXT.md and 01-DISCUSSION-LOG.md stay unchanged. Eight plans, eight waves, eighteen tasks, dependency order and BUILD/D identifier ownership are preserved. Plan 08 now explicitly owns the sequential update of existing baseline.json for observed CI expectations; no new framework or evidence file format is introduced. Other plan task contracts remain unchanged. Task 2 can resume candidate-policy review after this correction; no Task 2 completion, execution resumption or Conan/package/ABI readiness is credited by the planning-only edit. No builds/tests or runtime verification ran.
 
 ## Plan Inventory
 
@@ -18,7 +24,7 @@
 | 01-05 | 5 | 2 | 4 | — |
 | 01-06 | 6 | 2 | 4 | — |
 | 01-07 | 7 | 2 | 4 | Unsupported native outcome remains pending/failed |
-| 01-08 | 8 | 3 | 5 | Remote authorization, four native CI results and capacity |
+| 01-08 | 8 | 3 | 6 | Remote authorization, independent CI identities, four native results and capacity |
 
 Eight sequential waves match the approved breakdown and parallelization=false. Eighteen tasks comprise sixteen implementation tasks with automated quick checks and two blocking manual owner checkpoints. Plans 01-01 and 01-08 are autonomous=false. Other runtime/capacity failures also stop under the execution policy; autonomous does not grant commit/remote/lifecycle authority.
 
@@ -39,7 +45,7 @@ Eight sequential waves match the approved breakdown and parallelization=false. E
 | BUILD-11 | 01-05 tasks 1–2: checker fixtures, check-includes and CTest entry |
 | BUILD-12 | 01-03, 01-06, 01-07 and 01-08: cache-only boundaries/reuse/scoped clean/cold path |
 | BUILD-13 | 01-01/02/04/07/08: distinct native runtime identities and actual compatibility proof |
-| BUILD-14 | 01-08 tasks 1–3: same-profile four-combination CI and real result/capacity review |
+| BUILD-14 | 01-08 tasks 1–3: shared command/dependency policy, independently reviewed CI identities, four-combination results/capacity review |
 
 Discussion D-01–D-16 have task-linked coverage sections in PLAN.md files. Registered post-planning gap analysis reports 30/30 requirement/decision identifiers covered. This is an identifier/coverage result, not implementation verification.
 
@@ -87,7 +93,7 @@ Platform impact:
 
 ## Remaining Execution Gates
 
-1. Obtain actual Windows VCToolsVersion and Linux libc/linker identities before baseline acceptance.
+1. Review Omarchy developer candidate selection and its missing Conan prerequisite separately; actual Windows developer VCToolsVersion/CRT/SDK/linker and Ubuntu/Windows CI toolchain identities remain independently pending.
 2. Verify exact upstream source integrity and Conan-generated recipe revisions during authorized setup.
 3. Prove optimized LLVM with each requested runtime, particularly Windows Debug CRT; never suppress mismatch/fallback.
 4. Measure cold-source LLVM duration/memory/disk on selected CI account/runners against external hard limits.
@@ -97,5 +103,4 @@ These are planned execution checkpoints, not resolved research facts or passing 
 
 ## Owner Review Boundary
 
-Planning artifacts are complete for review and uncommitted. No implementation, package acquisition, builds/tests, remote actions or phase advancement occurred. Owner reviews this packet and the PLAN.md files before requesting the dedicated planning commit. Execution does not start from approval of this planning breakdown or from passing static plan checks.
-
+Original planning boundary: artifacts were complete for review and uncommitted; no implementation, package acquisition, builds/tests, remote actions or phase advancement had occurred at that checkpoint. Original planning was later committed separately in f4d8335. Current boundary: this eleven-file planning-only correction is uncommitted for owner review; execution has not resumed and no checks imply package/ABI readiness or lifecycle permission.

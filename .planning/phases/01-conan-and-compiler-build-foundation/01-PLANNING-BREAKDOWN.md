@@ -12,20 +12,24 @@ A contributor selects a reviewed native profile and Debug/Release configuration,
 
 This is infrastructure for P01 and PLAT_06. No .vyr syntax/compiler pipeline or future language project/package system is introduced.
 
+## Owner-approved baseline correction — 2026-10-04
+
+The eight-wave/task organization remains approved and unchanged. Linux developer candidate is the observed Omarchy/Arch x86_64 host; Ubuntu 24.04 is a distinct later CI environment with independently pending toolchain identity. Windows developer evidence waits for its actual host; Windows CI evidence is separately pending. Conan 2.33.0 remains required and missing, LLVM backend remains 23.1.2, and no package/ABI readiness is inferred. Scope D-07/D-14 through this dated owner clarification while preserving the committed discussion snapshot and shared commands/dependency policy. These planning corrections do not resume execution.
+
 ## Plan and Wave Breakdown
 
 Eight approved plans, eighteen tasks, sequential waves. Parallelization remains disabled. Each plan owns a coherent concern; shared script/CMake files appear only in later dependent waves.
 
 | Plan | Wave | Depends on | Concern / proposed tasks | Requirements |
 |---|---:|---|---|---|
-| 01-01 | 1 | — | Inspect and fix exact host/profile baseline; owner checkpoint for missing host identities or incompatible candidate pins; implement strict doctor with mismatch/SDK/path tests | BUILD-05, BUILD-07, BUILD-13 |
+| 01-01 | 1 | — | Inspect/select exact environment-specific developer candidates; owner checkpoint separates selection from missing prerequisite readiness; implement strict doctor with mismatch/SDK/path tests | BUILD-05, BUILD-07, BUILD-13 |
 | 01-02 | 2 | 01-01 | Implement narrow exact LLVM recipe/options/source integrity/native exports; implement Conan test_package proving exported headers/targets and matching runtime link/run | BUILD-03, BUILD-04, BUILD-13 |
 | 01-03 | 3 | 01-01, 01-02 | Add exact consumer refs/generators/profiles and Conan-native lock generation/review; implement explicit setup, dedicated Conan home and cache-only prepared generation with boundary tests | BUILD-02, BUILD-06, BUILD-12 |
 | 01-04 | 4 | 01-03 | Add target-oriented C++23/Ninja/presets/LLVM provider integration and compile database; wire independent veyrcore/version stub plus Conan GoogleTest/GoogleMock infrastructure harness | BUILD-01, BUILD-08, BUILD-09, BUILD-10 |
 | 01-05 | 5 | 01-04 | Implement owned-header include checker with positive/negative fixtures; integrate check-includes target and CTest entry | BUILD-11 |
 | 01-06 | 6 | 01-03, 01-04, 01-05 | Complete configure/build/test/verify/all/clean orchestration without duplicate acquisition/work; supervise child commands and test quiet progress, confirmed stall and clean/chaining boundaries | BUILD-06, BUILD-12 |
 | 01-07 | 7 | 01-06 | Add provider/runtime/offline/cache integration acceptance checks; run authorized native Debug/Release foundation acceptance and document actual results/gaps | BUILD-08, BUILD-10, BUILD-12, BUILD-13 |
-| 01-08 | 8 | 01-07 | Add four-combination GitHub Actions with distinct bootstrap/native steps and cache-disabled path; document same local commands/host prerequisites and capacity evidence; owner checkpoint for remote publication/CI evidence or inadequate runner capacity | BUILD-14, BUILD-06, BUILD-07, BUILD-12, BUILD-13 |
+| 01-08 | 8 | 01-07 | Add four-combination GitHub Actions with independently observed CI identities, distinct bootstrap/native steps and cache-disabled path; document shared commands/dependency policy; owner checkpoint for remote/CI evidence or capacity | BUILD-14, BUILD-06, BUILD-07, BUILD-12, BUILD-13 |
 
 This is the approved organization for the written PLAN.md files, not execution authorization. Plans 01-01 and 01-08 have autonomous: false because of their checkpoints. Other plans remain bounded by the project's execution/review/commit gates.
 
@@ -42,7 +46,7 @@ Paths below are future implementation locations, not files created during planni
 | 01-05 | scripts/check_includes.py; tests/development/test_include_policy.py; CMakeLists.txt; tests/CMakeLists.txt |
 | 01-06 | scripts/dev.py; scripts/devtools/runner.py; tests/development/test_dev_commands.py; tests/development/test_runner.py |
 | 01-07 | scripts/check_foundation.py; tests/development/test_foundation_contract.py; tests/infrastructure/llvm_link_test.cpp; docs/development/FOUNDATION_ACCEPTANCE.md |
-| 01-08 | .github/workflows/build-foundation.yml; docs/development/DEVELOPER_BOOTSTRAP.md; docs/development/CI_MATRIX_POLICY.md; docs/development/FOUNDATION_ACCEPTANCE.md; README.md |
+| 01-08 | .github/workflows/build-foundation.yml; scripts/devtools/baseline.json (observed CI expectations only); docs/development/DEVELOPER_BOOTSTRAP.md; docs/development/CI_MATRIX_POLICY.md; docs/development/FOUNDATION_ACCEPTANCE.md; README.md |
 
 Files shared across plans are intentional sequential updates. The initial CMake plan is limited to ten files and two cohesive tasks. Later plan review must split it if task complexity exceeds the planner's context target. Lockfiles are Conan outputs created and reviewed only during execution; planning does not fabricate revision hashes.
 
@@ -53,11 +57,11 @@ Files shared across plans are intentional sequential updates. The initial CMake 
 - Setup alone performs acquisition/source builds; cache-only install feeds configure.
 - CMake links imported GoogleTest and isolated LLVM infrastructure targets; veyrcore stays independent of LLVM.
 - Include checker feeds both check-includes and CTest; verify composes include/native checks once.
-- CI invokes the same entry point and profile inputs; four native outcomes and cold-build capacity are observable evidence, never inferred from YAML.
+- CI invokes the same entry point and dependency/profile policy with independently reviewed environment inputs; four native outcomes and cold-build capacity are observable evidence, never inferred from YAML or developer inventory.
 
 ## Unresolved Execution Gates
 
-1. Exact Windows VCToolsVersion and Linux libc/linker identity require actual host observations before complete strict baseline acceptance.
+1. Omarchy developer candidate evidence is recorded; Conan 2.33.0 is missing and readiness remains unproven. Exact Windows developer VCToolsVersion/CRT/SDK/linker requires actual host observations; Ubuntu Linux CI and Windows CI identities are separately pending before their readiness is accepted.
 2. Optimized LLVM plus Windows Debug CRT must pass source build, native exports and link/run checks. Failure stops for owner review; no ABI weakening/provider fallback.
 3. Official LLVM source integrity and Conan revisions must be recorded through normal recipe/lock mechanics, not invented here.
 4. Hosted cold LLVM jobs must fit actual runner resources and the six-hour hard limit. Capacity failure requires an owner decision.
@@ -67,7 +71,7 @@ Files shared across plans are intentional sequential updates. The initial CMake 
 
 Platform impact:
 - Windows: clang-cl, exact VS/SDK/CRT identity, runtime-specific optimized LLVM packages; argument/path spaces, process termination and include-case checks.
-- Linux: explicit Clang/libstdc++ baseline, ABI-compatible optimized LLVM; equivalent structured process/cache/offline/clean behavior.
+- Linux: Omarchy/Arch developer Clang 22/GCC 16/libstdc++/glibc/linker candidate and independently pending Ubuntu CI identity; equivalent process/cache/offline/clean behavior and unproven ABI.
 - macOS future: No Darwin implementation/runner. Preserve host/target identity, pathlib/argument-array boundaries and standard Conan/CMake integration.
 
 ## Project-System Impact Packet

@@ -44,7 +44,7 @@ Integer phases are the active M1 scope. Any inserted decimal phase requires sepa
 **Scope:** Thin Python operations; prerequisite checks; explicit Conan host/build profiles; exact dependency references/options; LLVM 23.1.2 recipe selection or narrow recipe; CMakeToolchain/CMakeDeps integration and explicit LLVM discovery; Ninja/C++23 targets, GoogleTest/GoogleMock, compile database, include guardrail, supported Debug/Release combinations, cache/offline behavior and Tier 1 CI path.
 **Success Criteria** (observable outcomes after authorized execution/verification):
 
-1. Windows and Linux contributors have documented, equivalent setup/doctor/configure/build/test/verify/all entry points; doctor reports real missing host tools/SDK prerequisites and CI uses the same reviewed configuration.
+1. Windows and Linux contributors have documented, equivalent setup/doctor/configure/build/test/verify/all entry points; doctor reports real missing host tools/SDK prerequisites. CI shares commands and dependency/profile policy while validating independently observed CI identities, not assumed developer toolchains.
 2. Reviewed Conan profiles/configuration supply LLVM 23.1.2 and GoogleTest/GoogleMock with explicit ABI/runtime and supported Debug/Release combinations; optional zlib/zstd/LibXml2 are included only when selected LLVM options require them.
 3. The target-oriented C++23/Ninja foundation configures with supported Conan generators and compatibility-checked find_package(LLVM CONFIG) discovery; development presets export compile_commands.json.
 4. Compiler infrastructure tests and the owned-header include guardrail run through the intended test/build interfaces on both Tier 1 platforms.
@@ -61,6 +61,8 @@ Plans:
 - [ ] 01-06-PLAN.md — Complete developer commands, scoped clean and liveness supervision
 - [ ] 01-07-PLAN.md — Native provider/runtime/offline/cache acceptance
 - [ ] 01-08-PLAN.md — Four-combination CI, documentation and evidence/capacity review
+
+**Owner-approved baseline clarification (2026-10-04):** Linux developer candidate is the observed Omarchy/Arch x86_64 host. Ubuntu 24.04 Linux CI, Windows developer and Windows CI identities remain independently pending. Conan 2.33.0 is required and missing; backend LLVM remains 23.1.2. Candidate selection does not establish installed/package/ABI readiness. Committed discussion is preserved with this dated clarification of shared policy versus environment identity; eight waves remain unchanged.
 
 **Research/design gate:** Recheck recipe/version availability, actual exported LLVM config/targets, exact host tools and runtime combinations during discussion/planning. Record Windows evidence as pending until actually supplied; do not expand this phase into a package/provisioning platform.
 
@@ -288,7 +290,7 @@ After M1 acceptance and its reviewed verification commit, the owner may start a 
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Conan and Compiler Build Foundation | 0/8 | Planned; owner review pending | — |
+| 1. Conan and Compiler Build Foundation | 0/8 | Executing; bounded planning correction applied, 01-01 Task 2 review resumable | — |
 | 2. Source Identity, Spans, and Diagnostics | 0/TBD | Not started | — |
 | 3. M1 Experimental Smoke Profile, Tokens, and Lexer | 0/TBD | Not started | — |
 | 4. Smoke Profile Parser | 0/TBD | Not started | — |

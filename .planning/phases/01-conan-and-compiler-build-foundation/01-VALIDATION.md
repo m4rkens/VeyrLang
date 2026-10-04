@@ -9,7 +9,11 @@ created: 2026-10-04
 
 # Phase 1 — Validation Strategy
 
-Planning-only contract. Breakdown approved and eight PLAN.md files written. No tests/infrastructure created or run. nyquist_compliant records reviewed plan coverage only; wave_0_complete remains false because implementation has not started.
+Original planning snapshot: breakdown approved and eight PLAN.md files written; no tests/infrastructure had been created or run at that checkpoint. nyquist_compliant records reviewed plan coverage only. wave_0_complete remains false; prior Task 1 execution and current readiness gaps are recorded separately below and in 01-01-EXECUTION.md.
+
+## Owner-approved environment correction — 2026-10-04
+
+Selection-policy review and installed/package/ABI readiness are separate. Linux developer candidate uses the saved Omarchy/Arch x86_64 inventory; Conan 2.33.0 is required and missing. Windows developer, Ubuntu 24.04 Linux CI and Windows CI observations are independently pending. The same commands/dependency policy apply, while prerequisite comparisons, runtime evidence and CI cache/build inputs identify the actual selected environment. No native ABI, package or CI row becomes green from this correction. Preserve eight waves; actual prior Task 1 fixture observations are recorded in 01-01-EXECUTION.md rather than inferred from this original planning coverage map. No checks run as part of this correction.
 
 ## Test Infrastructure
 
@@ -39,7 +43,7 @@ All files below are missing until execution creates them. No row is green.
 | Task | Wave | Requirement | Test type / meaningful behavior | Proposed verification | Status |
 |---|---:|---|---|---|---|
 | 01-01-01 | 1 | BUILD-05, BUILD-07, BUILD-13 | Host identity/profile inventory | Review actual versions, CRT/SDK/libc/linker and exact profile inputs | Pending |
-| 01-01-02 | 1 | BUILD-05, BUILD-07, BUILD-13 | Owner checkpoint | Resolve missing identity or unsupported baseline before package work | Pending |
+| 01-01-02 | 1 | BUILD-05, BUILD-07, BUILD-13 | Owner checkpoint | Review observed Omarchy candidate selection; keep missing Conan readiness and independent Windows/CI evidence gates | Resumable after correction review; readiness pending |
 | 01-01-03 | 1 | BUILD-07 | Unit: missing/mismatched tools/SDK, paths | unittest test_doctor | Missing infrastructure |
 | 01-02-01 | 2 | BUILD-03, BUILD-04 | Recipe/options/source-integrity | Review exact source/digest/options and Conan-native graph | Pending |
 | 01-02-02 | 2 | BUILD-03, BUILD-13 | Native recipe integration | Conan test_package verifies native exports and CRT-compatible link/run | Missing infrastructure |
@@ -53,7 +57,7 @@ All files below are missing until execution creates them. No row is green.
 | 01-06-02 | 6 | BUILD-06 | Unit child/liveness | unittest test_runner; healthy quiet child continues, confirmed stall stops once | Missing infrastructure |
 | 01-07-01 | 7 | BUILD-08, BUILD-10, BUILD-12, BUILD-13 | Unit acceptance harness contract | unittest test_foundation_contract; wrong version/runtime/triple and offline negatives | Missing infrastructure |
 | 01-07-02 | 7 | BUILD-08, BUILD-10, BUILD-12, BUILD-13 | Native acceptance | check_foundation for actual native profile/config/provider combinations | Missing infrastructure |
-| 01-08-01 | 8 | BUILD-14 | CI | Four native jobs, distinct bootstrap/native steps; cache-disabled source path | No remote evidence |
+| 01-08-01 | 8 | BUILD-14 | CI | Four jobs with independently observed Ubuntu/Windows CI identities, distinct bootstrap/native steps and cache-disabled source path | No remote evidence |
 | 01-08-02 | 8 | BUILD-06, BUILD-07, BUILD-12, BUILD-13, BUILD-14 | Docs/CI capacity | Compare documented local/CI commands; record duration/resource/cold/warm identities | Pending |
 | 01-08-03 | 8 | BUILD-14 | Owner checkpoint | Authorized publication/CI runs, passing URLs or capacity decision | Pending |
 
@@ -88,14 +92,14 @@ Quick commands are planned checks, not execution evidence. Native/behavior check
 
 Wave 0 means infrastructure prerequisites allocated within the written plans, not a new executed phase. A task creates its required test/recipe before its own check; consumers reference the creator task or a strictly earlier dependent plan.
 
-- [ ] Plan 01: doctor fixtures and exact baseline/profile prerequisite observations.
+- [ ] Plan 01: doctor fixtures and environment-specific developer candidate/readiness checks; original coverage item, with prior Task 1 results recorded separately.
 - [ ] Plan 02: narrow LLVM test_package and exact official source integrity.
 - [ ] Plan 03: conan operation tests and Conan-generated locks.
 - [ ] Plan 04: GoogleTest/GoogleMock CMake infrastructure and native LLVM probe.
 - [ ] Plan 05: owned-header include fixtures and CTest integration.
 - [ ] Plan 06: command/process fixtures, including quiet progress and destructive-boundary negatives.
 - [ ] Plan 07: provider/runtime/offline/cache acceptance harness.
-- [ ] Plan 08: GitHub Actions matrix, cache-disabled path and real CI evidence.
+- [ ] Plan 08: GitHub Actions matrix with independently observed CI identities, cache-disabled path and real CI evidence.
 
 No pytest or extra Python test-framework dependency required. Final PLAN.md mapping must provide automated checks or an explicit upstream infrastructure dependency for every task.
 
@@ -103,7 +107,7 @@ No pytest or extra Python test-framework dependency required. Final PLAN.md mapp
 
 | Behavior | Requirement | Why manual | Later instructions |
 |---|---|---|---|
-| Exact baseline acceptance | BUILD-05, BUILD-07, BUILD-13 | Real Windows/Linux host evidence and owner-selected support policy | Review observed VS toolset/CRT/SDK and libc/linker identities |
+| Exact baseline acceptance | BUILD-05, BUILD-07, BUILD-13 | Owner-selected candidate policy is separate from installed readiness and each developer/CI evidence source | Review Omarchy inventory and missing Conan; obtain Windows developer evidence from its actual host; observe CI identities separately when workflows exist |
 | ABI conflict/capacity resolution | BUILD-13, BUILD-14 | Policy/capacity choice belongs to owner | Report failed combination or measured CI constraint; no silent fallback |
 | Remote publication/runs | BUILD-14 | Local workflow file is not CI evidence | Obtain explicit remote authorization; retain four passing job/run URLs |
 | Quiet build supervision when telemetry unavailable | BUILD-06 | Process progress cannot always be inferred from captured output | Inspect child/process/artifact signals; continue credible progress, stop confirmed stall once |
