@@ -50,7 +50,17 @@ Integer phases are the active M1 scope. Any inserted decimal phase requires sepa
 4. Compiler infrastructure tests and the owned-header include guardrail run through the intended test/build interfaces on both Tier 1 platforms.
 5. A deliberate first dependency source build is supported; repeat workflows reuse compatible Conan packages and prepared dependency state supports acquisition-disabled configure/build without custom package storage or hidden downloads.
 
-**Plans:** TBD — created only by an explicit `$gsd-plan-phase 1` command after the preceding review/commit boundary is resolved.
+**Plans:** 8 plans — written and statically checked; awaiting owner planning review and separately requested planning commit. No execution started.
+
+Plans:
+- [ ] 01-01-PLAN.md — Exact native profiles and strict prerequisite doctor
+- [ ] 01-02-PLAN.md — Narrow LLVM 23.1.2 Conan recipe and native exports
+- [ ] 01-03-PLAN.md — Conan consumer, native locks, explicit setup and cache-only generation
+- [ ] 01-04-PLAN.md — Target-oriented C++23/Ninja, LLVM providers and infrastructure tests
+- [ ] 01-05-PLAN.md — Portable owned-header include guardrail
+- [ ] 01-06-PLAN.md — Complete developer commands, scoped clean and liveness supervision
+- [ ] 01-07-PLAN.md — Native provider/runtime/offline/cache acceptance
+- [ ] 01-08-PLAN.md — Four-combination CI, documentation and evidence/capacity review
 
 **Research/design gate:** Recheck recipe/version availability, actual exported LLVM config/targets, exact host tools and runtime combinations during discussion/planning. Record Windows evidence as pending until actually supplied; do not expand this phase into a package/provisioning platform.
 
@@ -278,7 +288,7 @@ After M1 acceptance and its reviewed verification commit, the owner may start a 
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Conan and Compiler Build Foundation | 0/TBD | Not started | — |
+| 1. Conan and Compiler Build Foundation | 0/8 | Planned; owner review pending | — |
 | 2. Source Identity, Spans, and Diagnostics | 0/TBD | Not started | — |
 | 3. M1 Experimental Smoke Profile, Tokens, and Lexer | 0/TBD | Not started | — |
 | 4. Smoke Profile Parser | 0/TBD | Not started | — |
@@ -291,4 +301,4 @@ After M1 acceptance and its reviewed verification commit, the owner may start a 
 **Coverage:** 49 active requirements mapped to exactly one phase; 0 unmapped; 0 implemented/verified.
 
 ---
-*Last updated: 2026-10-03 after fresh project initialization.*
+*Last updated: 2026-10-04 after authorized Phase 1 planning; no phase executed or completed.*

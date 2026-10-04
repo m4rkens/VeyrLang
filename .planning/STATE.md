@@ -4,15 +4,15 @@ milestone: M1
 milestone_name: Compiler Walking Skeleton
 current_phase: 1
 current_phase_name: Conan and Compiler Build Foundation
-status: discussing
-stopped_at: Phase 1 discussion captured; awaiting owner review and dedicated discussion commit. Initialization and starter baseline commits are resolved; no plan/execution started.
-last_updated: "2026-10-03T10:42:10.987Z"
-last_activity: 2026-10-03
-last_activity_desc: Captured sixteen Phase 1 decisions in context/discussion log; no implementation, builds/tests, or phase advancement.
+status: planned
+stopped_at: Phase 1 planning complete; eight sequential plans and inline review saved. Awaiting owner review and separately requested planning commit; no execution started.
+last_updated: "2026-10-04T02:05:01Z"
+last_activity: 2026-10-04
+last_activity_desc: Wrote eight approved Phase 1 plans and completed static coverage/dependency/source-grounding review. No implementation, builds/tests, commits or phase advancement.
 progress:
   total_phases: 10
   completed_phases: 0
-  total_plans: 0
+  total_plans: 8
   completed_plans: 0
   percent: 0
 ---
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-03)
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
-**Current focus:** Phase 1 discussion review. Fresh initialization b1f0bf5 and starter baseline 74ccfba are committed; phase planning has not started.
+**Current focus:** Completed Phase 1 planning owner review. Fresh initialization b1f0bf5, starter baseline 74ccfba and discussion 1ecd632 are committed. Planning remains uncommitted.
 
 ## Current Position
 
 Phase: 1 of 10 (Conan and Compiler Build Foundation)
-Plan: None — phase planning has not started
-Status: Discussing; context captured, awaiting owner review and separately approved discussion commit
-Last activity: 2026-10-03 — Captured sixteen Phase 1 decisions in context/discussion log; no implementation, builds/tests, or phase advancement.
+Plan: Eight written; none executed
+Status: Planned; inline checks passed, owner completed-planning review pending
+Last activity: 2026-10-04 — Wrote eight approved plans and static review; no implementation, builds/tests, commits or phase advancement.
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -39,7 +39,7 @@ Progress: [░░░░░░░░░░] 0%
 
 - Total plans completed: 0
 - Execution time: 0; no execution or verification started
-- Phase plans: all TBD
+- Phase plans: Phase 1 has eight written plans in eight sequential waves; all later phases TBD
 - Active requirements: 49 pending; each maps to exactly one of 10 phases
 
 ## Accumulated Context
@@ -54,14 +54,15 @@ Progress: [░░░░░░░░░░] 0%
 
 ### Pending Todos
 
-No captured todos. Resolve the initialization review/commit boundary before the next stage.
+Owner reviews Phase 1 plans and 01-PLAN-REVIEW.md; if accepted, explicitly request the dedicated planning-artifact commit. Execution requires a later exact $gsd-execute-phase 1 command. No stage commit or execution is authorized now.
 
 ### Blockers/Concerns
 
-- Phase 1: checked ConanCenter llvm-core version index lacks 23.1.2; recheck recipe suitability and use narrow recipe if needed. This does not block initialization.
-- Phase 1: tool versions, runtime/ABI and supported Debug/Release combinations need reviewed selection.
+- Phase 1: interrupted research confirmed the exact ConanCenter recipe gap; narrow project-owned LLVM 23.1.2 recipe proposed. Native exports/source integrity and recipe execution remain pending.
+- Phase 1: candidate tool/runtime baselines recorded in 01-RESEARCH.md; actual Windows VCToolsVersion and Linux libc/linker identity need execution-stage observations. Optimized LLVM/Windows Debug CRT compatibility is unproven.
 - Phase 3: exact provisional spelling and semantic range intentionally remain open.
-- Phase 1 discussion artifacts are uncommitted; owner review and explicit dedicated discussion-commit approval are required before a separately requested planning stage.
+- Phase 1 discussion artifacts were committed in 1ecd63213b96891dd327527a7fa4ec0e8c96d67c. Their historical pre-commit status wording is preserved; current lifecycle status is recorded here.
+- Phase 1: cold LLVM CI capacity requires measurement against actual runner resources and the six-hour hosted-job limit; no capacity or compatibility acceptance is claimed.
 - No platform execution evidence has been collected; all four Windows/Linux Debug/Release CI combinations await authorized execution and verification.
 
 ## Deferred Items
@@ -70,11 +71,16 @@ Future probe directions are tracked in REQUIREMENTS.md v2 and canonical mileston
 
 ## Session Continuity
 
-Last session: 2026-10-03T10:40:31.889Z
-Stopped at: Phase 1 discussion captured; awaiting owner review and dedicated discussion commit. Initialization and starter baseline commits are resolved; no plan/execution started.
-Resume file: .planning/phases/01-conan-and-compiler-build-foundation/01-CONTEXT.md
-Review record: .planning/phases/01-conan-and-compiler-build-foundation/01-CONTEXT.md and .planning/phases/01-conan-and-compiler-build-foundation/01-DISCUSSION-LOG.md
-Proposed dedicated commit: docs: capture Veyr Phase 1 build-foundation discussion
-Possible later command: $gsd-plan-phase 1 — suggestion only, after discussion review/commit boundary is resolved; not started.
+Last session: 2026-10-04T02:05:01Z
+Stopped at: Completed-planning owner-review gate; no commit or execution started.
+Resume file: .planning/phases/01-conan-and-compiler-build-foundation/01-PLAN-REVIEW.md
+Review records: 01-RESEARCH.md, 01-PATTERNS.md, 01-VALIDATION.md, approved 01-PLANNING-BREAKDOWN.md, 01-01-PLAN.md through 01-08-PLAN.md and 01-PLAN-REVIEW.md in the Phase 1 directory.
+Last completed planning step: Eight executable plans written; frontmatter/task contracts, dependency DAG, requirement/decision coverage and inline source-grounding review passed.
+First incomplete step: Owner completed-planning review; a dedicated planning commit remains separately explicit. No further planning work is required unless owner requests revisions.
+Preserved artifacts: Committed 01-CONTEXT.md and 01-DISCUSSION-LOG.md unchanged; no previous Veyr run imported.
+Continuation authorization: Owner explicitly requested resuming interrupted Phase 1 planning and then approved the eight-plan breakdown with option 1. No research restart or repeated completed decisions.
+Sub-agents: None; planning/review inline under the repository's explicit-request policy.
+Planning commit: Not authorized; planning is complete for owner review and must be explicitly committed separately if accepted.
+Possible later command: $gsd-execute-phase 1 — suggestion only after completed planning review and separately approved planning commit; not started.
 
 Do not build, test, install packages, execute, verify, commit or advance a phase without the exact required owner instruction. Rehydrate from repository state in every new session.
