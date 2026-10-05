@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "description": "Exact prerequisite policy only. Selected means owner-approved candidate policy, not installed tools, native ABI or Conan package readiness. CI identities require independent observation.",
+  "backend": {
+    "llvm": "23.1.2"
+  },
+  "tools": {
+    "conan": "2.33.0",
+    "ninja": "1.13.2"
+  },
+  "platforms": {
+    "linux-x86_64-clang": {
+      "status": "selected",
+      "os": "Linux",
+      "arch": "x86_64",
+      "target": "x86_64-pc-linux-gnu",
+      "git": "2.55.0",
+      "native": {
+        "distribution": "Omarchy",
+        "distribution_version": "4.0.4",
+        "gcc": "16.2.1",
+        "stdlib_abi": "libstdc++11",
+        "libc": "glibc 2.44",
+        "linker": "GNU Binutils 2.47"
+      },
+      "paths": {
+        "c_compiler": "/usr/bin/clang",
+        "cpp_compiler": "/usr/bin/clang++",
+        "linker": "/usr/bin/ld",
+        "gcc_install_dir": "/usr/lib/gcc/x86_64-pc-linux-gnu/16",
+        "stdlib_headers": "/usr/include/c++/16",
+        "stdlib_library": "/usr/lib/gcc/x86_64-pc-linux-gnu/16/libstdc++.so"
+      },
+      "environment": "linux-developer",
+      "tools": {
+        "python": "3.14.7",
+        "cmake": "4.4.3",
+        "clang": "22.1.8"
+      }
+    },
+    "windows-x86_64-clangcl": {
+      "status": "candidate",
+      "os": "Windows",
+      "arch": "x86_64",
+      "target": "x86_64-pc-windows-msvc",
+      "git": "2.55.0.windows.5",
+      "native": {
+        "vs_installation": "17.14.37710.0",
+        "vctools": null,
+        "crt": null,
+        "sdk": "10.0.26100.0",
+        "linker": null
+      },
+      "paths": {
+        "c_compiler": null,
+        "cpp_compiler": null,
+        "linker": null,
+        "vs_root": null,
+        "vctools_root": null,
+        "sdk_root": null
+      },
+      "environment": "windows-developer",
+      "tools": {
+        "python": "3.13.15",
+        "cmake": "3.31.8",
+        "clang": "20.1.8"
+      }
+    }
+  },
+  "ci_environments": {
+    "ubuntu-ci": {
+      "status": "pending",
+      "profile": "linux-x86_64-clang"
+    },
+    "windows-ci": {
+      "status": "pending",
+      "profile": "windows-x86_64-clangcl"
+    }
+  }
+}

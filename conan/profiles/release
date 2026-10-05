@@ -1,0 +1,6 @@
+# Compose after the selected native profile; explicitly pass it for build too.
+[settings]
+build_type=Release
+{% if os.environ["VEYR_PROFILE_OS"] == "Windows" %}
+compiler.runtime_type=Release
+{% endif %}

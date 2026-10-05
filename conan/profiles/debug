@@ -1,0 +1,7 @@
+# Compose after the selected native profile, in the host context.
+# Build context remains native Release even if this overlay is passed there.
+[settings]
+build_type={{ "Release" if context == "build" else "Debug" }}
+{% if os.environ["VEYR_PROFILE_OS"] == "Windows" %}
+compiler.runtime_type={{ "Release" if context == "build" else "Debug" }}
+{% endif %}

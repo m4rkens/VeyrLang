@@ -6,7 +6,7 @@
 
 Deliver the P01 smoke path: one source/root module, fixed provisional entry, one integer-literal return, native executable and observable exit code. The initial roadmap follows the canonical ten-phase breakdown in `docs/design/milestones/MILESTONE_1.md`. Future language, tooling and application probes remain deferred in REQUIREMENTS.md and the canonical milestone strategy.
 
-This is fresh initialization only. No phase has started, no phase execution plan exists, and no requirement is implemented or verified. `--auto` authorizes generation inside this command, not lifecycle transitions, builds or commits.
+This roadmap began as fresh initialization, with no previous lifecycle imported. Phase 1 now has eight approved execution plans; Plan 01-01 is complete for the available Linux scope. Phase-wide requirements remain unaccepted. Initialization `--auto` did not authorize later lifecycle transitions, builds or commits.
 
 ## Lifecycle and Design Gates
 
@@ -16,7 +16,7 @@ This is fresh initialization only. No phase has started, no phase execution plan
 - Phase 3 must author, review and commit the canonical M1 Experimental Smoke Profile before implementation/tests depend on concrete spelling. Execution itself requires `$gsd-execute-phase 3`; profile approval is not execution permission.
 - Every sensitive implementation commit requires the owner review packet. Passing tests never grants commit permission.
 - During authorized long commands, roughly 60 seconds of silence is a liveness checkpoint. Continue with credible progress; no duplicate retries or destructive cleanup.
-- Current initialization artifacts are uncommitted for owner review. Proposed dedicated commit: `planning: initialize fresh Veyr M1 lifecycle`.
+- Fresh initialization artifacts were committed separately as `planning: initialize fresh Veyr M1 lifecycle`; later discussion/planning commits remain separate from uncommitted execution work.
 
 ## Phases
 
@@ -50,10 +50,10 @@ Integer phases are the active M1 scope. Any inserted decimal phase requires sepa
 4. Compiler infrastructure tests and the owned-header include guardrail run through the intended test/build interfaces on both Tier 1 platforms.
 5. A deliberate first dependency source build is supported; repeat workflows reuse compatible Conan packages and prepared dependency state supports acquisition-disabled configure/build without custom package storage or hidden downloads.
 
-**Plans:** 8 plans — written and statically checked; awaiting owner planning review and separately requested planning commit. No execution started.
+**Plans:** 8 plans — reviewed and committed planning; 01-01 execution complete for the available Linux scope, with its dedicated checkpoint commit explicitly authorized. Stop for owner review before Wave 2. No phase completion or independent Windows/CI acceptance claimed.
 
 Plans:
-- [ ] 01-01-PLAN.md — Exact native profiles and strict prerequisite doctor
+- [x] 01-01-PLAN.md — Exact native profiles and strict prerequisite doctor (available Linux scope; Windows/CI evidence deferred)
 - [ ] 01-02-PLAN.md — Narrow LLVM 23.1.2 Conan recipe and native exports
 - [ ] 01-03-PLAN.md — Conan consumer, native locks, explicit setup and cache-only generation
 - [ ] 01-04-PLAN.md — Target-oriented C++23/Ninja, LLVM providers and infrastructure tests
@@ -62,7 +62,7 @@ Plans:
 - [ ] 01-07-PLAN.md — Native provider/runtime/offline/cache acceptance
 - [ ] 01-08-PLAN.md — Four-combination CI, documentation and evidence/capacity review
 
-**Owner-approved baseline clarification (2026-10-04):** Linux developer candidate is the observed Omarchy/Arch x86_64 host. Ubuntu 24.04 Linux CI, Windows developer and Windows CI identities remain independently pending. Conan 2.33.0 is required and missing; backend LLVM remains 23.1.2. Candidate selection does not establish installed/package/ABI readiness. Committed discussion is preserved with this dated clarification of shared policy versus environment identity; eight waves remain unchanged.
+**Owner-approved baseline clarification (2026-10-04; acceptance updated 2026-10-05):** Linux developer baseline is the observed Omarchy/Arch x86_64 host. Ubuntu 24.04 Linux CI, Windows developer and Windows CI identities remain independently pending. Authorized CLI-only setup installed project-owned Conan 2.33.0. The owner-approved read-only doctor correction is implemented/reviewed; corrected native doctor passes 22/22 without changing Conan home or tool environment. Plan 01-01 available-host prerequisite acceptance is complete; package/ABI readiness remains unverified. Backend LLVM remains 23.1.2. Committed discussion and all eight waves are preserved.
 
 **Research/design gate:** Recheck recipe/version availability, actual exported LLVM config/targets, exact host tools and runtime combinations during discussion/planning. Record Windows evidence as pending until actually supplied; do not expand this phase into a package/provisioning platform.
 
@@ -290,7 +290,7 @@ After M1 acceptance and its reviewed verification commit, the owner may start a 
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Conan and Compiler Build Foundation | 0/8 | Executing; bounded planning correction applied, 01-01 Task 2 review resumable | — |
+| 1. Conan and Compiler Build Foundation | 1/8 | Executing; 01-01 available Linux acceptance complete; owner review before Wave 2; Windows/CI pending | — |
 | 2. Source Identity, Spans, and Diagnostics | 0/TBD | Not started | — |
 | 3. M1 Experimental Smoke Profile, Tokens, and Lexer | 0/TBD | Not started | — |
 | 4. Smoke Profile Parser | 0/TBD | Not started | — |
@@ -300,7 +300,7 @@ After M1 acceptance and its reviewed verification commit, the owner may start a 
 | 8. LLVM Backend Smoke | 0/TBD | Not started | — |
 | 9. veyrc Driver Smoke | 0/TBD | Not started | — |
 | 10. End-to-End Native Smoke Acceptance | 0/TBD | Not started | — |
-**Coverage:** 49 active requirements mapped to exactly one phase; 0 unmapped; 0 implemented/verified.
+**Coverage:** 49 active requirements mapped to exactly one phase; 0 unmapped; 0 accepted complete at phase-wide requirement level. Plan 01-01 supplies partial BUILD-05/06/07/13 coverage; independent environment and later-plan evidence remain pending.
 
 ---
-*Last updated: 2026-10-04 after authorized Phase 1 planning; no phase executed or completed.*
+*Last updated: 2026-10-05 after authorized Plan 01-01 acceptance; Phase 1 execution remains in progress, with no phase completed or advanced.*

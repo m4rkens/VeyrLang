@@ -23,7 +23,7 @@ thin Python wrapper
 The initial developer contract should stay small:
 
 - Python;
-- Conan 2;
+- Conan 2.33.0 in the project-owned tool environment described below;
 - CMake;
 - Ninja;
 - Clang;
@@ -31,6 +31,75 @@ The initial developer contract should stay small:
 - platform SDK/runtime components genuinely required by the selected toolchain.
 
 Exact supported versions belong to fresh GSD planning and CI policy.
+
+### Project-owned Conan CLI bootstrap
+
+Plan 01-01 Task 3 owns the CLI prerequisite. From the repository root, using the
+reviewed base Python interpreter, run:
+
+```text
+python scripts/dev.py setup --tools-only
+```
+
+This command creates `.veyr-dev/tools/conan-2.33.0` only when missing. It uses
+standard `venv`, then that venv's Python with `-I -m pip --isolated
+--require-virtualenv --disable-pip-version-check install --index-url
+https://pypi.org/simple --no-cache-dir --only-binary=:all: conan==2.33.0`.
+`PIP_CONFIG_FILE` is set to the platform null device. System Python packages,
+ambient global pip state and unrelated system repositories are untouched. Python
+runtime dependencies of the Conan CLI are installed only inside this venv; no
+separate resolver, registry, lock format or provenance subsystem is introduced.
+If a required compatible wheel is unavailable, installation fails and stops;
+there is no automatic source-build fallback or retry.
+
+Setup validates the isolated venv, its reviewed Python identity and exact Conan
+package metadata, then launches the absolute Conan executable with `--version`
+and runs isolated `pip check`. This actual CLI launch is setup's responsibility:
+Conan may initialize or migrate metadata in the selected dedicated `CONAN_HOME`
+even for `--version`. A valid existing environment is reused:
+no `pip install`, upgrade or venv recreation. A broken, non-isolated or mismatched
+environment fails with expected/actual details. The owner may explicitly remove
+**only** `.veyr-dev/tools/conan-2.33.0` and rerun tools-only setup; the wrapper never
+deletes or repairs it automatically. Failed installation leaves any partial
+environment for inspection. A changed base Python or relocated checkout may
+require this same explicit recreation path.
+
+The absolute executable is exposed as `BuildSelection.conan_executable`:
+
+- Linux: `<checkout>/.veyr-dev/tools/conan-2.33.0/bin/conan`.
+- Windows: `<checkout>/.veyr-dev/tools/conan-2.33.0/Scripts/conan.exe`.
+
+Every Conan invocation uses that absolute executable and the selected dedicated
+external `CONAN_HOME`. No shell activation or persistent PATH change is required;
+an unrelated Conan on PATH is ignored. `doctor` inspects only this project-owned
+installation. It checks the expected executable exists and validates venv
+structure, isolation and Python identity, then reads the exact installed Conan
+version and distribution location using `importlib.metadata` through that venv's
+Python with `-I -B`. It never executes the Conan executable or imports the Conan
+CLI/API. Its metadata probe does not receive `CONAN_HOME`; doctor neither needs
+writable Conan home state nor creates, modifies, migrates or initializes it.
+Doctor never creates or repairs the tool environment. CLI launch validation
+remains exclusively in explicit setup, including validated reuse.
+
+`--tools-only` stops before Conan dependency resolution, package installation,
+recipe export, lock generation, source acquisition or builds. Success means the
+CLI is installed and internally consistent, not that all host prerequisites,
+native ABI compatibility or LLVM/package readiness are accepted.
+
+Plan 01-03 retains Conan-owned dependency/package setup. Its full `setup` command
+will automatically ensure this CLI through the same bootstrap function before
+dependency work; `--tools-only` remains available. Until that later implementation,
+plain `setup` fails with tools-only guidance. Ordinary commands require explicit
+setup and do not bootstrap tools implicitly; build may configure, test may build,
+and all includes setup under the later command-composition plan.
+
+The Linux developer baseline candidate is the observed Omarchy/Arch x86_64 host
+with Python 3.14.7. Windows developer evidence, Ubuntu Linux CI identities and
+Windows CI identities remain independently pending; these environments cannot
+inherit Omarchy observations. Implemented Windows path handling and mocked tests
+are not native Windows evidence. macOS remains deferred. A real installation is
+an execution action requiring owner authorization; mocked checks do not install
+Conan or establish prerequisite acceptance.
 
 ## 3. Wrapper responsibilities
 
@@ -50,6 +119,7 @@ clean
 The wrapper may:
 
 - validate host tools;
+- bootstrap the exact Conan CLI through explicit setup using standard venv/pip;
 - select tracked Conan/CMake profiles;
 - set the intended Conan home/configuration;
 - invoke Conan;
@@ -95,11 +165,15 @@ Reuse compatible Conan packages/cache in subsequent local and CI runs.
 
 Generated developer state remains untracked.
 
-The project may use `.veyr-dev/` for Veyr-owned wrapper state/receipts if useful, but Conan's
-package cache/home remains Conan-owned and must not be mirrored into a second Veyr dependency
-store.
+The project-owned CLI environment is `.veyr-dev/tools/conan-2.33.0`. Conan's
+dedicated external package cache/home remains Conan-owned and must not be mirrored
+into a second Veyr dependency store. Neither location is tracked. This tool
+environment is separate from Conan's C/C++ package storage and future `Veyr.lock`.
 
-`clean` should remove ordinary build output. Destructive package/cache purging must be explicit.
+Normal `clean` removes only the selected ordinary build output. It must preserve
+the Conan tool environment and Conan package home/cache, including other build
+configurations. Destructive tool-environment removal or package/cache purging
+must be explicit and separate.
 
 ## 7. Cross-platform behavior
 
@@ -109,6 +183,14 @@ platform-specific toolchain details.
 Do not hardcode POSIX paths into Windows logic or Windows SDK assumptions into Linux logic.
 
 macOS remains future Tier 2 and should not be structurally blocked.
+
+Platform impact:
+- Windows: Standard venv `Scripts/python.exe` and `Scripts/conan.exe`, structured
+  process arguments and independent reviewed host/CI identities; native evidence pending.
+- Linux: Standard venv `bin/python` and `bin/conan`, Omarchy developer candidate
+  separate from Ubuntu CI; no system-package or persistent PATH changes.
+- macOS future: Standard venv/Conan boundaries remain usable; no Darwin support
+  or evidence is claimed at this checkpoint.
 
 ## 8. CI
 

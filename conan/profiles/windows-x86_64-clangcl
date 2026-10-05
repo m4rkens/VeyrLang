@@ -1,0 +1,23 @@
+# Candidate only: exact VS/VC tools/CRT/SDK identity awaits native evidence.
+# Run from the reviewed VS developer environment; doctor supplies these paths.
+[settings]
+os=Windows
+arch=x86_64
+compiler=clang
+compiler.version=20
+compiler.cppstd=23
+compiler.runtime=dynamic
+compiler.runtime_version=v143
+llvm/*:build_type=Release
+
+[conf]
+tools.build:compiler_executables={{ {"c": os.environ["VEYR_C_COMPILER"], "cpp": os.environ["VEYR_CPP_COMPILER"]} | tojson }}
+tools.cmake.cmaketoolchain:extra_variables={{ {"CMAKE_LINKER": os.environ["VEYR_LINKER"]} | tojson }}
+
+[buildenv]
+VSINSTALLDIR={{ os.environ["VEYR_VS_ROOT"] }}
+VCToolsInstallDir={{ os.environ["VEYR_VCTOOLS_ROOT"] }}
+VCToolsVersion={{ os.environ["VEYR_VCTOOLS_VERSION"] }}
+WindowsSdkDir={{ os.environ["VEYR_WINDOWS_SDK_DIR"] }}
+WindowsSDKVersion={{ os.environ["VEYR_WINDOWS_SDK_VERSION"] }}\
+UCRTVersion={{ os.environ["VEYR_WINDOWS_SDK_VERSION"] }}
