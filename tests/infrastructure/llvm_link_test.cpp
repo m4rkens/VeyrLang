@@ -1,5 +1,8 @@
 #include <gtest/gtest.h>
 
+#include <string>
+#include <utility>
+
 #include <llvm/ADT/SmallVector.h>
 #include <llvm/Config/abi-breaking.h>
 #include <llvm/Config/llvm-config.h>
@@ -18,4 +21,22 @@ TEST(LLVMIntegration, SupportAllocationUseAndDestruction) {
   EXPECT_EQ(values.back(), 127);
   values.resize(3);
   EXPECT_EQ(values[2], 2);
+}
+
+TEST(LLVMIntegration, NontrivialElementsSurviveGrowthMoveAndClear) {
+  // Heap-backed strings exercise element ownership while SmallVector's storage
+  // growth/free crosses the linked LLVM Support boundary in this native runtime.
+  llvm::SmallVector<std::string, 1> values;
+  for (int index = 0; index < 64; ++index) {
+    values.emplace_back(256, static_cast<char>('a' + index % 26));
+  }
+  llvm::SmallVector<std::string, 1> moved(std::move(values));
+  ASSERT_EQ(moved.size(), 64U);
+  for (int index = 0; index < 64; ++index) {
+    EXPECT_EQ(moved[index], std::string(256, static_cast<char>('a' + index % 26)));
+  }
+  moved.clear();
+  EXPECT_TRUE(moved.empty());
+  moved.emplace_back(512, 'z');
+  EXPECT_EQ(moved.front(), std::string(512, 'z'));
 }
