@@ -48,8 +48,6 @@ jobs:
       VEYR_CI_ENVIRONMENT: ${{ matrix.environment }}
       VEYR_CI_PROFILE: ${{ matrix.profile }}
       VEYR_CI_CONFIG: ${{ matrix.config }}
-      # Outside checkout; unique to this native job/attempt. No shared cache mutation or purge.
-      CONAN_HOME: ${{ runner.temp }}/veyr-conan-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.environment }}-${{ matrix.config }}
       PYTHONDONTWRITEBYTECODE: '1'
       PYTHONNOUSERSITE: '1'
 
@@ -60,7 +58,11 @@ jobs:
           persist-credentials: false
 
       - name: Bootstrap observation only (installed runner tools; no policy promotion)
+        env:
+          # Outside checkout; unique to this native job/attempt. No shared cache mutation or purge.
+          CONAN_HOME: ${{ runner.temp }}/veyr-conan-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.environment }}-${{ matrix.config }}
         run: |
+          "CONAN_HOME=$env:CONAN_HOME" >> $env:GITHUB_ENV
           New-Item -ItemType Directory -Force .veyr-dev/ci | Out-Null
           @{
             environment = $env:VEYR_CI_ENVIRONMENT
