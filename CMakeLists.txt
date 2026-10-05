@@ -49,6 +49,12 @@ add_executable(veyrc src/driver/main.cpp)
 veyr_target_policy(veyrc)
 target_link_libraries(veyrc PRIVATE veyrcore)
 
+add_custom_target(check-includes
+  COMMAND "${VEYR_PYTHON}" -B "${PROJECT_SOURCE_DIR}/scripts/check_includes.py"
+    --root "${PROJECT_SOURCE_DIR}"
+  COMMENT "Checking canonical Veyr-owned includes"
+  VERBATIM)
+
 include(CTest)
 if(BUILD_TESTING)
   add_subdirectory(tests)

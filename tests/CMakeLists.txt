@@ -93,3 +93,7 @@ else()
 endif()
 veyr_add_policy_negative(WrongHeaderABI "package header ABI checks must be disabled"
   "file(WRITE \"\${LLVM_INCLUDE_DIRS}/llvm/Config/abi-breaking.h\" \"#define LLVM_ENABLE_ABI_BREAKING_CHECKS 1\\n\")")
+
+add_test(NAME include-policy
+  COMMAND "${VEYR_PYTHON}" -B "${PROJECT_SOURCE_DIR}/scripts/check_includes.py"
+    --root "${PROJECT_SOURCE_DIR}")
