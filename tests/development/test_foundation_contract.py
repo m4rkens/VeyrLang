@@ -1,0 +1,300 @@
+"""Acceptance boundaries in temporary trees; all native/package commands mocked."""
+
+import contextlib
+from dataclasses import replace
+import io
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import unittest
+from unittest.mock import patch
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+import check_foundation as foundation
+import dev
+from devtools.doctor import BaselineError
+from test_conan_ops import ConanOperationsFixture
+from test_doctor import matching_observations, LINUX
+
+
+def cache_fixture(package_revision="package-revision"):
+    return {"Local Cache": {"llvm/23.1.2@veyr/m1": {"revisions": {
+        "recipe-revision": {"packages": {"package-id": {
+            "revisions": {package_revision: {"timestamp": 1}}}}}}}}}
+
+
+class FoundationContractTests(ConanOperationsFixture, unittest.TestCase):
+    def setUp(self):
+        super().setUp()
+        self.addCleanup(patch.stopall)
+        patch("sys.stdout", io.StringIO()).start()
+        patch("sys.stderr", io.StringIO()).start()
+        (self.root / "CMakeLists.txt").touch()
+        (self.root / "CMakePresets.json").touch()
+        policy = self.root / "scripts/devtools/baseline.json"
+        policy.parent.mkdir(parents=True)
+        policy.write_text(json.dumps(self.baseline))
+        self.llvm = self.directory / "Installed LLVM config with spaces"
+        self.llvm.mkdir()
+        (self.llvm / "LLVMConfig.cmake").write_text("# fixture only; not native evidence\n")
+        self.harness = foundation.FoundationChecks(self.selection, self.selected, self.baseline,
+                                                   root=self.root, external_dir=self.llvm)
+        patch.object(foundation, "collect_observations",
+                     return_value=matching_observations(self.baseline, LINUX)).start()
+        patch.object(dev, "run_command", side_effect=self.native_fixture).start()
+        patch.object(foundation, "run_command", side_effect=self.native_fixture).start()
+        self.setup = patch.object(dev, "setup_dependencies").start()
+        self.bootstrap = patch.object(dev, "bootstrap_conan").start()
+
+    def native_fixture(self, argv, **kwargs):
+        self.calls.append((argv, kwargs))
+        if argv[:2] == ["cmake", "--preset"]:
+            directory = Path(kwargs["env"]["VEYR_BUILD_DIR"])
+            directory.mkdir(parents=True, exist_ok=True)
+            llvm = kwargs["env"]["VEYR_LLVM_DIR"] or str(self.llvm)
+            (directory / "CMakeCache.txt").write_text(f"LLVM_DIR:PATH={llvm}\n")
+            for name in ("build.ninja", "CTestTestfile.cmake"):
+                (directory / name).touch()
+            (directory / "tests").mkdir()
+            (directory / "tests/CTestTestfile.cmake").write_text('add_test("include-policy" "python")\n')
+            (directory / "compile_commands.json").write_text(json.dumps([{
+                "directory": str(directory), "file": str(self.root / "example.cpp"),
+                "command": self.selected["environment"]["VEYR_CPP_COMPILER"] + " -std=c++23 -c example.cpp"}]))
+        elif argv[:2] == ["cmake", "--build"]:
+            for name in ("veyrc", "tests/foundation_tests", "tests/llvm_link_tests"):
+                (Path(argv[2]) / name).touch()
+        elif argv[1:2] == ["list"]:
+            path = Path(next(value.split("=", 1)[1] for value in argv if value.startswith("--out-file=")))
+            path.write_text(json.dumps(cache_fixture()))
+        return subprocess.CompletedProcess(argv, 0)
+
+    def assert_no_setup(self):
+        self.setup.assert_not_called()
+        self.bootstrap.assert_not_called()
+        for argv, kwargs in self.calls:
+            if argv[0] == str(self.selection.conan_executable) and argv[1] == "install":
+                self.assertIn("--no-remote", argv)
+                self.assertIn("--build=never", argv)
+                self.assertNotIn("--build=missing", argv)
+                self.assertIn(f"--lockfile={self.selection.lockfile}", argv)
+                self.assertEqual(kwargs["env"]["CONAN_HOME"], str(self.selection.conan_home))
+
+    def test_prepared_uses_isolated_output_compilation_database_and_one_ctest(self):
+        before = foundation.input_identity(self.selection, self.selected, self.root)
+        self.harness.execute("prepared")
+        self.assertEqual([argv[0] for argv, _ in self.calls],
+                         [str(self.selection.conan_executable), "cmake", "cmake", "ctest"])
+        self.assert_no_setup()
+        output = self.harness.context().selection.build_dir
+        self.assertIn(self.root / "build/foundation-acceptance", output.parents)
+        self.assertNotEqual(output, self.selection.build_dir)
+        self.assertFalse(self.selection.build_dir.exists())
+        report = json.loads((self.harness.workspace / "results.json").read_text())
+        self.assertEqual(report["input_sha256"], before)
+        self.assertEqual(report["windows_and_ci"], "independently pending")
+        self.assertEqual(report["phase_verification"], "not performed")
+
+    def test_external_providers_retain_real_selection_and_never_fallback(self):
+        self.harness.execute("providers")
+        self.assert_no_setup()
+        for provider in ("managed", "system", "custom"):
+            selection = self.harness.context(provider).selection
+            self.assertEqual(selection.provider, provider)
+            self.assertEqual(selection.llvm_dir, None if provider == "managed" else self.llvm)
+            self.assertEqual(selection.lockfile, self.selection.lockfile)
+        installs = [argv for argv, _ in self.calls if argv[1:2] == ["install"]]
+        self.assertEqual([argv[argv.index("-o:h") + 1] for argv in installs],
+                         ["&:llvm_provider=managed", "&:llvm_provider=system", "&:llvm_provider=custom"])
+
+    def test_missing_external_config_stops_before_any_native_command(self):
+        (self.llvm / "LLVMConfig.cmake").unlink()
+        with self.assertRaisesRegex(BaselineError, "real explicit.*no fallback"):
+            self.harness.execute("providers")
+        self.assertEqual(self.calls, [])
+
+    def test_first_cache_or_build_failure_stops_without_retry_setup_or_next_provider(self):
+        for failure_point in ("install", "--build"):
+            self.calls.clear()
+            self.harness.contexts.clear()
+            def fail(argv, **kwargs):
+                if argv[1] == failure_point:
+                    self.calls.append((argv, kwargs))
+                    raise subprocess.CalledProcessError(7, argv)
+                return self.native_fixture(argv, **kwargs)
+            with patch.object(dev, "run_command", side_effect=fail), self.assertRaises(
+                    (BaselineError, subprocess.CalledProcessError)):
+                self.harness.execute("providers")
+            self.assertEqual(sum(argv[1] == failure_point for argv, _ in self.calls), 1)
+            self.assertFalse(any(argv[0] == "ctest" for argv, _ in self.calls))
+            self.assertEqual(set(self.harness.contexts), {"managed"})
+            self.assert_no_setup()
+
+    def test_mismatched_tool_identity_stops_read_only_before_workspace_or_command(self):
+        observed = matching_observations(self.baseline, LINUX)
+        observed["tools.conan"] = "2.32.0"
+        with patch.object(foundation, "collect_observations", return_value=observed), \
+             self.assertRaisesRegex(BaselineError, "tools.conan expected=2.33.0; actual=2.32.0"):
+            self.harness.execute("prepared")
+        self.assertIsNone(self.harness.workspace)
+        self.assertEqual(self.calls, [])
+
+    def test_runtime_uses_native_checks_and_strict_existing_ctest_rejection_wrappers(self):
+        self.harness.execute("runtime")
+        argv = self.calls[-1][0]
+        self.assertEqual(argv[0], "ctest")
+        self.assertIn("--no-tests=error", argv)
+        self.assertIn("WrongVersion|WrongRuntime|WrongTriple", argv[argv.index("-R") + 1])
+        self.assert_no_setup()
+
+    def test_all_requires_separately_explicit_setup_evidence_before_any_work(self):
+        with self.assertRaisesRegex(BaselineError, "setup remains separate"):
+            self.harness.execute("all-checks")
+        self.assertEqual(self.calls, [])
+        self.assertIsNone(self.harness.workspace)
+
+    def test_cache_snapshot_uses_absolute_cli_and_only_conan_owned_raw_list(self):
+        destination = self.root / ".veyr-dev/observations/before.json"
+        self.harness.cache_snapshot(destination)
+        argv, kwargs = self.calls[0]
+        self.assertEqual(argv[:3], [str(self.selection.conan_executable), "list", "*#*:*#*"])
+        self.assertIn("--cache", argv)
+        self.assertFalse(any(value.startswith("--remote") for value in argv))
+        self.assertEqual(kwargs["env"]["CONAN_HOME"], str(self.selection.conan_home))
+        self.assertEqual(json.loads(destination.read_text()), cache_fixture())
+        self.assert_no_setup()
+        with self.assertRaisesRegex(BaselineError, "overwrite"):
+            self.harness.cache_snapshot(destination)
+        self.assertEqual(len(self.calls), 1)
+
+    def setup_evidence(self, extra=""):
+        before = self.root / "build/cache-before.json"
+        before.parent.mkdir(exist_ok=True)
+        before.write_text(json.dumps(cache_fixture()))
+        log = self.root / ".veyr-dev/setup.log"
+        argv = ["python", "-B", str(self.root / "scripts/dev.py"), "setup",
+                "--profile", self.selection.profile, "--config", self.selection.config,
+                "--environment", self.selection.environment, "--conan-home", str(self.selection.conan_home)]
+        log.write_text(f"Command: {argv!r}\nWorking directory: {self.root}\n"
+                       "llvm/23.1.2@veyr/m1: Already installed!\ngtest/1.18.0: Already installed!\n"
+                       "llvm/23.1.2@veyr/m1 (test package): Calling build()\n" + extra + "\nExit: 0; elapsed: 1.0s\n")
+        self.harness.cache_before, self.harness.setup_log = before, log
+        return before, log
+
+    def test_cache_comparison_requires_matching_successful_setup_and_unchanged_revisions(self):
+        self.setup_evidence()
+        self.harness.execute("cache")
+        self.assertEqual([argv[1] for argv, _ in self.calls], ["list"])
+        self.assertIn("cache", self.harness.results)
+        self.assert_no_setup()
+
+    def test_dependency_build_download_or_failed_mismatched_setup_is_not_warm_reuse(self):
+        for extra in ("llvm/23.1.2@veyr/m1: Calling build()", "Downloading package"):
+            self.setup_evidence(extra)
+            with self.assertRaisesRegex(BaselineError, "download/build"):
+                self.harness.cache()
+        _, log = self.setup_evidence()
+        log.write_text(log.read_text().replace("Exit: 0", "Exit: 1"))
+        with self.assertRaisesRegex(BaselineError, "successful final"):
+            self.harness.cache()
+        _, log = self.setup_evidence()
+        log.write_text(log.read_text().replace("'Debug'", "'Release'"))
+        with self.assertRaisesRegex(BaselineError, "differs"):
+            self.harness.cache()
+        self.assertEqual(self.calls, [])
+
+    def test_changed_package_revision_is_reported_and_no_repair_runs(self):
+        self.setup_evidence()
+        with patch.object(self.harness, "cache_snapshot", return_value=foundation.package_identities(
+                cache_fixture("new-revision"))), self.assertRaisesRegex(BaselineError, "identities changed"):
+            self.harness.cache()
+        self.assert_no_setup()
+
+    def test_clean_removes_only_disposable_selected_output_preserving_tools_cache_other_outputs(self):
+        self.selection.build_dir.mkdir(parents=True)
+        (self.selection.build_dir / "normal.txt").write_text("normal output")
+        (self.selection.conan_home / "cache-marker").write_text("cached package")
+        before = foundation.tree_identity(self.selection.conan_home)
+        self.harness.execute("clean")
+        self.assertFalse((self.harness.workspace / "clean/Debug").exists())
+        self.assertEqual((self.harness.workspace / "clean/Release/preserved.txt").read_text(), "other configuration")
+        self.assertEqual((self.selection.build_dir / "normal.txt").read_text(), "normal output")
+        self.assertTrue(self.selection.conan_executable.is_file())
+        self.assertEqual(foundation.tree_identity(self.selection.conan_home), before)
+        self.assertEqual(self.calls, [])
+
+    def test_tree_observation_does_not_follow_symlinks_and_detects_entry_change(self):
+        outside = self.directory / "outside"
+        outside.mkdir()
+        (outside / "not-followed").write_text("external")
+        link = self.selection.conan_home / "link"
+        link.symlink_to(outside, target_is_directory=True)
+        before = foundation.tree_identity(self.selection.conan_home)
+        self.assertEqual(before["entries"], 2)
+        (outside / "not-followed").write_text("external changed")
+        self.assertEqual(foundation.tree_identity(self.selection.conan_home), before)
+        (self.selection.conan_home / "new").touch()
+        self.assertNotEqual(foundation.tree_identity(self.selection.conan_home), before)
+
+    def test_offline_expected_rejection_is_once_in_empty_external_home_not_real_cache(self):
+        homes = []
+        def reject(argv, **kwargs):
+            self.calls.append((argv, kwargs))
+            homes.append(Path(kwargs["env"]["CONAN_HOME"]))
+            self.addCleanup(lambda: __import__("shutil").rmtree(homes[-1]))
+            self.assertEqual(list(homes[-1].iterdir()), [])
+            self.assertIn("--no-remote", argv)
+            self.assertIn("--build=never", argv)
+            print("gtest/1.18.0: Not found in local cache, looking in remotes...")
+            print("Graph root\n    conanfile.py: /fixture/conanfile.py")
+            print("ERROR: Package 'gtest/1.18.0' not resolved: No remote defined. Required by ''")
+            raise subprocess.CalledProcessError(1, argv)
+        before = foundation.tree_identity(self.selection.conan_home)
+        with patch.object(foundation, "run_command", side_effect=reject):
+            self.harness.execute("offline")
+        self.assertEqual(len(self.calls), 1)
+        self.assertNotEqual(homes[0], self.selection.conan_home)
+        self.assertNotIn(self.root, homes[0].parents)
+        self.assertEqual(foundation.tree_identity(self.selection.conan_home), before)
+        self.assertEqual(self.harness.results["offline"]["expected_exit"], 1)
+        self.setup.assert_not_called()
+
+    def test_offline_unexpected_success_or_nonzero_diagnostic_stops_without_retry(self):
+        missing = "gtest/1.18.0: Not found in local cache, looking in remotes..."
+        unresolved = "ERROR: Package 'gtest/1.18.0' not resolved: No remote defined. Required by ''"
+        expected = f"{missing}\n{unresolved}"
+        for exit_code, message in ((0, "ok"), (7, expected), (1, "ERROR: compiler failed"),
+                                   (1, missing), (1, unresolved),
+                                   (1, expected.replace("gtest/1.18.0", "other/1.18.0")),
+                                   (1, f"Downloading package\n{expected}"),
+                                   (1, f"Building from source\n{expected}"),
+                                   (1, f"Calling build()\n{expected}")):
+            self.calls.clear()
+            def result(argv, **kwargs):
+                self.calls.append((argv, kwargs))
+                home = Path(kwargs["env"]["CONAN_HOME"])
+                self.addCleanup(lambda path=home: __import__("shutil").rmtree(path))
+                print(message)
+                if exit_code:
+                    raise subprocess.CalledProcessError(exit_code, argv)
+                return subprocess.CompletedProcess(argv, 0)
+            with patch.object(foundation, "run_command", side_effect=result), self.assertRaises(
+                    (BaselineError, subprocess.CalledProcessError)):
+                self.harness.offline()
+            self.assertEqual(len(self.calls), 1)
+
+    def test_pending_windows_and_ci_do_not_inherit_linux_evidence(self):
+        with patch.object(foundation, "read_baseline", return_value=self.baseline), \
+             patch.object(foundation.platform, "system", return_value="Linux"), \
+             patch.object(foundation.platform, "machine", return_value="x86_64"), \
+             patch.dict(os.environ, {"GITHUB_ACTIONS": "true"}), \
+             patch.object(foundation, "make_selection") as selection:
+            self.assertEqual(foundation.main(["--profile", LINUX, "--config", "Debug",
+                                               "--environment", "linux-developer"]), 1)
+            selection.assert_not_called()
+        self.assertEqual(self.calls, [])
+
+
+if __name__ == "__main__":
+    unittest.main()

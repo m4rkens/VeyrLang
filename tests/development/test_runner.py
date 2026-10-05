@@ -98,6 +98,77 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(len(self.stops), 1)
         self.assertEqual(len(self.spawns), 1)
 
+    def check_mocked_exit(self, codes, expected):
+        """Control EOF/exit timing without launching a child or racing threads."""
+        self.out.seek(0)
+        self.out.truncate()
+        self.errors.seek(0)
+        self.errors.truncate()
+        process = Mock(pid=123, returncode=None)
+        process.stdout.read1.side_effect = [b"stdout drained\nstderr dr", b"ained\n", b""]
+        exits = iter(codes)
+
+        def poll():
+            process.returncode = next(exits)
+            return process.returncode
+
+        process.poll.side_effect = poll
+        popen, stopper = Mock(return_value=process), Mock()
+        thread = Mock()
+        thread.is_alive.return_value = False
+
+        def make_reader(*, target, daemon):
+            self.assertTrue(daemon)
+            thread.start.side_effect = target
+            return thread
+
+        argv = ["mock-child", "exit-fixture"]
+        with patch.object(runner.threading, "Thread", side_effect=make_reader):
+            if expected:
+                with self.assertRaises(subprocess.CalledProcessError) as caught:
+                    runner.run_command(argv, cwd=Path.cwd(), env={}, popen=popen,
+                                       stopper=stopper, capture_output=True,
+                                       observer=self.observation("unknown"))
+                self.assertEqual(caught.exception.returncode, expected)
+                self.assertEqual(caught.exception.cmd, argv)
+                stopper.assert_called_once_with(process)
+                self.assertEqual(self.errors.getvalue().count("supervisor stop:"), 1)
+                self.assertIn("stdout drained\\nstderr drained\\n", self.errors.getvalue())
+            else:
+                result = runner.run_command(argv, cwd=Path.cwd(), env={}, popen=popen,
+                                            stopper=stopper, capture_output=True,
+                                            observer=self.observation("unknown"))
+                self.assertEqual(result.returncode, 0)
+                self.assertEqual(result.stdout, "stdout drained\nstderr drained\n")
+                stopper.assert_not_called()
+                self.assertEqual(self.errors.getvalue(), "")
+        self.assertIn("stdout drained\nstderr drained\n", self.out.getvalue())
+        popen.assert_called_once()
+        self.assertEqual(popen.call_args.args[0], argv)
+        self.assertIs(popen.call_args.kwargs["stderr"], subprocess.STDOUT)
+        thread.start.assert_called_once()
+        process.stdout.close.assert_called_once()
+        self.assertFalse(runner.COMMAND_LOCK.locked())
+
+    def test_mocked_nonzero_exit_before_eof_preserves_drained_output(self):
+        self.check_mocked_exit([7], 7)
+
+    def test_mocked_nonzero_exit_at_eof_preserves_drained_output(self):
+        self.check_mocked_exit([None, None, 7], 7)
+
+    def test_mocked_nonzero_exit_during_eof_condition_is_reported(self):
+        # Two output chunks, then EOF with an active child; the next poll exits.
+        self.check_mocked_exit([None, None, None, 7], 7)
+
+    def test_mocked_eof_before_delayed_final_exit_is_reported(self):
+        self.check_mocked_exit([None, None, None, None, None, 7], 7)
+
+    def test_mocked_successful_exit_before_or_after_eof_remains_zero(self):
+        for codes in ([0, 0, 0, 0], [None, None, None, 0],
+                      [None, None, None, None, 0, 0]):
+            with self.subTest(codes=codes):
+                self.check_mocked_exit(codes, 0)
+
     def test_owner_interrupt_stops_tree_once_and_releases_guard(self):
         def interrupt(process, previous):
             raise KeyboardInterrupt()

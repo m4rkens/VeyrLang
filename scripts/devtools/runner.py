@@ -151,6 +151,10 @@ def run_command(argv, cwd, env, *, capture_output=False, quiet_seconds=60,
         if tail:
             print(tail, end="", flush=True)
             captured.append(tail)
+        # EOF and the final poll can complete between the loop body's checks.
+        # Apply the same nonzero contract before returning a completed child.
+        if process.returncode != 0:
+            raise subprocess.CalledProcessError(process.returncode, list(argv))
         return subprocess.CompletedProcess(list(argv), process.returncode,
                                            "".join(captured) if capture_output else None)
     except BaseException as error:
