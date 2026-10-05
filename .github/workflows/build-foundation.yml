@@ -92,13 +92,128 @@ jobs:
             }
             & gcc -print-libgcc-file-name | Tee-Object -Append .veyr-dev/ci/native-tools.txt
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-            & g++ -print-file-name=libstdc++.so | Tee-Object -Append .veyr-dev/ci/native-tools.txt
+            & g++ '-print-file-name=libstdc++.so' | Tee-Object -Append .veyr-dev/ci/native-tools.txt
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            # Query/dry-run flags only: no frontend, assembler or linker is executed by -###.
+            $clangCpp = (Get-Command clang++ -CommandType Application -ErrorAction Stop).Source
+            & $clangCpp '-print-search-dirs' 2>&1 | Tee-Object .veyr-dev/ci/compiler-search-paths.txt
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            & g++ '-print-search-dirs' 2>&1 | Tee-Object -Append .veyr-dev/ci/compiler-search-paths.txt
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            $trace = & $clangCpp '-###' '-x' 'c++' '/dev/null' 2>&1
+            if ($LASTEXITCODE -ne 0) { $trace | Write-Output; exit $LASTEXITCODE }
+            $trace | Tee-Object .veyr-dev/ci/clang-default-driver.txt
+            $headerRoots = [regex]::Matches(($trace -join "`n"), '"-internal-(?:externc-)?isystem" "([^"]+)"') |
+              ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique
+            foreach ($root in $headerRoots) {
+              "header_search_root=$root exists=$(Test-Path -LiteralPath $root -PathType Container)" | Tee-Object -Append .veyr-dev/ci/stdlib-headers.txt
+              $configHeader = Join-Path $root 'bits/c++config.h'
+              if (Test-Path -LiteralPath $configHeader -PathType Leaf) {
+                $resolvedHeader = & readlink '-f' $configHeader
+                if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+                "resolved_config_header=$resolvedHeader" | Tee-Object -Append .veyr-dev/ci/stdlib-headers.txt
+                Get-FileHash -LiteralPath $configHeader -Algorithm SHA256 | Format-List | Out-String | Tee-Object -Append .veyr-dev/ci/stdlib-headers.txt
+                Get-Content -LiteralPath $configHeader | Select-String '^#define\s+(?:_GLIBCXX_RELEASE|__GLIBCXX__|_GLIBCXX_USE_CXX11_ABI)\b' |
+                  ForEach-Object { $_.Line } | Tee-Object -Append .veyr-dev/ci/stdlib-headers.txt
+                & dpkg-query '-S' $resolvedHeader 2>&1 | Tee-Object -Append .veyr-dev/ci/stdlib-headers.txt
+                if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+              }
+            }
+            $libraries = @()
+            foreach ($driver in @($clangCpp, (Get-Command g++ -CommandType Application -ErrorAction Stop).Source)) {
+              $library = & $driver '-print-file-name=libstdc++.so'
+              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+              "driver=$driver reported_libstdcxx=$library" | Tee-Object -Append .veyr-dev/ci/stdlib-runtime.txt
+              if (-not (Test-Path -LiteralPath $library -PathType Leaf)) {
+                'Resolved runtime unavailable; identity remains pending.' | Tee-Object -Append .veyr-dev/ci/stdlib-runtime.txt
+                continue
+              }
+              $resolved = & readlink '-f' $library
+              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+              "resolved_libstdcxx=$resolved" | Tee-Object -Append .veyr-dev/ci/stdlib-runtime.txt
+              $libraries += $resolved
+            }
+            foreach ($library in ($libraries | Sort-Object -Unique)) {
+              Get-FileHash -LiteralPath $library -Algorithm SHA256 | Format-List | Out-String | Tee-Object -Append .veyr-dev/ci/stdlib-runtime.txt
+              & dpkg-query '-S' $library 2>&1 | Tee-Object -Append .veyr-dev/ci/stdlib-runtime.txt
+              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+              $versions = & readelf '--version-info' $library 2>&1
+              if ($LASTEXITCODE -ne 0) { $versions | Write-Output; exit $LASTEXITCODE }
+              $versions | Select-String 'Name: (?:GLIBCXX|CXXABI)_' |
+                ForEach-Object { $_.Line } | Tee-Object -Append .veyr-dev/ci/stdlib-runtime.txt
+            }
+            & dpkg-query '--show' '--showformat=${binary:Package} ${Version}\n' 'libstdc++6' 2>&1 | Tee-Object -Append .veyr-dev/ci/stdlib-runtime.txt
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            $linker = & $clangCpp '-print-prog-name=ld'
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            "clang_reported_linker=$linker" | Tee-Object .veyr-dev/ci/selected-linker.txt
+            $linkerPath = (Get-Command $linker -CommandType Application -ErrorAction Stop).Source
+            $resolvedLinker = & readlink '-f' $linkerPath
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            "linker_path=$linkerPath resolved_linker=$resolvedLinker" | Tee-Object -Append .veyr-dev/ci/selected-linker.txt
+            & $linkerPath '--version' 2>&1 | Tee-Object -Append .veyr-dev/ci/selected-linker.txt
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           } else {
             $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
             & $vswhere -all -format json -utf8 | Tee-Object .veyr-dev/ci/vs-installations.json
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-            # Installed VS candidates are observations, not selected CRT/SDK/linker identities.
+            # Inspect the one complete installed VS shell's defaults, without selecting CI policy.
+            # Its environment is process-local to this observation step; never export it via GITHUB_ENV.
+            $installations = @(Get-Content .veyr-dev/ci/vs-installations.json -Raw | ConvertFrom-Json |
+              Where-Object { $_.isComplete -and $_.isLaunchable })
+            if ($installations.Count -ne 1) { throw 'VS observation ambiguous: expected one complete installation; review vs-installations.json.' }
+            $installation = $installations[0]
+            $module = Join-Path $installation.installationPath 'Common7/Tools/Microsoft.VisualStudio.DevShell.dll'
+            Import-Module $module -ErrorAction Stop
+            Enter-VsDevShell -VsInstallPath $installation.installationPath -SkipAutomaticLocation -DevCmdArguments '-arch=x64 -host_arch=x64' -ErrorAction Stop
+            $shell = [ordered]@{
+              purpose = 'Observed installed shell defaults only; CI policy pending/unselected; no environment export'
+              vs_installation_version = $installation.installationVersion
+              vs_installation_path = $installation.installationPath
+              shell_module = $module
+            }
+            foreach ($name in @('VSINSTALLDIR', 'VCToolsInstallDir', 'VCToolsVersion', 'VCToolsRedistDir', 'WindowsSdkDir', 'WindowsSDKVersion', 'WindowsSDKLibVersion', 'UniversalCRTSdkDir', 'UCRTVersion', 'VSCMD_VER', 'VSCMD_ARG_HOST_ARCH', 'VSCMD_ARG_TGT_ARCH', 'PATH', 'INCLUDE', 'LIB', 'LIBPATH')) {
+              $shell[$name] = [Environment]::GetEnvironmentVariable($name)
+            }
+            $shell | ConvertTo-Json -Depth 5 | Tee-Object .veyr-dev/ci/windows-developer-shell.json
+            foreach ($tool in @('cl', 'link', 'clang', 'clang++', 'clang-cl')) {
+              $found = Get-Command $tool -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+              if ($null -eq $found) { "${tool}: missing in observed developer shell" | Tee-Object -Append .veyr-dev/ci/windows-selected-tools.txt; continue }
+              $item = Get-Item -LiteralPath $found.Source
+              "$tool path=$($item.FullName) file_version=$($item.VersionInfo.FileVersion) product_version=$($item.VersionInfo.ProductVersion)" | Tee-Object -Append .veyr-dev/ci/windows-selected-tools.txt
+              if ($tool -like 'clang*') {
+                & $found.Source '--version' 2>&1 | Tee-Object -Append .veyr-dev/ci/windows-selected-tools.txt
+                if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+              }
+            }
+            if (-not $env:VCToolsInstallDir -or -not $env:WindowsSdkDir -or -not $env:WindowsSDKVersion -or -not $env:UniversalCRTSdkDir -or -not $env:UCRTVersion) {
+              throw 'Observed developer shell has incomplete VC/SDK/UCRT identity; review windows-developer-shell.json.'
+            }
+            $sdkVersion = $env:WindowsSDKVersion.TrimEnd([char[]]'\/')
+            $ucrtVersion = $env:UCRTVersion.TrimEnd([char[]]'\/')
+            $crtHeader = Join-Path $env:VCToolsInstallDir 'include/crtversion.h'
+            if (Test-Path -LiteralPath $crtHeader -PathType Leaf) {
+              Get-Content -LiteralPath $crtHeader | Select-String '^#define\s+_VC_CRT_(?:MAJOR|MINOR|BUILD|RBUILD)_VERSION\b' |
+                ForEach-Object { $_.Line } | Tee-Object .veyr-dev/ci/windows-crt-version.txt
+            }
+            $runtimeFiles = @(
+              $crtHeader
+              (Join-Path $env:VCToolsInstallDir 'lib/x64/msvcrt.lib')
+              (Join-Path $env:VCToolsInstallDir 'lib/x64/msvcrtd.lib')
+              (Join-Path $env:WindowsSdkDir "Include/$sdkVersion/um/Windows.h")
+              (Join-Path $env:WindowsSdkDir "Lib/$sdkVersion/um/x64/kernel32.lib")
+              (Join-Path $env:UniversalCRTSdkDir "Include/$ucrtVersion/ucrt/corecrt.h")
+              (Join-Path $env:UniversalCRTSdkDir "Lib/$ucrtVersion/ucrt/x64/ucrt.lib")
+              (Join-Path $env:UniversalCRTSdkDir "Lib/$ucrtVersion/ucrt/x64/ucrtd.lib")
+              (Join-Path $env:SystemRoot 'System32/ucrtbase.dll')
+            )
+            foreach ($path in $runtimeFiles) {
+              if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { "missing=$path" | Tee-Object -Append .veyr-dev/ci/windows-runtime-files.txt; continue }
+              $item = Get-Item -LiteralPath $path
+              "path=$($item.FullName) file_version=$($item.VersionInfo.FileVersion) product_version=$($item.VersionInfo.ProductVersion)" | Tee-Object -Append .veyr-dev/ci/windows-runtime-files.txt
+              Get-FileHash -LiteralPath $path -Algorithm SHA256 | Format-List | Out-String | Tee-Object -Append .veyr-dev/ci/windows-runtime-files.txt
+            }
+            # ucrtbase.dll is the observed OS runtime, distinct from selected SDK/UCRT link inputs.
           }
 
       - name: Require independently reviewed CI policy before tool/package setup
