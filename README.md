@@ -1,8 +1,50 @@
 # Veyr Project Starter Pack
 
-This repository is the clean design and AI-development starter pack for **Veyr**, a native compiled systems/application programming language.
+This repository contains the design and initial compiler build foundation for
+**Veyr**, a native compiled systems/application programming language.
 
-This starter pack is meant for a **clean cross-platform restart** of the project, with Windows and Linux as Tier 1 development environments. It intentionally contains design documents, development policies, GSD instructions, milestone strategy, and project-system/tooling decisions, but **no generated `.planning/` state and no implementation produced by previous Windows experiments**.
+It began from a clean cross-platform starter. The fresh M1 lifecycle now tracks
+reviewed `.planning/` artifacts and authorized infrastructure implementation;
+no prior-run implementation or evidence was imported. Windows and Linux remain
+Tier 1; available native evidence currently covers the Omarchy/Arch Linux host.
+Windows developer and independent Windows/Ubuntu CI evidence remain pending.
+
+## Developer quick start
+
+Use the reviewed base Python from the repository root. On the current Omarchy
+host this is `/usr/bin/python3`; exact tool/runtime policy is in
+`scripts/devtools/baseline.json`.
+
+```text
+python scripts/dev.py setup --tools-only
+python scripts/dev.py doctor --json
+python scripts/dev.py setup --config Debug
+python scripts/dev.py build --config Debug
+python scripts/dev.py test --config Debug
+python scripts/dev.py verify --config Debug
+```
+
+Setup is explicit and Conan may download/source-build missing dependencies.
+Build may configure and test may build from existing cache only. For the composed
+Release workflow use `python scripts/dev.py all --config Release` once; it includes
+setup/configure/build/test/verify. `python scripts/dev.py clean --config Debug`
+removes only that selected output, preserving Release output, project-owned
+Conan 2.33.0 under `.veyr-dev/tools/conan-2.33.0` and the dedicated package cache.
+
+Linux selects `linux-x86_64-clang`; Windows selects `windows-x86_64-clangcl`.
+Explicit `--profile`, `--environment`, `--config`, `--conan-home`,
+`--llvm-provider managed|system|custom` and external `--llvm-dir` inputs are
+documented in [DEVELOPER_BOOTSTRAP.md](docs/development/DEVELOPER_BOOTSTRAP.md).
+Missing/unreviewed Windows or CI prerequisites fail; Linux checks do not certify
+those environments. LLVM 23.1.2 and GoogleTest/GoogleMock remain Conan-owned;
+future language packages and `Veyr.lock` are separate product features.
+
+The local [CI workflow draft](.github/workflows/build-foundation.yml) covers
+Ubuntu 24.04 and Windows 2022 × Debug/Release. It is unpublished/unrun in this
+execution and blocks at independent CI identity review before package setup.
+See [CI policy](docs/development/CI_MATRIX_POLICY.md) and the
+[acceptance ledger](docs/development/FOUNDATION_ACCEPTANCE.md) for pending
+runner/runtime/lock/cold-capacity evidence. No Phase 1 completion is claimed.
 
 ## What Veyr is
 

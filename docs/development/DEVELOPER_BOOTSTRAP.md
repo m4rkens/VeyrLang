@@ -1,7 +1,7 @@
 
 # Veyr Developer Bootstrap
 
-**Status:** Required starter direction
+**Status:** Implemented developer-command contract; native acceptance currently limited to Omarchy/Arch Linux. Independent Windows and CI evidence remains pending.
 
 ## 1. Goal
 
@@ -30,7 +30,20 @@ The initial developer contract should stay small:
 - Git;
 - platform SDK/runtime components genuinely required by the selected toolchain.
 
-Exact supported versions belong to fresh GSD planning and CI policy.
+Exact prerequisite policy is tracked in `scripts/devtools/baseline.json`. Selected
+prerequisites are not a general ABI/package-readiness claim.
+
+| Environment | Exact tools / native identity | Evidence |
+|---|---|---|
+| Omarchy/Arch x86_64 developer | Python 3.14.7; Conan 2.33.0; CMake 4.4.3; Ninja 1.13.2; Clang 22.1.8; Git 2.55.0; GCC/libstdc++ 16.2.1; glibc 2.44; Binutils 2.47; Omarchy 4.0.4 | Read-only doctor 22/22 and separate native Debug/Release foundation acceptance recorded |
+| Windows x86_64 developer candidate | Python 3.13.15; Conan 2.33.0; CMake 3.31.8; Ninja 1.13.2; Clang 20.1.8; Git 2.55.0.windows.5; VS candidate 17.14.37710.0 and SDK candidate 10.0.26100.0 | Actual VC tools/CRT/linker/paths and native inspection pending; candidate unchanged |
+| Ubuntu 24.04 x86_64 CI | Independently pending; no developer tools/runtime copied into CI policy | No runner observations or runs yet |
+| Windows 2022 x86_64 CI | Independently pending; no Windows developer candidate promoted to CI policy | No runner observations or runs yet |
+
+LLVM backend 23.1.2 is distinct from the host Clang version. Linux's observed
+static optimized LLVM Support compatibility covers this selected host and the
+tested surfaces only. Windows Debug/Release CRT/iterator compatibility must be
+demonstrated independently.
 
 ### Project-owned Conan CLI bootstrap
 
@@ -86,14 +99,13 @@ recipe export, lock generation, source acquisition or builds. Success means the
 CLI is installed and internally consistent, not that all host prerequisites,
 native ABI compatibility or LLVM/package readiness are accepted.
 
-Plan 01-03 retains Conan-owned dependency/package setup. Its full `setup` command
-will automatically ensure this CLI through the same bootstrap function before
-dependency work; `--tools-only` remains available. Until that later implementation,
-plain `setup` fails with tools-only guidance. Ordinary commands require explicit
-setup and do not bootstrap tools implicitly; build may configure, test may build,
-and all includes setup under the later command-composition plan.
+Plan 01-03 owns the implemented Conan dependency/package setup. Full `setup`
+ensures this CLI through the same bootstrap function before dependency work;
+`--tools-only` remains available. Ordinary commands require explicit setup and
+do not bootstrap tools implicitly. Build may configure, test may build, and all
+includes setup. Equivalent work is reused within one composed invocation.
 
-The Linux developer baseline candidate is the observed Omarchy/Arch x86_64 host
+The Linux developer baseline is the observed Omarchy/Arch x86_64 host
 with Python 3.14.7. Windows developer evidence, Ubuntu Linux CI identities and
 Windows CI identities remain independently pending; these environments cannot
 inherit Omarchy observations. Implemented Windows path handling and mocked tests
@@ -103,7 +115,7 @@ Conan or establish prerequisite acceptance.
 
 ## 3. Wrapper responsibilities
 
-Repository-owned Python tooling may expose equivalent developer operations such as:
+`scripts/dev.py` exposes these operations on native Windows/Linux x86_64:
 
 ```text
 setup
@@ -115,6 +127,44 @@ verify
 all
 clean
 ```
+
+From the checkout root with the reviewed base Python (on this Linux host,
+`/usr/bin/python3`), Debug is the default and Release is explicit:
+
+```text
+python scripts/dev.py setup --tools-only
+python scripts/dev.py doctor --json
+python scripts/dev.py setup --config Debug
+python scripts/dev.py configure --config Debug
+python scripts/dev.py build --config Debug
+python scripts/dev.py test --config Debug
+python scripts/dev.py verify --config Debug
+python scripts/dev.py all --config Release
+python scripts/dev.py clean --config Debug
+```
+
+Choose `--profile linux-x86_64-clang` or `--profile windows-x86_64-clangcl`,
+and the independent `--environment linux-developer`, `windows-developer`,
+`ubuntu-ci` or `windows-ci`. Missing/unreviewed identity fails before package
+work; these flags do not bypass baseline review. Both host and build use the
+selected native profile; host adds `conan/profiles/debug` or `release`, build
+always adds `release`. `--build-profile` currently accepts only that same
+native profile. Cross compilation is deferred.
+
+Explicit `setup`/`all` may download and source-build missing dependencies through
+Conan (`--build=missing`). Configure prepares only from the tracked lock/cache
+(`--no-remote --build=never`); build may configure and test may build without
+setup. Verify requires prepared native outputs and checks the compile database,
+include-policy registration and CTest. Run `all` once for the composed path;
+do not follow it with duplicate build/test/verify commands. Clean removes only
+the selected output beneath `build/` and preserves sibling selections,
+`.veyr-dev/tools/conan-2.33.0` and the entire Conan package home.
+
+The CMake presets are `linux-x86_64-clang-Debug`,
+`linux-x86_64-clang-Release`, `windows-x86_64-clangcl-Debug` and
+`windows-x86_64-clangcl-Release`, selected by the wrapper with its structured
+environment inputs; ordinary developer use goes through `scripts/dev.py`.
+`compile_commands.json` is generated in the printed selected build directory.
 
 The wrapper may:
 
@@ -144,6 +194,13 @@ Do not accept `conan profile detect` output as permanent canonical configuration
 Use Conan-native package IDs/revisions and lockfiles where useful. Keep compiler implementation
 dependency locking separate from the future language-level `Veyr.lock`.
 
+Tracked `conan/locks/<profile>-Debug.lock` and `-Release.lock` fix recipe
+resolution, not native ABI or binary-package compatibility. Both Linux locks
+exist; Windows locks are independently pending. Existing locks are never
+updated automatically. `setup --init-lock` creates a missing lock only during
+an explicitly approved initialization step, followed by owner review; CI does
+not initialize or modify missing locks automatically.
+
 The normal workflow should make network/build behavior visible to the developer. It is acceptable
 for a missing binary to trigger a deliberate source build when the selected workflow permits it.
 
@@ -161,6 +218,12 @@ around that cost by growing a bespoke SDK acquisition/provisioning subsystem.
 
 Reuse compatible Conan packages/cache in subsequent local and CI runs.
 
+`--llvm-provider managed` is the default Conan package path. Explicit `system`
+or `custom` requires `--llvm-dir <directory-containing-LLVMConfig.cmake>` and
+the same exact LLVM 23.1.2 configuration/runtime/target/header guards. There is
+no fallback, archive normalization or implicit external-provider acquisition.
+GoogleTest/GoogleMock remains Conan-owned in each provider mode.
+
 ## 6. Local state
 
 Generated developer state remains untracked.
@@ -174,6 +237,14 @@ Normal `clean` removes only the selected ordinary build output. It must preserve
 the Conan tool environment and Conan package home/cache, including other build
 configurations. Destructive tool-environment removal or package/cache purging
 must be explicit and separate.
+
+The dedicated external home defaults to `$XDG_CACHE_HOME/veyr/conan/<project-key>`
+(or `~/.cache/veyr/conan/<project-key>`) on Linux and
+`%LOCALAPPDATA%/Veyr/conan/<project-key>` on Windows. The key derives from the
+resolved Git common directory; worktrees share the project's Conan home.
+`--conan-home <absolute-external-directory>` overrides it. Shared default
+`~/.conan2` and homes inside the checkout are rejected. Mutating local operations
+are guarded against concurrent use; CI uses separate job-owned homes.
 
 ## 7. Cross-platform behavior
 
@@ -194,19 +265,35 @@ Platform impact:
 
 ## 8. CI
 
-CI should reuse the same tracked Conan profiles/configuration used by developers.
-
-Typical flow:
+The local draft `.github/workflows/build-foundation.yml` covers Ubuntu 24.04 and
+Windows 2022 × Debug/Release, with one active matrix job at a time. It uses
+shared commands/dependency policy with independently reviewed CI expectations:
 
 ```text
-validate tools
--> conan install / package resolution
--> cmake configure
--> build with Ninja
--> ctest
+observe installed runner identity
+-> require independent CI policy review
+-> select exact reviewed base Python / isolated CMake and Ninja
+-> setup --tools-only
+-> read-only doctor and require tracked lock
+-> optional Conan cache restore
+-> explicit setup
+-> configure -> build -> test -> verify
+-> foundation prepared and offline task checks
 ```
 
-Cache restoration is an optimization. A clean environment must remain buildable.
+The initial draft stops at pending CI identity before tool/package setup. Raw
+runner tool/VS observations are inputs for review, not accepted CRT/SDK/ABI
+evidence. Host Clang/GCC or VS/SDK must match the independently reviewed
+installed native environment; mismatches stop rather than provisioning or
+accepting drift. If actual tools require another Conan profile or changes to
+the fixed compiler-major policy, obtain a bounded ownership correction first.
+
+Only Conan's job-owned home is cached with full input/runner identity, and
+`cold_build: true` skips restore/save for a fresh source-build path. No CLI venv,
+build directory or downloaded backend SDK is cached/published. See
+[CI_MATRIX_POLICY.md](CI_MATRIX_POLICY.md) for action pins, run authorization,
+resource limits and required evidence. A locally checked YAML file is not a
+passing CI run.
 
 ## 9. Long-running operations
 

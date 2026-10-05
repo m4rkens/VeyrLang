@@ -70,11 +70,17 @@
   "ci_environments": {
     "ubuntu-ci": {
       "status": "pending",
-      "profile": "linux-x86_64-clang"
+      "profile": "linux-x86_64-clang",
+      "environment": "ubuntu-ci",
+      "runner": "ubuntu-24.04",
+      "evidence": "Pending actual runner/tool/runtime observations and owner review; Omarchy developer identity is not CI identity."
     },
     "windows-ci": {
       "status": "pending",
-      "profile": "windows-x86_64-clangcl"
+      "profile": "windows-x86_64-clangcl",
+      "environment": "windows-ci",
+      "runner": "windows-2022",
+      "evidence": "Pending actual runner VS/VC tools/CRT/SDK/linker/tool observations and owner review; Windows developer candidates are not CI identity."
     }
   }
 }

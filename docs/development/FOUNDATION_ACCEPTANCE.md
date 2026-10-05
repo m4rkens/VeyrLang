@@ -13,7 +13,36 @@ This ledger records preserved execution-task observations from the current fresh
 | Windows x86_64 / Debug | Pending actual native host inspection, reviewed runtime identity and execution | Pending native evidence, including Debug CRT/iterator compatibility | Pending | No Linux evidence credited |
 | Windows x86_64 / Release | Pending actual native host inspection, reviewed runtime identity and execution | Pending native evidence | Pending | No Linux evidence credited |
 
-Ubuntu GitHub Actions Linux Debug/Release and Windows GitHub Actions Debug/Release are independently pending. Ubuntu is not the Linux developer baseline. Plan 01-08 has not started; no workflow run or cold-runner capacity is claimed. Windows candidate identities have not been rewritten or promoted to observed evidence.
+Ubuntu GitHub Actions Linux Debug/Release and Windows GitHub Actions Debug/Release are independently pending. Ubuntu is not the Linux developer baseline. Plan 01-08 local workflow/documentation execution has started; no workflow publication/run or cold-runner capacity is claimed. Windows candidate identities have not been rewritten or promoted to observed evidence.
+
+## Plan 01-08 independent CI evidence gate
+
+The local draft `.github/workflows/build-foundation.yml` implements the four
+matrix rows below. Initial CI policy remains pending and stops before CLI or
+package setup, after reporting installed runner observations. Creating/reviewing
+this YAML does not pass native CI. Its workflow inputs and blocking gates are
+documented in [CI_MATRIX_POLICY.md](CI_MATRIX_POLICY.md).
+
+| CI environment / consumer | Observed exact identity / tracked lock | Native configure/build/test/verify | Actual job URL | Cold/warm capacity |
+|---|---|---|---|---|
+| Ubuntu 24.04 x86_64 / Debug | CI tools/runtime pending; existing Linux lock is not binary/ABI proof | Pending | Pending; no run | Pending |
+| Ubuntu 24.04 x86_64 / Release | CI tools/runtime pending; existing Linux lock is not binary/ABI proof | Pending | Pending; no run | Pending |
+| Windows 2022 x86_64 / Debug | CI VS/VC/CRT/SDK/linker/tools and Windows Debug lock pending | Pending | Pending; no run | Pending |
+| Windows 2022 x86_64 / Release | CI VS/VC/CRT/SDK/linker/tools and Windows Release lock pending | Pending | Pending; no run | Pending |
+
+No runner/tool identities, resource peaks, cache hits or CI URLs are fabricated.
+The draft records setup wall time but does not measure peak memory/disk; actual
+cold-source feasibility, useful compiler/link parallelism and warm cache benefit
+need separately authorized observation. Historical Omarchy cold timings below
+are not Ubuntu/Windows runner measurements. Missing native profile/tool/lock
+inputs require owner review before package work. Capacity failure requires an
+owner runner choice while retaining Tier 1 and Conan ownership.
+
+The missed Plan 01-07 Task 1 Support lifetime extension is now committed as
+`eef4780faa9063a50ae5ede89fc40f55408279bb`, after the nine-file execution/closeout
+checkpoint `ddec666b43546d8820d7eacd28e6ce4ef2b068ed`. Its preserved native
+13/13 results below were not rerun. Plan 01-08 completion and phase-wide
+acceptance remain blocked on actual reviewed CI evidence.
 
 ## Observed Linux selection
 

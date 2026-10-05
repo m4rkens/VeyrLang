@@ -1,47 +1,148 @@
 # CI Matrix Policy
 
-**Status:** future implementation contract
+**Status:** Plan 01-08 local workflow draft. Publication, runner identity review,
+all four native results and cold-runner capacity remain blocking evidence gaps.
 
-CI is not required to exist in the starter pack, but build/bootstrap design must support this matrix without restructuring the repository.
+## Required matrix and entry points
 
-## Required Tier 1 direction
+`.github/workflows/build-foundation.yml` has `pull_request`, pushes to `main`
+and `workflow_dispatch` triggers. Its matrix is exactly:
+
+| Runner family | Environment / profile | Consumer |
+|---|---|---|
+| ubuntu-24.04 x86_64 | ubuntu-ci / linux-x86_64-clang | Debug |
+| ubuntu-24.04 x86_64 | ubuntu-ci / linux-x86_64-clang | Release |
+| windows-2022 x86_64 | windows-ci / windows-x86_64-clangcl | Debug |
+| windows-2022 x86_64 | windows-ci / windows-x86_64-clangcl | Release |
+
+`fail-fast: false` retains independent row failures; `max-parallel: 1` preserves
+the approved serial policy. Windows and Linux are Tier 1; macOS remains deferred.
+
+## Independent bootstrap and native stages
+
+Publication/run authorization is separate from local implementation. The first
+authorized run reports installed runner tools, paths, image version and VS
+candidates as observations. Both tracked `ci_environments` remain `pending`:
+the existing read-only doctor fails before CLI installation, cache restore or
+dependency setup. A pending-policy observation run is not a passing native row.
+
+After actual observations and owner review, each CI entry must have its own
+complete `environment`, `runner`, `profile`, `os`, `arch`, `target`, `git`, exact
+`tools`, `native` and `paths` values compatible with the existing doctor schema.
+Runner labels are scheduling choices, not compiler/CRT/SDK identities. Never
+copy Omarchy developer policy into Ubuntu CI or promote Windows developer
+candidates as CI evidence. Windows developer inspection remains independent.
+
+The existing Linux profile fixes Clang major 22/libstdc++11; Windows fixes Clang
+major 20/v143 dynamic CRT with separate Debug/Release runtime selection. Actual
+CI tools outside these inputs require owner review and a bounded profile/doctor
+ownership correction before use. No `profile detect`, automatic candidate
+promotion, extra profile or compiler-major change is authorized by this draft.
+
+Once reviewed, upstream setup-python selects the exact CI base Python. Standard
+venv/isolated pip installs only exact tracked CMake/Ninja prerequisites into
+`.veyr-dev/tools/ci-prerequisites`; no system Python/global pip changes. Installed
+host Clang/GCC or VS/SDK must match reviewed native identities. Windows uses the
+selected Microsoft VS developer shell; strict doctor checks actual VC tools,
+CRT/SDK/linker/paths. Missing compiler provisioning remains an owner gate; no
+backend SDK acquisition or automatic drift acceptance. Explicit tools-only setup
+creates project-owned Conan 2.33.0; doctor reads isolated package metadata without
+executing Conan or mutating its home.
+
+A required native lock must already be tracked. Both Linux locks exist;
+Windows Debug/Release locks remain pending. Missing locks stop before cache
+restore or package work. CI never runs `--init-lock`; lock initialization and
+review require a separately approved bounded execution step.
+
+## Shared commands and Conan ownership
+
+Each command passes explicit `--environment`, `--profile`, `--config` and the
+job-owned `--conan-home` to existing Python tooling:
 
 ```text
-windows-x86_64-msvc
-linux-x86_64-gnu
+python scripts/dev.py setup --tools-only ...
+python scripts/dev.py doctor --json ...
+python scripts/dev.py setup ...
+python scripts/dev.py configure ...
+python scripts/dev.py build ...
+python scripts/dev.py test ...
+python scripts/dev.py verify ...
+python scripts/check_foundation.py --case prepared ...
+python scripts/check_foundation.py --case offline ...
 ```
 
-Each Tier 1 environment should eventually run two logically distinct job classes:
+Distinct named steps preserve merged stdout/stderr logs and stop on first
+nonzero exit without retry. The offline case recognizes only its strict
+expected child failure; other failures stop the job. Configure/build/test/verify
+never acquire dependencies. Setup visibly permits Conan downloads and genuinely
+missing source builds; dependency versions/options remain in Conan inputs.
+The workflow never runs `all` followed by duplicate build/test/verify. Separate
+test/verify invocations each perform their documented checks; the foundation
+prepared case deliberately validates an isolated native probe output.
 
-```text
-1. managed-bootstrap validation
-2. configure/build/test/verification
-```
+Conan owns resolution, acquisition, packages/revisions/storage and locks. No
+custom package graph, binary publication, SDK normalization, host provisioning
+framework or language-level `Veyr.lock` behavior is introduced.
 
-Separating them prevents SDK/provenance/cache problems from being reported as compiler implementation failures.
+## Cache and deliberate source build
 
-## Optional validation
+Each job uses a fresh external home beneath `runner.temp`, isolated by run ID,
+attempt, environment and consumer configuration. Only Conan's home is cached.
+Keys include OS/architecture, environment/configuration, actual image version and
+hashes of baseline, profiles, recipes/options, locks, root consumer and CMake
+presets. Doctor first matches actual tool/runtime identities to baseline inputs.
+No broad restore prefixes or cross-OS archives; save occurs only after job
+success. Failed/bootstrap-only runs publish no package cache.
 
-```text
-linux-x86_64-libcxx
-```
+Manual `cold_build: true` skips restore and save. The new job-owned home has no
+dependency packages; explicit setup uses standard source-built LLVM 23.1.2 and
+`--build=missing`. No forced rebuild, active-home deletion, cache purge or foreign
+backend archive. Isolated CMake/Ninja and Conan CLI tools are distinct from LLVM
+package state. No CLI venv or build directory is cached/published as a package.
+Normal developer clean preserves tools, package home and other selections.
 
-may be added to catch accidental libstdc++ assumptions.
+## Supervision, capacity and evidence
 
-## Tier 2 direction
+The job has an explicit 360-minute hard limit within the
+[GitHub-hosted six-hour limit](https://docs.github.com/en/actions/reference/limits).
+About 60 seconds quiet remains a soft liveness checkpoint in the existing
+wrapper: inspect children/CPU/I/O/artifacts and continue healthy work. No
+quiet-time termination, duplicate execution or repair.
 
-```text
-macos-aarch64
-macos-x86_64
-```
+The draft records setup exit/wall time and uploads runner observations, doctor,
+command logs, compile databases, CTest logs and foundation results. These are
+evidence, not transferable build/package truth. Existing foundation results
+retain their conservative `windows_and_ci: independently pending` field;
+specific task results and actual job URLs require ledger review before CI
+acceptance. A JSON file does not mark a phase complete.
 
-macOS jobs may begin as experimental/allowed-failure while the platform is Tier 2. Do not label macOS supported until its required build/test contract actually passes.
+Process-tree peak memory/disk, useful compiler/link parallelism, feasible cold
+source builds, four passing job URLs and warm-cache benefit remain unmeasured
+on actual runners. Setup wall time is not peak-resource measurement. Collect
+those observations during authorized CI work and record failures honestly. If
+resources/time are inadequate, report the bottleneck and request adequate
+larger/self-hosted capacity; retain all four combinations and Conan ownership.
 
-## CI rules
+## Reviewed immutable action inputs
 
-- use the same reviewed Conan profiles/lock/configuration as local setup;
-- prefer the same `doctor --json` readiness contract used locally when implemented;
-- do not duplicate dependency versions/options in CI YAML;
-- preserve offline/no-network build checks once managed cache population is complete;
-- keep host/target triplet visible in artifact names and logs;
-- cache only verified managed artifacts and invalidate cache on manifest/schema changes.
+Action definitions were inspected read-only during local execution:
+
+| Action | Exact revision / upstream definition |
+|---|---|
+| checkout v4.2.2 | [11bd71901bbe5b1630ceea73d27597364c9af683](https://github.com/actions/checkout/blob/11bd71901bbe5b1630ceea73d27597364c9af683/action.yml) |
+| setup-python v5.6.0 | [a26af69be951a213d495a4c3e4e4022e16d87065](https://github.com/actions/setup-python/blob/a26af69be951a213d495a4c3e4e4022e16d87065/action.yml) |
+| cache v4.2.3 | [5a3ec84eff668545956fd18022155c47e93e2684](https://github.com/actions/cache/blob/5a3ec84eff668545956fd18022155c47e93e2684/action.yml) |
+| upload-artifact v4.6.2 | [ea165f8d65b6e75b540449e92b4886f43607fa02](https://github.com/actions/upload-artifact/blob/ea165f8d65b6e75b540449e92b4886f43607fa02/action.yml) |
+
+Pins establish selected upstream code/inputs, not successful runner execution.
+Remote publication/dispatch, sensitive commit, dedicated phase verification and
+Phase 2 require their own exact owner actions.
+
+Platform impact:
+- Windows: Independent VS/VC/CRT/SDK/linker and clang-cl identities, native
+  Debug/Release runtime evidence and locks remain pending; PowerShell calls
+  shared Python operations with the selected absolute Conan executable.
+- Linux: Ubuntu CI remains distinct from validated Omarchy developer evidence;
+  exact compiler/GCC/libstdc++/libc/linker review precedes packages.
+- macOS future: No Darwin matrix or acceptance; Conan/CMake/Python boundaries
+  remain without extending active platform scope.
