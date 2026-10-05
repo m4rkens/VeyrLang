@@ -1,0 +1,194 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 31,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "native",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "$env{VEYR_BUILD_DIR}",
+      "toolchainFile": "$env{VEYR_CONAN_TOOLCHAIN}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+        "BUILD_TESTING": true,
+        "VEYR_PYTHON": "$env{VEYR_PYTHON}"
+      }
+    },
+    {
+      "name": "linux-x86_64-clang-Debug",
+      "inherits": "native",
+      "condition": {
+        "type": "allOf",
+        "conditions": [
+          {
+            "type": "equals",
+            "lhs": "${hostSystemName}",
+            "rhs": "Linux"
+          },
+          {
+            "type": "notEquals",
+            "lhs": "$env{VEYR_BUILD_DIR}",
+            "rhs": ""
+          },
+          {
+            "type": "notEquals",
+            "lhs": "$env{VEYR_CONAN_TOOLCHAIN}",
+            "rhs": ""
+          }
+        ]
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "linux-x86_64-clang-Release",
+      "inherits": "native",
+      "condition": {
+        "type": "allOf",
+        "conditions": [
+          {
+            "type": "equals",
+            "lhs": "${hostSystemName}",
+            "rhs": "Linux"
+          },
+          {
+            "type": "notEquals",
+            "lhs": "$env{VEYR_BUILD_DIR}",
+            "rhs": ""
+          },
+          {
+            "type": "notEquals",
+            "lhs": "$env{VEYR_CONAN_TOOLCHAIN}",
+            "rhs": ""
+          }
+        ]
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "windows-x86_64-clangcl-Debug",
+      "inherits": "native",
+      "condition": {
+        "type": "allOf",
+        "conditions": [
+          {
+            "type": "equals",
+            "lhs": "${hostSystemName}",
+            "rhs": "Windows"
+          },
+          {
+            "type": "notEquals",
+            "lhs": "$env{VEYR_BUILD_DIR}",
+            "rhs": ""
+          },
+          {
+            "type": "notEquals",
+            "lhs": "$env{VEYR_CONAN_TOOLCHAIN}",
+            "rhs": ""
+          }
+        ]
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "windows-x86_64-clangcl-Release",
+      "inherits": "native",
+      "condition": {
+        "type": "allOf",
+        "conditions": [
+          {
+            "type": "equals",
+            "lhs": "${hostSystemName}",
+            "rhs": "Windows"
+          },
+          {
+            "type": "notEquals",
+            "lhs": "$env{VEYR_BUILD_DIR}",
+            "rhs": ""
+          },
+          {
+            "type": "notEquals",
+            "lhs": "$env{VEYR_CONAN_TOOLCHAIN}",
+            "rhs": ""
+          }
+        ]
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "linux-x86_64-clang-Debug",
+      "configurePreset": "linux-x86_64-clang-Debug"
+    },
+    {
+      "name": "linux-x86_64-clang-Release",
+      "configurePreset": "linux-x86_64-clang-Release"
+    },
+    {
+      "name": "windows-x86_64-clangcl-Debug",
+      "configurePreset": "windows-x86_64-clangcl-Debug"
+    },
+    {
+      "name": "windows-x86_64-clangcl-Release",
+      "configurePreset": "windows-x86_64-clangcl-Release"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "linux-x86_64-clang-Debug",
+      "configurePreset": "linux-x86_64-clang-Debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
+    },
+    {
+      "name": "linux-x86_64-clang-Release",
+      "configurePreset": "linux-x86_64-clang-Release",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
+    },
+    {
+      "name": "windows-x86_64-clangcl-Debug",
+      "configurePreset": "windows-x86_64-clangcl-Debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
+    },
+    {
+      "name": "windows-x86_64-clangcl-Release",
+      "configurePreset": "windows-x86_64-clangcl-Release",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
+    }
+  ]
+}
