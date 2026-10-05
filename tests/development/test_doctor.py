@@ -624,13 +624,20 @@ class ConanBootstrapTests(unittest.TestCase):
                 self.assertEqual(argv[1:], ["--version"])
         self.assertFalse(self.selection.conan_home.exists())
 
-    def test_plain_setup_is_deferred_until_dependency_plan_without_bootstrap(self):
-        with patch.object(dev, "bootstrap_conan") as bootstrap, \
-             contextlib.redirect_stderr(io.StringIO()) as errors:
+    def test_plain_setup_delegates_to_dependency_plan(self):
+        with patch.object(dev, "read_baseline", return_value=self.baseline), \
+             patch.object(dev, "make_selection", return_value=self.selection), \
+             patch.object(dev.platform, "system", return_value="Linux"), \
+             patch.object(dev.platform, "machine", return_value="x86_64"), \
+             patch.object(dev, "setup_dependencies") as setup, \
+             patch.dict(os.environ, {}, clear=True), \
+             contextlib.redirect_stdout(io.StringIO()):
             result = dev.main(["setup"])
-        self.assertEqual(result, 2)
-        self.assertIn("Plan 01-03", errors.getvalue())
-        bootstrap.assert_not_called()
+        self.assertEqual(result, 0)
+        setup.assert_called_once()
+        self.assertIs(setup.call_args.args[0], self.selection)
+        self.assertFalse(setup.call_args.kwargs["initialize_lock"])
+        self.assertTrue(callable(setup.call_args.kwargs["ensure_prerequisites"]))
 
 
 class DoctorCliTests(unittest.TestCase):

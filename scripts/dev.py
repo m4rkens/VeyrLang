@@ -1,4 +1,4 @@
-"""Veyr developer entry point: read-only doctor and explicit Conan CLI setup."""
+"""Veyr developer entry point: doctor, explicit setup and cache-only configure."""
 
 import argparse
 from dataclasses import asdict
@@ -14,6 +14,7 @@ from devtools.doctor import (
     conan_tool_remedy, inspect_conan_tool,
     make_selection, policy_entry, read_baseline, select_inputs,
 )
+from devtools.conan_ops import conan_home_guard, configure_project, setup_dependencies
 
 
 def bootstrap_conan(selection, entry):
@@ -70,8 +71,9 @@ def bootstrap_conan(selection, entry):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("doctor", "setup"))
+    parser.add_argument("command", choices=("doctor", "setup", "configure"))
     parser.add_argument("--tools-only", action="store_true", help="Setup Conan CLI only; no package/dependency work")
+    parser.add_argument("--init-lock", action="store_true", help="Explicit setup initialization of a missing Conan lock; review it afterward")
     parser.add_argument("--profile", choices=tuple(PROFILES))
     parser.add_argument("--build-profile", choices=tuple(PROFILES))
     parser.add_argument("--config", choices=("Debug", "Release"), default="Debug")
@@ -83,10 +85,9 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.tools_only and args.command != "setup":
         parser.error("--tools-only is valid only with setup")
+    if args.init_lock and (args.command != "setup" or args.tools_only):
+        parser.error("--init-lock requires dependency setup, without --tools-only")
     try:
-        if args.command == "setup" and not args.tools_only:
-            raise BaselineError("Dependency/package setup belongs to Plan 01-03 and is not implemented yet; "
-                                "use setup --tools-only for CLI bootstrap only")
         system = platform.system()
         if system not in {"Linux", "Windows"} or platform.machine().casefold() not in {"x86_64", "amd64"}:
             raise BaselineError("Only native Windows/Linux x86_64 is supported; macOS is deferred")
@@ -104,11 +105,33 @@ def main(argv=None):
         selection = make_selection(baseline, selected, args.llvm_provider, args.llvm_dir,
                                    args.conan_home, args.build_profile)
         entry = policy_entry(baseline, profile, selection.environment)
-        if args.command == "setup":
-            state = bootstrap_conan(selection, entry)
+        if args.command == "setup" and args.tools_only:
+            with conan_home_guard(selection):
+                state = bootstrap_conan(selection, entry)
             print(f"Conan CLI {CONAN_VERSION}: {state}; executable={selection.conan_executable}; "
                   f"conan-home={selection.conan_home}")
             print("Tools-only complete. No Conan dependency/package operation; native ABI/package readiness unverified.")
+            return 0
+        def require_prerequisites():
+            observations = collect_observations(entry, args.config, selection.conan_home, selection.conan_executable)
+            checks = check_prerequisites(baseline, selected, observations)
+            failed = [check for check in checks if check["status"] != "ok"]
+            if failed:
+                raise BaselineError("Prerequisites not ready: " + "; ".join(
+                    f"{check['identity']} expected={check['expected']}; actual={check['actual']}; "
+                    f"{check['remedy']}" for check in failed))
+        if args.command == "setup":
+            def ensure_prerequisites():
+                state = bootstrap_conan(selection, entry)
+                print(f"Conan CLI {CONAN_VERSION}: {state}; executable={selection.conan_executable}", flush=True)
+                require_prerequisites()
+            setup_dependencies(selection, selected, initialize_lock=args.init_lock,
+                               ensure_prerequisites=ensure_prerequisites)
+            print("Explicit dependency setup complete; independent Windows/CI evidence remains pending.")
+            return 0
+        if args.command == "configure":
+            require_prerequisites()
+            configure_project(selection, selected)
             return 0
         observations = collect_observations(entry, args.config, selection.conan_home, selection.conan_executable)
         checks = check_prerequisites(baseline, selected, observations)

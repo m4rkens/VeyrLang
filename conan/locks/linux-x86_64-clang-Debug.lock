@@ -1,0 +1,12 @@
+{
+    "version": "0.5",
+    "requires": [
+        "llvm/23.1.2@veyr/m1#aa4cad25b3148c3bdd22ed96fba04654%1791194471.3072367",
+        "gtest/1.18.0#e2507fc4efe2ec9e2db9e5c91eefab9f%1786446847.733"
+    ],
+    "build_requires": [
+        "cmake/4.4.3#8b46ce9dbf1937af1c05f19579c1f105%1789658722.203"
+    ],
+    "python_requires": [],
+    "config_requires": []
+}

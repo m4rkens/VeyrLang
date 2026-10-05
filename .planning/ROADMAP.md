@@ -6,7 +6,7 @@
 
 Deliver the P01 smoke path: one source/root module, fixed provisional entry, one integer-literal return, native executable and observable exit code. The initial roadmap follows the canonical ten-phase breakdown in `docs/design/milestones/MILESTONE_1.md`. Future language, tooling and application probes remain deferred in REQUIREMENTS.md and the canonical milestone strategy.
 
-This roadmap began as fresh initialization, with no previous lifecycle imported. Phase 1 now has eight approved execution plans; Plans 01-01 and 01-02 are complete for the available Linux scope. Phase-wide requirements remain unaccepted. Initialization `--auto` did not authorize later lifecycle transitions, builds or commits.
+This roadmap began as fresh initialization, with no previous lifecycle imported. Phase 1 now has eight approved execution plans; Plans 01-01 through 01-03 are complete for the available Linux scope. Phase-wide requirements remain unaccepted. Initialization `--auto` did not authorize later lifecycle transitions, builds or commits.
 
 ## Lifecycle and Design Gates
 
@@ -50,12 +50,12 @@ Integer phases are the active M1 scope. Any inserted decimal phase requires sepa
 4. Compiler infrastructure tests and the owned-header include guardrail run through the intended test/build interfaces on both Tier 1 platforms.
 5. A deliberate first dependency source build is supported; repeat workflows reuse compatible Conan packages and prepared dependency state supports acquisition-disabled configure/build without custom package storage or hidden downloads.
 
-**Plans:** 8 plans — reviewed and committed planning; 01-01 execution complete for the available Linux scope and committed. Plan 01-02 is complete for available Linux developer scope: LLVM source/build/package succeeded, separate Debug/Release configure/compile-link/native runs passed using the same cached package, with no LLVM/dependency rebuild during final validation. Owner reviewed execution/closeout and explicitly authorized its dedicated checkpoint commit; stop for owner review afterward. Plan 01-03 remains unstarted. No phase completion or independent Windows/CI acceptance claimed.
+**Plans:** 8 plans — reviewed and committed planning; 01-01/01-02 execution complete for available Linux scope and committed. Plan 01-02 checkpoint is `3f0636bda87da69a8526b0c57bf9844b8448c831`. Owner-authorized Plan 01-03 available-Linux execution is complete: real Debug/Release locks, four external subset graphs, 60 mocked checks, separate native setup/probes and cache-only preparation passed. Original LLVM reused throughout; only missing GoogleTest packages built. Execution/closeout reviewed; owner explicitly authorized its dedicated checkpoint commit `build: wire Conan dependency setup and cache-only preparation`. Stop for owner review afterward. Two Windows locks and independent Windows developer/CI/Ubuntu CI evidence remain pending. Plans 01-04–01-08 unstarted; no phase completion claimed.
 
 Plans:
 - [x] 01-01-PLAN.md — Exact native profiles and strict prerequisite doctor (available Linux scope; Windows/CI evidence deferred)
 - [x] 01-02-PLAN.md — Narrow LLVM 23.1.2 Conan recipe and native exports (available Linux developer scope; Windows/CI evidence deferred)
-- [ ] 01-03-PLAN.md — Conan consumer, native locks, explicit setup and cache-only generation
+- [x] 01-03-PLAN.md — Conan consumer, native locks, explicit setup and cache-only generation (available Linux scope; two Windows locks/native evidence deferred)
 - [ ] 01-04-PLAN.md — Target-oriented C++23/Ninja, LLVM providers and infrastructure tests
 - [ ] 01-05-PLAN.md — Portable owned-header include guardrail
 - [ ] 01-06-PLAN.md — Complete developer commands, scoped clean and liveness supervision
@@ -290,7 +290,7 @@ After M1 acceptance and its reviewed verification commit, the owner may start a 
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Conan and Compiler Build Foundation | 2/8 | Executing; 01-02 available-Linux checkpoint commit explicitly authorized, owner review afterward; 01-03 unstarted; Windows/CI pending | — |
+| 1. Conan and Compiler Build Foundation | 3/8 | Executing; 01-03 available-Linux execution/closeout reviewed, dedicated checkpoint commit explicitly authorized; owner review afterward; 01-04 unstarted; Windows locks/CI pending | — |
 | 2. Source Identity, Spans, and Diagnostics | 0/TBD | Not started | — |
 | 3. M1 Experimental Smoke Profile, Tokens, and Lexer | 0/TBD | Not started | — |
 | 4. Smoke Profile Parser | 0/TBD | Not started | — |

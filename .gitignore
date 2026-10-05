@@ -11,10 +11,15 @@ Veyr.lock
 .veyr-dev/
 
 # CMake
+CMakeUserPresets.json
 CMakeFiles/
 CMakeCache.txt
 cmake-build-*/
 compile_commands.json
+
+# Python generated state
+__pycache__/
+*.pyc
 
 # GSD planning state is intentionally trackable.
 # Do not add .planning/ here: reviewed discussion/plan/verification artifacts
