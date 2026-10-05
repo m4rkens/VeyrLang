@@ -86,10 +86,13 @@ def _inputs(selection, selected, root):
     return recipe, profiles, env
 
 
-def _run(argv, root, env):
+def _run(argv, root, env, runner=None):
     print(f"command: {argv!r}", flush=True)
     try:
-        subprocess.run(argv, cwd=root, env=env, check=True)
+        if runner is None:
+            subprocess.run(argv, cwd=root, env=env, check=True)
+        else:
+            runner(argv, cwd=root, env=env)
     except subprocess.CalledProcessError as error:
         raise BaselineError(f"Command stopped (exit={error.returncode}): {argv!r}. "
                             "No retry or acquisition fallback. For missing dependencies, "
@@ -99,7 +102,7 @@ def _run(argv, root, env):
 
 
 def setup_dependencies(selection, selected, root=ROOT, *, initialize_lock=False,
-                       ensure_prerequisites=None):
+                       ensure_prerequisites=None, runner=None):
     """Explicit acquiring setup; optional prerequisite callback runs inside the guard."""
     root = Path(root).resolve()
     with conan_home_guard(selection, root):
@@ -116,23 +119,23 @@ def setup_dependencies(selection, selected, root=ROOT, *, initialize_lock=False,
             local_recipe = root / "conan" / "recipes" / "llvm"
             if not (local_recipe / "conanfile.py").is_file():
                 raise BaselineError(f"Missing reviewed LLVM recipe {local_recipe}")
-            _run([executable, "export", str(local_recipe), "--user=veyr", "--channel=m1"], root, env)
+            _run([executable, "export", str(local_recipe), "--user=veyr", "--channel=m1"], root, env, runner)
         if not selection.lockfile.is_file():
             # Initialize a managed superset lock for the native configuration.
             _run([executable, "lock", "create", str(recipe), *profiles,
                   "-o:h", "&:llvm_provider=managed", "--lockfile=",
-                  f"--lockfile-out={selection.lockfile}"], root, env)
+                  f"--lockfile-out={selection.lockfile}"], root, env, runner)
             if not selection.lockfile.is_file():
                 raise BaselineError(f"Conan did not create {selection.lockfile}; stopped without retry")
         lock = [f"--lockfile={selection.lockfile}"]
         _run([executable, "install", str(recipe), *profiles, *options, *lock,
-              "--build=missing", f"--output-folder={selection.build_dir}"], root, env)
+              "--build=missing", f"--output-folder={selection.build_dir}"], root, env, runner)
         if selection.provider == "managed":
             _run([executable, "test", str(root / "conan" / "recipes" / "llvm" / "test_package"),
-                  "llvm/23.1.2@veyr/m1", *profiles, *lock, "--no-remote", "--build=never"], root, env)
+                  "llvm/23.1.2@veyr/m1", *profiles, *lock, "--no-remote", "--build=never"], root, env, runner)
 
 
-def prepare_dependencies(selection, selected, root=ROOT):
+def prepare_dependencies(selection, selected, root=ROOT, *, runner=None):
     """Generate from an existing lock/cache only; never bootstrap or acquire."""
     root = Path(root).resolve()
     if not resolve_conan_home(selection, root).is_dir():
@@ -143,16 +146,16 @@ def prepare_dependencies(selection, selected, root=ROOT):
         recipe, profiles, env = _inputs(selection, selected, root)
         _run([str(selection.conan_executable), "install", str(recipe), *profiles,
               "-o:h", f"&:llvm_provider={selection.provider}", f"--lockfile={selection.lockfile}",
-              "--no-remote", "--build=never", f"--output-folder={selection.build_dir}"], root, env)
+              "--no-remote", "--build=never", f"--output-folder={selection.build_dir}"], root, env, runner)
 
 
-def configure_project(selection, selected, root=ROOT, python=None):
+def configure_project(selection, selected, root=ROOT, python=None, *, runner=None):
     """Prepare, then invoke the native preset once Plan 01-04 supplies its inputs."""
     root = Path(root).resolve()
     if not (root / "CMakeLists.txt").is_file() or not (root / "CMakePresets.json").is_file():
         raise BaselineError("CMake project/presets are not available until Plan 01-04; "
                             "no Conan preparation or CMake command started")
-    prepare_dependencies(selection, selected, root)
+    prepare_dependencies(selection, selected, root, runner=runner)
     env = {**os.environ, **selected["environment"],
            "VEYR_BUILD_DIR": str(selection.build_dir),
            "VEYR_CONAN_TOOLCHAIN": str(selection.build_dir / "generators" / "conan_toolchain.cmake"),
@@ -163,4 +166,4 @@ def configure_project(selection, selected, root=ROOT, python=None):
           f"toolchain={env['VEYR_CONAN_TOOLCHAIN']}; python={env['VEYR_PYTHON']}", flush=True)
     _run(["cmake", "--preset", f"{selection.profile}-{selection.config}",
           f"-DVEYR_LLVM_PROVIDER={selection.provider}",
-          f"-DVEYR_LLVM_DIR={env['VEYR_LLVM_DIR']}"], root, env)
+          f"-DVEYR_LLVM_DIR={env['VEYR_LLVM_DIR']}"], root, env, runner)

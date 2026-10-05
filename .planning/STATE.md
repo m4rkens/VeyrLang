@@ -5,16 +5,16 @@ milestone_name: Compiler Walking Skeleton
 current_phase: 1
 current_phase_name: Conan and Compiler Build Foundation
 status: executing
-stopped_at: Plan 01-05 available-Linux execution/closeout complete at 5/8; reviewed dedicated checkpoint explicitly requested, then owner review. Plan 01-06 unstarted; Windows/CI evidence pending.
-last_updated: "2026-10-05T12:56:32Z"
+stopped_at: Plan 01-06 available-Linux execution/closeout complete at 6/8; reviewed dedicated nine-file checkpoint explicitly requested, then owner review. Plan 01-07 unstarted; Windows/CI pending.
+last_updated: "2026-10-05T14:02:49Z"
 last_activity: 2026-10-05
-last_activity_desc: Owner explicitly requested the reviewed eight-file Plan 01-05 dedicated checkpoint at 5/8. Existing 20-fixture/direct checker and independent Debug/Release target/CTest evidence retained; cached LLVM/GoogleTest reuse preserved. No new builds/tests/package operations or phase advancement.
+last_activity_desc: Owner explicitly requested reviewed nine-file Plan 01-06 execution/closeout checkpoint. Existing all/CTest/cache-reuse/clean-preservation evidence retained; no new builds/tests/package operations or phase advancement.
 progress:
   total_phases: 10
   completed_phases: 0
   total_plans: 8
-  completed_plans: 5
-  percent: 63
+  completed_plans: 6
+  percent: 75
 ---
 
 # Project State
@@ -24,26 +24,27 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-03)
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
-**Current focus:** Owner review of completed Plan 01-05 available-Linux include-policy implementation and normal closeout. Twenty fixtures, direct checker and independent Debug/Release configure/check-includes/CTest passed. Cached LLVM/GoogleTest reused; dependency policy and existing native foundation preserved. Windows developer/locks/runtime and independent Windows/Ubuntu CI remain pending; no phase-wide acceptance.
+**Current focus:** Owner-requested dedicated checkpoint of reviewed Plan 01-06 available-Linux execution/normal closeout, then owner review. Progress 6/8; Debug/Release all/CTest 12/12 and clean preservation evidence retained. Windows/CI pending; no phase-wide acceptance.
 
 ## Current Position
 
 Phase: 1 of 10 (Conan and Compiler Build Foundation)
-Plan: 01-05 complete within available Linux scope; 5/8 execution plans complete
-Status: Plan 01-05 reviewed execution/closeout included in the explicitly requested dedicated checkpoint; stop for owner review afterward. Plans 01-01 through 01-04 already committed; Plan 01-06 onward unstarted. No phase-wide requirement completion.
-Last activity: 2026-10-05 — Owner explicitly requested the reviewed Plan 01-05 eight-file implementation/closeout checkpoint. Existing 20/20 fixtures, direct checker and separate Debug/Release configure/target/include-policy CTest 1/1 results retained; cached dependency identities, locks and protected artifacts unchanged. No commands repeated.
+Plan: 01-06 complete within available Linux scope; 6/8 execution plans complete
+Status: Plan 01-06 reviewed execution/closeout included in the explicitly requested dedicated nine-file checkpoint; stop for owner review afterward. Plan 01-07/01-08 unstarted; zero completed phases.
+Last activity: 2026-10-05T14:02:49Z — Owner explicitly requested the reviewed Plan 01-06 checkpoint. Five implementation/test files preserved unchanged; only commit-status wording aligned in four normal records. Existing native all/CTest/cache/clean evidence retained; no commands repeated.
 
-Progress: [██████░░░░] 5/8 Phase 1 execution plans (62.5%, rounded to 63% above); no phase completed
+Progress: [████████░░] 6/8 Phase 1 execution plans (75%); no phase completed
 
 ## Performance Metrics
 
-- Total plans completed: 5 (01-01 through 01-05, available Linux scope; deferred environment acceptance retained)
+- Total plans completed: 6 (01-01 through 01-06, available Linux scope; independent platform acceptance retained)
 - Execution: Plan 01-01 Tasks 1–3, owner baseline selection, real CLI prerequisite and corrected Linux doctor acceptance complete
 - Plan 01-02 Tasks 1–2: Source/build/package and separate Linux Debug/Release configure/compile-link/native-run evidence accepted; owner-authorized summary/closeout recorded, independent Windows/CI gaps retained
 - Plan 01-03 Tasks 1–2: Real Linux Debug/Release locks, four external subset graphs, 60 mocked checks and separate native setup/probe/preparation checks passed; owner reviewed and explicitly authorized the dedicated checkpoint commit, two Windows lock outputs deferred
 - Plan 01-04 Tasks 1–2: Target-oriented C++23/Ninja foundation, exact LLVM runtime/provider policy, compile databases and native GoogleTest/GoogleMock/LLVM/CLI tests complete for available Linux scope; CTest 11/11 Debug and Release, owner-authorized closeout recorded
 - Plan 01-05 Tasks 1–2: Read-only canonical include checker and 20 temporary-tree fixtures, direct checker and independent Linux Debug/Release target/CTest routes passed; include-policy 1/1 each, normal closeout recorded
-- Phase plans: Eight written plans in eight sequential waves; Waves 1–5 complete within available Linux scope, Waves 6–8 not started
+- Plan 01-06 Tasks 1–2: Complete thin commands, invocation-local reuse, cache-only stale regeneration and liveness/scoped-clean fixtures; 30 new/60 regression tests passed, independent Debug/Release entry points/all passed with CTest 12/12 and four C++23 entries each. Explicit Debug clean preserved Release/tool/cache metadata; normal available-Linux closeout recorded
+- Phase plans: Eight written plans in eight sequential waves; Waves 1–6 complete within available Linux scope, Waves 7–8 unstarted
 - Active requirements: 49 pending; each maps to exactly one of 10 phases. Plan completion does not mark phase-wide requirements implemented/verified.
 
 ## Accumulated Context
@@ -62,7 +63,7 @@ Progress: [██████░░░░] 5/8 Phase 1 execution plans (62.5%, r
 
 ### Pending Todos
 
-Stop for owner review after the explicitly requested reviewed checkpoint `build: enforce canonical Veyr-owned includes`. Progress remains 5/8, zero completed phases. Plan 01-06 remains unstarted. Windows native locks/developer/runtime and Windows/Ubuntu CI evidence remain independently pending; macOS deferred. Phase-wide requirements remain pending. No separate phase verification or lifecycle advancement authorized.
+Stop for owner review after the explicitly requested reviewed Plan 01-06 dedicated checkpoint. Progress 6/8 and zero completed phases; Plan 01-07 unstarted. No builds/tests/package operations after clean. Windows developer/CI and Ubuntu CI independent/pending; macOS deferred.
 
 ### Blockers/Concerns
 
@@ -83,15 +84,15 @@ Future probes are tracked in REQUIREMENTS.md v2 and canonical milestone strategy
 
 ## Session Continuity
 
-Last session: 2026-10-05T12:56:32Z
-Stopped at: Owner-requested Plan 01-05 available-Linux dedicated checkpoint, then owner review. No package/build/test command active.
-Resume file: .planning/phases/01-conan-and-compiler-build-foundation/01-05-EXECUTION.md
-Current summary: .planning/phases/01-conan-and-compiler-build-foundation/01-05-SUMMARY.md
-Prior completed summaries: .planning/phases/01-conan-and-compiler-build-foundation/01-01-SUMMARY.md, 01-02-SUMMARY.md, 01-03-SUMMARY.md and 01-04-SUMMARY.md
-Last completed execution step: Plan 01-05 Tasks 1–2 available-Linux implementation and native route acceptance; SUMMARY, checkpoint and 5/8 progress records written. Existing dependency identities, locks, presets, production guards and native sources preserved.
-First incomplete execution step: Owner review after the explicitly requested Plan 01-05 checkpoint commit. Next incomplete plan is 01-06, unstarted and not authorized by this commit.
+Last session: 2026-10-05T14:02:49Z
+Stopped at: Owner-requested Plan 01-06 available-Linux dedicated checkpoint, then owner review. No build/test/package command active.
+Resume file: .planning/phases/01-conan-and-compiler-build-foundation/01-06-EXECUTION.md
+Current summary: .planning/phases/01-conan-and-compiler-build-foundation/01-06-SUMMARY.md
+Prior completed summaries: .planning/phases/01-conan-and-compiler-build-foundation/01-01-SUMMARY.md, 01-02-SUMMARY.md, 01-03-SUMMARY.md, 01-04-SUMMARY.md and 01-05-SUMMARY.md
+Last completed execution step: Plan 01-06 native Debug clean/preservation passed; normal available-Linux SUMMARY/checkpoint/6-of-8 progress closeout written from existing acceptance evidence.
+First incomplete execution step: Owner review after the explicitly requested Plan 01-06 checkpoint commit. Plan 01-07 remains unstarted; no continuation authorization inferred from committing.
 Preserved artifacts: Completed Plan 01-01/01-02 implementation, CLI and read-only doctor, cached LLVM package, committed discussion and all eight plans/waves unchanged.
-Continuation authorization: Owner explicitly requested the reviewed eight-file Plan 01-05 dedicated checkpoint commit. Stop for owner review afterward. No Plan 01-06 start, separate phase verification, push or phase advancement authorization. Windows/CI evidence remains pending.
+Continuation authorization: Owner explicitly requested the reviewed nine-file Plan 01-06 execution/closeout checkpoint. Stop for owner review afterward. No Plan 01-07, new builds/tests/package operations, dedicated phase verification, push or phase advancement authorization.
 Sub-agents: None; execution inline under explicit-request policy.
 Planning commit: f4d8335d0c09eef7eb9ec3bb756e92ff9f7fd5a8; baseline correction commit 8336e13e7a85b2bf4661828a7bdf4aa6b1211937.
 Execution commit: `941c70da327b2977cf35b59938795599aaa4b4e4`, `build: establish Conan-aware developer baseline`. Planning ownership alignment: `1e02ab2f5e6be4d5711aa65b797728520b5f37ed`. Subsequent explicit owner execution instruction, not either commit, authorized Wave 2.
@@ -127,3 +128,27 @@ Supersedes earlier Plan 01-04 owner-review/commit entries, fulfilled by checkpoi
 ## Owner-authorized Plan 01-05 dedicated checkpoint — 2026-10-05T12:56:32Z
 
 Owner reviewed completed Plan 01-05 execution/closeout and explicitly requested its eight-file checkpoint `build: enforce canonical Veyr-owned includes`. This supersedes earlier pending-commit wording; resolve its hash from Git history. Four implementation/test/configuration files are preserved unchanged; only commit-status wording aligned in four normal records. Progress remains 5/8 plans and zero completed phases, with all eight waves preserved. Cached LLVM/GoogleTest reuse and existing Linux evidence retained; no new builds/tests/package operations. Windows developer/CI and Ubuntu CI evidence independently pending; macOS deferred. Plan 01-06 unstarted. Stop for owner review afterward; no phase advancement.
+
+## Current Plan 01-06 continuation — 2026-10-05T13:25:21Z
+
+Supersedes historical Plan 01-05 owner-review entries, fulfilled by d34a793575e140680804b45058b68c6436cb0c0e. Owner then invoked $gsd-execute-phase 1 and selected inline Plan 01-06. Five implementation/test paths written (including documented narrow optional conan_ops runner integration); 29 new fixtures and 60 regression checks passed. Prepared Linux Debug/Release entry points next; native all separately owner-gated. No SUMMARY/completion yet; 5/8, zero completed phases, no commit, Plan 01-07 or phase advancement.
+
+## Current Plan 01-06 acceptance gate — 2026-10-05T13:31:42Z
+
+Supersedes the pre-native continuation above. Independent Linux Debug/Release build/test/verify all passed, CTest 12/12 and four C++23 entries per configuration; cache-only configure reused original LLVM/GoogleTest without downloads/dependency rebuilds. Thirty new and 60 regression fixtures passed; 198 protected tracked files unchanged. First incomplete step is native all, separately explicit for setup/acquisition; real selected-output clean also unrun. No SUMMARY/completion yet; 5/8 plans, zero completed phases, no command active, no commit/Plan 01-07/phase advancement. Resume 01-06-EXECUTION.md at the next owner-approved acceptance action only.
+
+## Owner-authorized native all continuation — 2026-10-05T13:35:41Z
+
+Option 1 authorizes Plan 01-06 native all Debug then Release with existing locks/cache, no forced rebuild and first-error stop. Supersedes the prior native all approval wait only. No completed implementation/fixtures repeated; no real clean/commit/Plan 01-07/phase advancement authorization.
+
+## Current Plan 01-06 selected-output clean gate — 2026-10-05T13:42:54Z
+
+Supersedes the historical native all wait/authorization records above. Both native all commands passed (Debug 5.031s, Release 5.026s), CTest 12/12 once and four C++23 entries per invocation; verify reused completed CTest. CLI 2.33.0 and cached LLVM/GoogleTest reused, no package download/source rebuild/forced build. Only standard Conan test_package consumer probes compiled/linked again. Five implementation/test files and 198 protected tracked files unchanged. No command active. First incomplete gate is explicitly authorized Debug selected-output clean with read-only Release/tool/cache preservation comparison; no native clean, SUMMARY/completion or commit yet. Progress 5/8, zero completed phases, Plan 01-07 unstarted, Windows/CI pending and macOS deferred.
+
+## Current Plan 01-06 available-Linux closeout — 2026-10-05T13:55:58Z
+
+Supersedes historical native all/clean waits, both subsequently explicitly authorized and passed. Debug clean exited 0; Debug output intentionally absent, Release prepared, all 184/2382/405455 preserved Release/tool/cache entries unchanged by metadata comparison. No native/package commands after clean. Normal SUMMARY/EXECUTION/STATE/ROADMAP closeout records 6/8 plans and zero completed phases; existing acceptance evidence retained, implementation and 198 protected files unchanged, nine-file packet uncommitted/unstaged. No Plan 01-07, dedicated phase verification or phase advancement. Windows/CI pending, macOS deferred. Stop for owner review before separately requested sensitive-file commit: build: complete developer commands and liveness supervision.
+
+## Owner-authorized Plan 01-06 dedicated checkpoint — 2026-10-05T14:02:49Z
+
+Owner reviewed completed Plan 01-06 available-Linux execution/closeout and explicitly requested its nine-file checkpoint build: complete developer commands and liveness supervision. This supersedes earlier pending-commit wording; resolve its hash from Git history. Five implementation/test files preserved unchanged; only commit-status wording aligned in four normal records. Progress remains 6/8, zero completed phases, all eight waves preserved. Successful Debug/Release native all with CTest 12/12 each, Conan 2.33.0 and cached LLVM/GoogleTest reuse, selected Debug clean and Release/tools/cache preservation evidence retained. No new builds/tests/package operations, implementation edits or Plan 01-07 start. Windows/CI independent/pending; macOS deferred. Stop for owner review after committing; no phase advancement.
