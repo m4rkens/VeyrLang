@@ -13,11 +13,15 @@ The earlier structural PASS remains a historical planning result. This bounded u
 
 D-07/D-14 are clarified by the dated owner direction: exact policy applies to each selected environment; shared commands and dependency/profile policy do not require identical developer/CI host identities. Committed 01-CONTEXT.md and 01-DISCUSSION-LOG.md stay unchanged. Eight plans, eight waves, eighteen tasks, dependency order and BUILD/D identifier ownership are preserved. Plan 08 now explicitly owns the sequential update of existing baseline.json for observed CI expectations; no new framework or evidence file format is introduced. Other plan task contracts remain unchanged. Task 2 can resume candidate-policy review after this correction; no Task 2 completion, execution resumption or Conan/package/ABI readiness is credited by the planning-only edit. No builds/tests or runtime verification ran.
 
+## Owner-approved CLI-bootstrap ownership correction — 2026-10-05
+
+Plan 01-01 Task 3 owns the standard project-local Conan 2.33.0 venv bootstrap and read-only absolute-path doctor before Wave 2 needs Conan. Plan 01-03 retains Conan dependency/package setup and automatically ensures the CLI first; tools-only returns before packages. Plan 01-06 normal clean must preserve the tool environment and dedicated package cache. Coverage/file ownership records are updated only for that correction; eight waves, eighteen tasks and dependency edges are unchanged. Earlier conceptual `conan create/test` references consume the Plan 01-01 absolute executable/home, never ambient PATH Conan. No package solver, source registry, SDK normalizer, new framework or Windows/CI evidence is introduced. Mocked implementation checks do not prove real installation, native ABI or package readiness. Current checkpoint and actual checks are in 01-01-EXECUTION.md; no real installation or wave/phase advancement is authorized here.
+
 ## Plan Inventory
 
 | Plan | Wave | Tasks | Future files | Checkpoint |
 |---|---:|---:|---:|---|
-| 01-01 | 1 | 3 | 8 | Exact evidenced host baseline |
+| 01-01 | 1 | 3 | 9 | Exact evidenced host baseline; separately authorized real CLI bootstrap |
 | 01-02 | 2 | 2 | 5 | Runtime failure stops for owner review |
 | 01-03 | 3 | 2 | 9 | Lock/provider-subset incompatibility stops for review |
 | 01-04 | 4 | 2 | 10 | Native ABI/provider failure stops for review |
@@ -37,7 +41,7 @@ Eight sequential waves match the approved breakdown and parallelization=false. E
 | BUILD-03 | 01-02 tasks 1–2: exact LLVM source recipe/native exports/test_package |
 | BUILD-04 | 01-02 task 1: X86/static options, explicit optional dependency disabling |
 | BUILD-05 | 01-01 tasks 1–3: reviewed native host/build/runtime profiles |
-| BUILD-06 | 01-03 task 2; 01-06 tasks 1–2; 01-08 docs: thin complete developer interface |
+| BUILD-06 | 01-01 task 3 CLI-only bootstrap; 01-03 task 2 dependency setup; 01-06 tasks 1–2; 01-08 docs: thin complete developer interface |
 | BUILD-07 | 01-01 tasks 1–3; 01-08 docs: exact prerequisite/SDK/runtime diagnostics |
 | BUILD-08 | 01-04 tasks 1–2; 01-07: exact managed/system/custom native CONFIG discovery and negative checks |
 | BUILD-09 | 01-04 tasks 1–2: four native Ninja presets and compile database inspection |
@@ -103,4 +107,4 @@ These are planned execution checkpoints, not resolved research facts or passing 
 
 ## Owner Review Boundary
 
-Original planning boundary: artifacts were complete for review and uncommitted; no implementation, package acquisition, builds/tests, remote actions or phase advancement had occurred at that checkpoint. Original planning was later committed separately in f4d8335. Current boundary: this eleven-file planning-only correction is uncommitted for owner review; execution has not resumed and no checks imply package/ABI readiness or lifecycle permission.
+Original planning boundary: artifacts were complete for review and uncommitted; no implementation, package acquisition, builds/tests, remote actions or phase advancement had occurred at that checkpoint. Original planning was later committed separately in f4d8335. The earlier eleven-file environment correction was committed separately in 8336e13. Plan 01-01 implementation, reviewed doctor/bootstrap corrections, real project-owned Conan 2.33.0 CLI bootstrap and Omarchy/Arch Linux prerequisite acceptance were completed and committed in checkpoint 941c70da327b2977cf35b59938795599aaa4b4e4. Corrected read-only doctor passed 22/22 with Conan home/tool environment unchanged. Current boundary: only the five-file planning ownership correction set remains uncommitted for owner review. Windows developer and Windows CI evidence, independent Ubuntu CI evidence, native ABI compatibility and package readiness remain pending. Phase 1 remains 1/8 plans complete; Plan 01-02 and later waves have not started. No further execution, commit or phase advancement is authorized by this planning correction.

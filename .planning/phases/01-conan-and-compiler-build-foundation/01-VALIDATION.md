@@ -20,7 +20,7 @@ Selection-policy review and installed/package/ABI readiness are separate. Linux 
 | Property | Value |
 |---|---|
 | Framework | Python stdlib unittest; GoogleTest/GoogleMock gtest/1.18.0 through Conan |
-| Configuration | Future tests/development/ and tests/CMakeLists.txt; no existing harness |
+| Configuration | Task 3 doctor/bootstrap unittest fixtures in tests/development/; other development and CMake harnesses remain future |
 | Quick command | python -m unittest discover -s tests/development -p 'test_*.py' |
 | Full command | python scripts/dev.py verify --profile <reviewed-native-profile> --config <Debug-or-Release> |
 | Recipe integration | Conan test_package during explicit setup/native recipe validation |
@@ -38,13 +38,13 @@ These are proposed future commands, not commands authorized or executed by plann
 
 ## Per-Task Native/Behavior Verification Map
 
-All files below are missing until execution creates them. No row is green.
+Original planning coverage map; earlier Task 1/2 row statuses are historical. The Task 3 row and Wave 0 entry below record completed Plan 01-01 bootstrap and available Omarchy/Arch Linux prerequisite acceptance. Other files remain missing until their execution tasks create them. No native ABI/package/CI acceptance row is green; independent Windows developer/CI and Ubuntu CI evidence remain pending.
 
 | Task | Wave | Requirement | Test type / meaningful behavior | Proposed verification | Status |
 |---|---:|---|---|---|---|
 | 01-01-01 | 1 | BUILD-05, BUILD-07, BUILD-13 | Host identity/profile inventory | Review actual versions, CRT/SDK/libc/linker and exact profile inputs | Pending |
 | 01-01-02 | 1 | BUILD-05, BUILD-07, BUILD-13 | Owner checkpoint | Review observed Omarchy candidate selection; keep missing Conan readiness and independent Windows/CI evidence gates | Resumable after correction review; readiness pending |
-| 01-01-03 | 1 | BUILD-07 | Unit: missing/mismatched tools/SDK, paths | unittest test_doctor | Missing infrastructure |
+| 01-01-03 | 1 | BUILD-06, BUILD-07 | Unit: strict doctor and mocked CLI bootstrap/reuse/failure; tools-only stops before packages | unittest test_doctor; real tools-only/bootstrap and corrected Linux doctor acceptance recorded in checkpoint 941c70da327b2977cf35b59938795599aaa4b4e4 | Completed for available Omarchy/Arch Linux scope; Windows developer/CI, Ubuntu CI and ABI/package readiness remain pending |
 | 01-02-01 | 2 | BUILD-03, BUILD-04 | Recipe/options/source-integrity | Review exact source/digest/options and Conan-native graph | Pending |
 | 01-02-02 | 2 | BUILD-03, BUILD-13 | Native recipe integration | Conan test_package verifies native exports and CRT-compatible link/run | Missing infrastructure |
 | 01-03-01 | 3 | BUILD-02, BUILD-12 | Conan profile/lock resolution | Review Conan-generated exact refs/revisions across native combinations | Pending |
@@ -53,7 +53,7 @@ All files below are missing until execution creates them. No row is green.
 | 01-04-02 | 4 | BUILD-10 | GoogleTest/GoogleMock and LLVM probe | CTest infrastructure suite on matching runtime | Missing infrastructure |
 | 01-05-01 | 5 | BUILD-11 | Unit include positives/negatives | unittest test_include_policy | Missing infrastructure |
 | 01-05-02 | 5 | BUILD-11 | Build/CTest reachability | check-includes target and CTest include-policy entry | Missing infrastructure |
-| 01-06-01 | 6 | BUILD-06, BUILD-12 | Unit command chaining/clean | unittest test_dev_commands; no setup in build/test; preserve cache/other builds | Missing infrastructure |
+| 01-06-01 | 6 | BUILD-06, BUILD-12 | Unit command chaining/clean | unittest test_dev_commands; no setup in build/test; preserve Conan tool environment, package cache and other builds | Missing infrastructure |
 | 01-06-02 | 6 | BUILD-06 | Unit child/liveness | unittest test_runner; healthy quiet child continues, confirmed stall stops once | Missing infrastructure |
 | 01-07-01 | 7 | BUILD-08, BUILD-10, BUILD-12, BUILD-13 | Unit acceptance harness contract | unittest test_foundation_contract; wrong version/runtime/triple and offline negatives | Missing infrastructure |
 | 01-07-02 | 7 | BUILD-08, BUILD-10, BUILD-12, BUILD-13 | Native acceptance | check_foundation for actual native profile/config/provider combinations | Missing infrastructure |
@@ -92,7 +92,7 @@ Quick commands are planned checks, not execution evidence. Native/behavior check
 
 Wave 0 means infrastructure prerequisites allocated within the written plans, not a new executed phase. A task creates its required test/recipe before its own check; consumers reference the creator task or a strictly earlier dependent plan.
 
-- [ ] Plan 01: doctor fixtures and environment-specific developer candidate/readiness checks; original coverage item, with prior Task 1 results recorded separately.
+- [x] Plan 01: doctor fixtures, project-local Conan 2.33.0 CLI-only bootstrap and available Omarchy/Arch Linux prerequisite acceptance completed in checkpoint 941c70da327b2977cf35b59938795599aaa4b4e4; checks are recorded in 01-01-EXECUTION.md and 01-01-SUMMARY.md. Windows developer/CI and independent Ubuntu CI evidence, native ABI compatibility and package readiness remain pending. This closes only Plan 01-01's available-host prerequisite; Plan 01-02 and later waves have not started, and overall wave_0_complete remains false.
 - [ ] Plan 02: narrow LLVM test_package and exact official source integrity.
 - [ ] Plan 03: conan operation tests and Conan-generated locks.
 - [ ] Plan 04: GoogleTest/GoogleMock CMake infrastructure and native LLVM probe.

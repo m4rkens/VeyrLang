@@ -22,9 +22,9 @@ Eight approved plans, eighteen tasks, sequential waves. Parallelization remains 
 
 | Plan | Wave | Depends on | Concern / proposed tasks | Requirements |
 |---|---:|---|---|---|
-| 01-01 | 1 | — | Inspect/select exact environment-specific developer candidates; owner checkpoint separates selection from missing prerequisite readiness; implement strict doctor with mismatch/SDK/path tests | BUILD-05, BUILD-07, BUILD-13 |
+| 01-01 | 1 | — | Inspect/select exact environment-specific developer candidates; owner checkpoint separates selection from missing prerequisite readiness; implement strict doctor and project-local Conan CLI-only bootstrap with mocked isolation/reuse/failure tests | BUILD-05, BUILD-06, BUILD-07, BUILD-13 |
 | 01-02 | 2 | 01-01 | Implement narrow exact LLVM recipe/options/source integrity/native exports; implement Conan test_package proving exported headers/targets and matching runtime link/run | BUILD-03, BUILD-04, BUILD-13 |
-| 01-03 | 3 | 01-01, 01-02 | Add exact consumer refs/generators/profiles and Conan-native lock generation/review; implement explicit setup, dedicated Conan home and cache-only prepared generation with boundary tests | BUILD-02, BUILD-06, BUILD-12 |
+| 01-03 | 3 | 01-01, 01-02 | Add exact consumer refs/generators/profiles and Conan-native lock generation/review; extend setup with Conan-owned dependency/package work after Plan 01-01 CLI bootstrap, dedicated Conan home and cache-only prepared generation with boundary tests | BUILD-02, BUILD-06, BUILD-12 |
 | 01-04 | 4 | 01-03 | Add target-oriented C++23/Ninja/presets/LLVM provider integration and compile database; wire independent veyrcore/version stub plus Conan GoogleTest/GoogleMock infrastructure harness | BUILD-01, BUILD-08, BUILD-09, BUILD-10 |
 | 01-05 | 5 | 01-04 | Implement owned-header include checker with positive/negative fixtures; integrate check-includes target and CTest entry | BUILD-11 |
 | 01-06 | 6 | 01-03, 01-04, 01-05 | Complete configure/build/test/verify/all/clean orchestration without duplicate acquisition/work; supervise child commands and test quiet progress, confirmed stall and clean/chaining boundaries | BUILD-06, BUILD-12 |
@@ -39,7 +39,7 @@ Paths below are future implementation locations, not files created during planni
 
 | Plan | Intended files |
 |---|---|
-| 01-01 | conan/profiles/linux-x86_64-clang; conan/profiles/windows-x86_64-clangcl; conan/profiles/debug; conan/profiles/release; scripts/dev.py; scripts/devtools/baseline.json; scripts/devtools/doctor.py; tests/development/test_doctor.py |
+| 01-01 | conan/profiles/linux-x86_64-clang; conan/profiles/windows-x86_64-clangcl; conan/profiles/debug; conan/profiles/release; scripts/dev.py; scripts/devtools/baseline.json; scripts/devtools/doctor.py; tests/development/test_doctor.py; docs/development/DEVELOPER_BOOTSTRAP.md |
 | 01-02 | conan/recipes/llvm/conanfile.py; conan/recipes/llvm/conandata.yml; conan/recipes/llvm/test_package/conanfile.py; conan/recipes/llvm/test_package/CMakeLists.txt; conan/recipes/llvm/test_package/src/llvm_probe.cpp |
 | 01-03 | conanfile.py; conan/locks/linux-x86_64-clang-Debug.lock; conan/locks/linux-x86_64-clang-Release.lock; conan/locks/windows-x86_64-clangcl-Debug.lock; conan/locks/windows-x86_64-clangcl-Release.lock; scripts/dev.py; scripts/devtools/conan_ops.py; tests/development/test_conan_ops.py; .gitignore |
 | 01-04 | CMakeLists.txt; CMakePresets.json; cmake/VeyrLLVM.cmake; cmake/VeyrTargets.cmake; include/veyr/build_info.hpp; src/core/build_info.cpp; src/driver/main.cpp; tests/CMakeLists.txt; tests/infrastructure/build_info_test.cpp; tests/infrastructure/llvm_link_test.cpp |
@@ -54,7 +54,7 @@ Files shared across plans are intentional sequential updates. The initial CMake 
 
 - Baseline/profile selection feeds doctor, Conan host/build profiles, CMake presets and CI.
 - Narrow recipe's native LLVM install feeds managed exact CONFIG discovery.
-- Setup alone performs acquisition/source builds; cache-only install feeds configure.
+- Plan 01-01 Task 3 owns project-local Conan CLI-only bootstrap before Wave 2; Plan 01-03 extends full setup with Conan-owned dependency/package acquisition/source builds. Cache-only install feeds configure. All Conan children use BuildSelection.conan_executable and the dedicated home. Normal clean preserves both CLI environment and package cache.
 - CMake links imported GoogleTest and isolated LLVM infrastructure targets; veyrcore stays independent of LLVM.
 - Include checker feeds both check-includes and CTest; verify composes include/native checks once.
 - CI invokes the same entry point and dependency/profile policy with independently reviewed environment inputs; four native outcomes and cold-build capacity are observable evidence, never inferred from YAML or developer inventory.
