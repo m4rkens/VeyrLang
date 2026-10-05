@@ -2,7 +2,10 @@
 
 **Date:** 2026-10-05
 **Status:** Local Tasks 1–2 drafted and required mocked/static task checks passed.
-Task 3 remains a blocking owner publication/identity/native-evidence checkpoint.
+The owner subsequently authorized checkpoint commits and publication. Run
+37356855017 supplied four successful observations followed by pending-policy
+failures; both CI candidates remain pending/unselected. Task 3 remains a blocking
+identity/profile/doctor/locks/native-evidence checkpoint, not a completed plan.
 Progress remains 7/8 execution plans, zero completed phases. No SUMMARY created.
 
 ## Authorization and preserved work
@@ -73,9 +76,11 @@ Managed/system/custom LLVM discovery retains exact configuration/runtime guards.
 Future language Veyr.lock remains separate. Historical accepted Linux native
 results/hash observations are retained, not promoted to current CI evidence.
 
-The CI ledger has four independently pending rows, no invented URLs/tool pins
-or capacity measurements. Actual Windows locks and native/CI evidence are still
-missing. Existing foundation JSON conservatively says CI pending; individual
+At the local draft stage the CI ledger had four independently pending rows, no
+invented URLs/tool pins or capacity measurements. The observation-only update
+below now supplies real job URLs and partial candidate identities. Windows locks
+and native/CI acceptance are still missing. Existing foundation JSON
+conservatively says CI pending; individual
 native task results and actual job URLs need explicit ledger review before
 acceptance. No phase-wide requirements marked complete.
 
@@ -90,49 +95,106 @@ All commands ran from `/home/m4rkens/Projects/VeyrLang`:
 | Read-only Python/PyYAML BaseLoader + JSON static assertions | Passed: exact four rows/triggers, fail-fast/serial/timeout policy, pending → doctor/lock → cache → package order, cold skip, full cache inputs, 40-hex action pins, shared explicit selections, no all/init-lock, always-upload and unchanged developer/tool/backend identities |
 | Diff whitespace and protected-file scope inspection | Passed; final inspection recorded below |
 
-No real Conan/CMake/Ninja/CTest/compiler/linker command, dependency operation,
-installation or build ran locally. No workflow push/dispatch, stage/commit,
-phase verification or advancement. PowerShell execution/action execution/native
-Windows and Ubuntu bootstrap remain untested. YAML parsing/static inspection
-is not an Actions or PowerShell execution guarantee.
+During those local draft checks no real Conan/CMake/Ninja/CTest/compiler/linker
+command, dependency operation, installation or build ran locally, and no
+push/dispatch/stage/commit/phase verification or advancement occurred. Runner
+PowerShell/action execution was then untested. Later owner-approved publication
+and observation execution are recorded below; no native CI build has run.
+YAML parsing/static inspection is not an Actions or PowerShell execution guarantee.
+
+## Task 3 authorized publication and candidate observations
+
+The owner explicitly authorized the nine-file local draft checkpoint
+`01acd22be35226c9c2aa0310da28f89d0a63efcc`, then `git push origin main`.
+Automatic run 37355569361 failed workflow validation with zero jobs. The reviewed
+one-file correction moved CONAN_HOME from job-level env into the existing
+observation step env and persisted it through GITHUB_ENV; the owner committed
+it as `c4f27d086370c8d63d0b81990eba04044bdbe98f` and authorized its push.
+No manual dispatch or automatic retry occurred.
+
+The resulting automatic push run
+[37356855017](https://github.com/m4rkens/VeyrLang/actions/runs/37356855017)
+completed the four observation steps and artifact uploads, then all four jobs
+failed at the expected pending CI-policy gate. No tools-only/CLI installation,
+cache restore/save, dependency setup, native build/test or package operation ran.
+No Conan installation/version was observed. These are identity observations,
+not successful native CI rows or package/ABI readiness evidence.
+
+| Observed identity | Ubuntu Debug/Release | Windows Debug/Release |
+|---|---|---|
+| Runner / ImageOS / image version | ubuntu-24.04 / ubuntu24 / 20260927.320.1 | windows-2022 / win22 / 20260927.320.1 |
+| Runner agent | 2.337.0 | 2.337.0 |
+| OS / architecture | Ubuntu 24.04.5 LTS / x86_64 | Windows Server 2022 Datacenter 10.0.20348 / x86_64 |
+| Python / CMake / Ninja | 3.12.3 / 3.31.6 / 1.13.2 | 3.12.10 / 3.31.6 / 1.13.2 |
+| Clang / clang++ / clang-cl | 18.1.3 / 18.1.3 / missing | 20.1.8 / 20.1.8 / 20.1.8 |
+| Target | x86_64-pc-linux-gnu | x86_64-pc-windows-msvc |
+| GCC / G++ / glibc / Binutils | 13.3.0 / 13.3.0 / 2.39 / 2.42 | Not applicable |
+| Visual Studio Enterprise 2022 | Not applicable | 17.14.37710.0 |
+| Git | 2.55.0 | 2.55.0.windows.5 |
+
+Debug and Release share the observed platform identities, while their homes
+remain isolated by run/attempt/environment/configuration. Exact observed paths
+and four job URLs are in baseline.json and FOUNDATION_ACCEPTANCE.md. Ubuntu and
+Windows CI entries remain pending/unselected; the owner authorized recording
+observations only. Omarchy developer policy and the independently pending
+Windows developer candidate are unchanged. Conan 2.33.0 and LLVM 23.1.2 remain
+required; progress is still 7/8 with all eight waves preserved and macOS deferred.
+
+Remaining Ubuntu gaps: Clang 18 conflicts with the existing Clang-22
+developer/profile/doctor policy; resolved libstdc++ runtime/path, standard-library
+header identity and exact linker path are not established. The locator reported
+only `libstdc++`. Current doctor libc/linker parsers do not accept observed Ubuntu
+banner formats. No profile or parser was changed to bypass these gaps.
+
+Remaining Windows gaps: VC tools, CRT, Windows SDK, exact linker identity/path
+and selected developer-shell/toolchain environment are not established. VS
+installation alone does not prove these identities. Both platforms still need
+project-owned Conan validation, native ABI/package acceptance and cold-build
+capacity evidence; Windows Debug/Release locks remain pending.
+
+Current edit scope is exactly baseline.json, CI_MATRIX_POLICY.md,
+FOUNDATION_ACCEPTANCE.md, README.md, STATE.md, ROADMAP.md and this execution
+record. Workflow/profiles/doctor and all other files are unchanged. No additional
+CI run, setup/package/native operation, commit or phase advancement is authorized
+or performed by this candidate-recording step.
 
 ## Task 3 blocking owner decision
 
-Local draft is available for sensitive-file review. It cannot claim Plan 01-08
-or Phase 1 completion until independent CI identity, four native outcomes and
-actual cold-build feasibility are reviewed. Required remaining steps:
+Publication and initial observations are complete under explicit owner requests;
+the seven-file recording packet is now available for owner review. It cannot
+claim Plan 01-08 or Phase 1 completion until independent CI identity, four native
+outcomes and actual cold-build feasibility are reviewed. Remaining steps:
 
-1. Review this local workflow/policy/docs packet. A dedicated execution checkpoint
-   commit requires the owner's exact request; proposed message:
-   `ci: draft gated Windows and Linux foundation workflow`.
-2. Separately authorize publication of the reviewed committed workflow. Current
-   branch main has origin configured; a candidate publication action after
-   that commit is `git push origin main`. Push-main would trigger the four
-   pending-identity observation jobs. This action was not executed or authorized
-   by local execution. Any manual dispatch also needs separate authorization.
-3. Review actual raw CI observations and complete each independent baseline
-   only with observed exact tool/native/path identities. Missing Windows CRT/SDK
-   details may require another bounded observation step. No baseline selected now.
-4. If the observed tools require different profile/doctor inputs, stop for the
-   plan's bounded ownership correction. Missing Windows native locks also require
-   approved initialization/review; this draft does not create them automatically.
-5. Under separately approved CI execution, collect four passing actual job URLs,
+1. Review the pending candidate/evidence record. A dedicated commit requires a
+   separate exact owner request; recording does not authorize commit/publication.
+2. Separately approve a bounded observation-step extension to collect missing
+   Ubuntu library/header/linker paths and Windows VC/CRT/SDK/linker/environment
+   identities before the existing pending-policy gate. No setup/package enablement.
+   Any observation publication/run requires its own concrete authorization.
+3. Review those exact identities and decide the Ubuntu Clang/profile ownership
+   correction before selecting either CI baseline. A narrow doctor libc/linker
+   banner parsing correction needs its own scope/approval; neither developer
+   baseline nor profile detection becomes CI authority. Windows locks require
+   separately approved initialization/review and are never generated silently.
+4. Under separately approved CI execution, collect four passing actual job URLs,
    native/runtime/configuration/compile-database evidence, warm-cache benefit,
    deliberate cold-source wall time and actual peak resource/capacity findings.
    Capacity failure requires an adequate runner decision; do not reduce Tier 1
    or introduce a custom SDK/package service.
 
-Sensitive implementation outputs: workflow and baseline.json (CI metadata only).
-Other outputs: four contributor/CI/acceptance docs and normal STATE/ROADMAP/this
-execution record. No SUMMARY, no REQUIREMENTS edits and no completed-artifact
-rewrite beyond necessary current status reconciliation.
+Current sensitive output: baseline.json (pending CI observation metadata only).
+Other current outputs: CI_MATRIX_POLICY.md, FOUNDATION_ACCEPTANCE.md, README.md
+and normal STATE/ROADMAP/this execution record. No SUMMARY, REQUIREMENTS changes
+or phase completion; completed native evidence and discussion/plans preserved.
 
 Platform impact:
 - Windows: PowerShell orchestrates shared Python operations; reviewed installed
   VS/VC/CRT/SDK/linker/clang-cl inputs and independent Debug/Release native/CI
-  evidence/locks remain pending. No candidate rewritten or native claim made.
-- Linux: Omarchy accepted developer evidence remains intact; Ubuntu CI needs its
-  own actual compiler/GCC/libstdc++/libc/linker/tool policy. No developer-policy
-  fallback or package/cache reuse across unreviewed identities.
+  acceptance/locks remain pending. CI observations recorded without rewriting
+  the independent Windows developer candidate or making a native claim.
+- Linux: Omarchy accepted developer evidence remains intact; Ubuntu candidate
+  observations are recorded pending/unselected, with compiler/profile and
+  libstdc++/header/linker/parser gaps. No developer-policy fallback or package/cache
+  reuse across unreviewed identities.
 - macOS future: No Darwin job/profile/evidence; standard structured Conan/CMake/
   Python boundaries retained without extending current execution scope.

@@ -1,6 +1,6 @@
 # Foundation acceptance ledger
 
-**Status:** Plan 01-07 complete for the available Omarchy/Arch Linux developer scope, by explicit owner closeout. Windows developer and independent Windows/Ubuntu CI evidence remain pending; macOS deferred. Phase 1 remains executing, 7/8 plans complete and zero phases complete.
+**Status:** Plan 01-07 complete for the available Omarchy/Arch Linux developer scope, by explicit owner closeout. Windows developer evidence and independent Windows/Ubuntu CI acceptance remain pending; observed CI candidates are unselected; macOS deferred. Phase 1 remains executing, 7/8 plans complete and zero phases complete.
 
 This ledger records preserved execution-task observations from the current fresh lifecycle. No builds, tests, setup or Conan operations ran to create it. Dedicated phase verification and four-combination Tier 1 CI acceptance remain separate gates. Exact commands, timestamps, failures, approved corrections and logs are in [01-07-EXECUTION.md](../../.planning/phases/01-conan-and-compiler-build-foundation/01-07-EXECUTION.md).
 
@@ -13,25 +13,65 @@ This ledger records preserved execution-task observations from the current fresh
 | Windows x86_64 / Debug | Pending actual native host inspection, reviewed runtime identity and execution | Pending native evidence, including Debug CRT/iterator compatibility | Pending | No Linux evidence credited |
 | Windows x86_64 / Release | Pending actual native host inspection, reviewed runtime identity and execution | Pending native evidence | Pending | No Linux evidence credited |
 
-Ubuntu GitHub Actions Linux Debug/Release and Windows GitHub Actions Debug/Release are independently pending. Ubuntu is not the Linux developer baseline. Plan 01-08 local workflow/documentation execution has started; no workflow publication/run or cold-runner capacity is claimed. Windows candidate identities have not been rewritten or promoted to observed evidence.
+Ubuntu and Windows CI acceptance remain independently pending. Ubuntu is not the Linux developer baseline. The owner authorized publication and the automatic observation run 37356855017; all four jobs reported candidates and stopped at pending CI policy before setup/package/build work. No native CI acceptance or cold-runner capacity is claimed. Windows developer candidates remain unchanged and uninspected independently of Windows CI observations.
 
 ## Plan 01-08 independent CI evidence gate
 
-The local draft `.github/workflows/build-foundation.yml` implements the four
-matrix rows below. Initial CI policy remains pending and stops before CLI or
-package setup, after reporting installed runner observations. Creating/reviewing
-this YAML does not pass native CI. Its workflow inputs and blocking gates are
+The published `.github/workflows/build-foundation.yml` implements the four
+matrix rows below. CI policy remains pending and stopped before CLI or
+package setup, after reporting installed runner observations. Publication and
+observation do not pass native CI. Its workflow inputs and blocking gates are
 documented in [CI_MATRIX_POLICY.md](CI_MATRIX_POLICY.md).
 
 | CI environment / consumer | Observed exact identity / tracked lock | Native configure/build/test/verify | Actual job URL | Cold/warm capacity |
 |---|---|---|---|---|
-| Ubuntu 24.04 x86_64 / Debug | CI tools/runtime pending; existing Linux lock is not binary/ABI proof | Pending | Pending; no run | Pending |
-| Ubuntu 24.04 x86_64 / Release | CI tools/runtime pending; existing Linux lock is not binary/ABI proof | Pending | Pending; no run | Pending |
-| Windows 2022 x86_64 / Debug | CI VS/VC/CRT/SDK/linker/tools and Windows Debug lock pending | Pending | Pending; no run | Pending |
-| Windows 2022 x86_64 / Release | CI VS/VC/CRT/SDK/linker/tools and Windows Release lock pending | Pending | Pending; no run | Pending |
+| Ubuntu 24.04 x86_64 / Debug | Observed candidate below; pending/unselected; existing Linux lock is not CI ABI proof | Not run; pending-policy failure before setup | [Observation job 111921336171](https://github.com/m4rkens/VeyrLang/actions/runs/37356855017/job/111921336171) | Pending |
+| Ubuntu 24.04 x86_64 / Release | Same observed candidate as Debug; pending/unselected | Not run; pending-policy failure before setup | [Observation job 111921336214](https://github.com/m4rkens/VeyrLang/actions/runs/37356855017/job/111921336214) | Pending |
+| Windows 2022 x86_64 / Debug | Observed candidate below; runtime/toolchain identity and Windows lock incomplete | Not run; pending-policy failure before setup | [Observation job 111921336225](https://github.com/m4rkens/VeyrLang/actions/runs/37356855017/job/111921336225) | Pending |
+| Windows 2022 x86_64 / Release | Same observed candidate as Debug; runtime/toolchain identity and Windows lock incomplete | Not run; pending-policy failure before setup | [Observation job 111921336313](https://github.com/m4rkens/VeyrLang/actions/runs/37356855017/job/111921336313) | Pending |
+
+Run [37356855017](https://github.com/m4rkens/VeyrLang/actions/runs/37356855017)
+observed commit `c4f27d086370c8d63d0b81990eba04044bdbe98f`, triggered by the
+owner-approved push. All four observation steps and artifact uploads succeeded;
+all four jobs failed at the pending-policy gate. No tools-only/bootstrap,
+dependency setup, cache restore/save or native configure/build/test work ran. Conan installation
+and version were not observed; exact project-owned Conan 2.33.0 validation is
+still pending. LLVM backend remains 23.1.2.
+
+### Observed candidates shared by Debug/Release within each platform
+
+| Identity | Ubuntu CI candidate | Windows CI candidate |
+|---|---|---|
+| Runner / ImageOS / image version | ubuntu-24.04 / ubuntu24 / 20260927.320.1 | windows-2022 / win22 / 20260927.320.1 |
+| Runner agent | 2.337.0 | 2.337.0 |
+| OS / architecture | Ubuntu 24.04.5 LTS / x86_64 | Windows Server 2022 Datacenter 10.0.20348 / x86_64 |
+| Python | 3.12.3 at `/usr/bin/python` | 3.12.10 at `C:\hostedtoolcache\windows\Python\3.12.10\x64\python.exe` |
+| CMake | 3.31.6 at `/usr/local/bin/cmake` | 3.31.6 at `C:\Program Files\CMake\bin\cmake.exe` |
+| Ninja | 1.13.2 at `/usr/local/bin/ninja` | 1.13.2 at `C:\ProgramData\Chocolatey\bin\ninja.exe` |
+| Clang / clang++ | 18.1.3 at `/usr/bin/clang` and `/usr/bin/clang++` | 20.1.8 at `C:\Program Files\LLVM\bin\clang.exe` and `clang++.exe` |
+| clang-cl | Missing; Linux native profile uses clang/clang++ | 20.1.8 at `C:\Program Files\LLVM\bin\clang-cl.exe` |
+| Compiler target | x86_64-pc-linux-gnu | x86_64-pc-windows-msvc |
+| GCC / G++ | 13.3.0 / 13.3.0; Ubuntu package 13.3.0-6ubuntu2~24.04.1 | Not applicable |
+| glibc / Binutils | 2.39 / 2.42 | Not applicable |
+| Visual Studio installation | Not applicable | Enterprise 2022 17.14.37710.0 at `C:\Program Files\Microsoft Visual Studio\2022\Enterprise` |
+| Git | 2.55.0 at `/usr/bin/git` | 2.55.0.windows.5 at `C:\Program Files\Git\bin\git.exe` |
+
+Ubuntu reported `/usr/lib/gcc/x86_64-linux-gnu/13/libgcc.a`, but its libstdc++
+locator returned only `libstdc++`. Resolved libstdc++ runtime/path, standard-library
+header identity and exact linker path are not established. Clang 18 conflicts
+with the existing Clang-22 developer/profile/doctor policy. Current doctor
+libc/linker parsers do not accept the observed Ubuntu banner formats.
+
+Windows VC tools, CRT, Windows SDK, exact linker identity/path and selected
+developer-shell/toolchain environment remain unobserved. Both platforms retain
+project-owned Conan validation, native ABI/package acceptance and cold-build
+capacity gaps; Windows Debug/Release locks remain pending. Both CI entries stay
+pending/unselected. These observations do not modify either developer baseline,
+authorize setup, or prove Debug/Release runtime compatibility.
 
 No runner/tool identities, resource peaks, cache hits or CI URLs are fabricated.
-The draft records setup wall time but does not measure peak memory/disk; actual
+The workflow is designed to record setup wall time when enabled, but setup was
+skipped in this run. It does not measure peak memory/disk; actual
 cold-source feasibility, useful compiler/link parallelism and warm cache benefit
 need separately authorized observation. Historical Omarchy cold timings below
 are not Ubuntu/Windows runner measurements. Missing native profile/tool/lock

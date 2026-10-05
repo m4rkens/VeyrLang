@@ -1,7 +1,9 @@
 # CI Matrix Policy
 
-**Status:** Plan 01-08 local workflow draft. Publication, runner identity review,
-all four native results and cold-runner capacity remain blocking evidence gaps.
+**Status:** Plan 01-08 published workflow; run 37356855017 supplied four
+successful observation steps, followed by pending-policy failures. Both CI
+candidates remain pending/unselected. Complete identity review, all four native
+results and cold-runner capacity remain blocking evidence gaps; progress 7/8.
 
 ## Required matrix and entry points
 
@@ -20,11 +22,62 @@ the approved serial policy. Windows and Linux are Tier 1; macOS remains deferred
 
 ## Independent bootstrap and native stages
 
-Publication/run authorization is separate from local implementation. The first
-authorized run reports installed runner tools, paths, image version and VS
-candidates as observations. Both tracked `ci_environments` remain `pending`:
+Publication/run authorization is separate from local implementation. The
+owner-approved pushes published the draft and its startup correction. Run
+37355569361 failed workflow validation with zero jobs; the committed correction
+in `c4f27d086370c8d63d0b81990eba04044bdbe98f` moved CONAN_HOME into step-level
+env and persisted it through GITHUB_ENV. Its automatic push run
+[37356855017](https://github.com/m4rkens/VeyrLang/actions/runs/37356855017)
+reported installed runner tools, paths, image version and VS candidates.
+All four observation steps and artifact uploads succeeded; all four jobs then
+failed at the expected pending-policy gate. Both tracked `ci_environments` remain `pending`:
 the existing read-only doctor fails before CLI installation, cache restore or
 dependency setup. A pending-policy observation run is not a passing native row.
+
+## Observed CI candidates, not selected policy
+
+Debug and Release reported the same observed identities within each platform.
+`baseline.json` stores them under `observed_candidate`, separate from executable
+policy inputs; this evidence does not select either CI entry or enable setup.
+
+| Identity | Ubuntu CI candidate | Windows CI candidate |
+|---|---|---|
+| Runner / ImageOS / image version | ubuntu-24.04 / ubuntu24 / 20260927.320.1 | windows-2022 / win22 / 20260927.320.1 |
+| Runner agent | 2.337.0 | 2.337.0 |
+| OS / architecture | Ubuntu 24.04.5 LTS / x86_64 | Windows Server 2022 Datacenter 10.0.20348 / x86_64 |
+| Python | 3.12.3 | 3.12.10 |
+| CMake / Ninja | 3.31.6 / 1.13.2 | 3.31.6 / 1.13.2 |
+| Clang / clang++ / clang-cl | 18.1.3 / 18.1.3 / missing | 20.1.8 / 20.1.8 / 20.1.8 |
+| Compiler target | x86_64-pc-linux-gnu | x86_64-pc-windows-msvc |
+| GCC / G++ | 13.3.0 / 13.3.0 | Not applicable |
+| glibc / Binutils | 2.39 / 2.42 | Not applicable |
+| Visual Studio installation | Not applicable | Enterprise 2022 / 17.14.37710.0 |
+| Git | 2.55.0 | 2.55.0.windows.5 |
+| Project-owned Conan | Validation pending; installation/version unobserved | Validation pending; installation/version unobserved |
+
+Exact observed tool paths and the four job URLs are in
+[FOUNDATION_ACCEPTANCE.md](FOUNDATION_ACCEPTANCE.md) and baseline.json. Conan
+2.33.0 remains required; LLVM backend remains 23.1.2. No ambient Conan was
+accepted or used. Windows developer candidates and the Omarchy baseline are
+unchanged and independent of these CI observations.
+
+Remaining Ubuntu gaps: observed Clang 18 conflicts with the existing Clang-22
+developer/profile/doctor policy; resolved libstdc++ runtime/path, standard-library
+header identity and exact linker path are not established. The libstdc++ locator
+returned only `libstdc++`. Current doctor libc/linker parsers do not accept the
+observed Ubuntu banner formats. Neither profile settings nor parsers changed.
+
+Remaining Windows gaps: VC tools, CRT, Windows SDK, exact linker identity/path
+and selected developer-shell/toolchain environment are not established. The
+observed VS installation is not evidence of selected runtime/SDK/toolset values.
+
+Both environments still lack project-owned Conan validation, native ABI/package
+acceptance and cold-build capacity evidence. Windows Debug/Release locks remain
+pending. Shared platform identity across configurations does not waive separate
+native Debug/Release and Windows runtime validation. No additional run or setup
+is authorized by recording these candidates.
+
+## Requirements before policy activation
 
 After actual observations and owner review, each CI entry must have its own
 complete `environment`, `runner`, `profile`, `os`, `arch`, `target`, `git`, exact
