@@ -345,6 +345,7 @@ jobs:
           $entry | ConvertTo-Json -Depth 10 | Set-Content .veyr-dev/ci/expected-policy.json
 
       - name: Select exact reviewed base Python
+        id: base_python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: ${{ steps.policy.outputs.python }}
@@ -352,13 +353,23 @@ jobs:
           check-latest: false
 
       - name: Set up conventional isolated CMake/Ninja prerequisites and reviewed native environment
+        env:
+          VEYR_BASE_PYTHON: ${{ steps.base_python.outputs.python-path }}
         run: |
+          if (-not $env:VEYR_BASE_PYTHON -or
+              -not [System.IO.Path]::IsPathFullyQualified($env:VEYR_BASE_PYTHON) -or
+              $env:VEYR_BASE_PYTHON.Contains("`n") -or $env:VEYR_BASE_PYTHON.Contains("`r") -or
+              -not (Test-Path -LiteralPath $env:VEYR_BASE_PYTHON -PathType Leaf)) {
+            throw 'setup-python must supply an existing absolute base Python executable.'
+          }
+          Write-Output "Reviewed base Python executable: $env:VEYR_BASE_PYTHON"
+          "VEYR_BASE_PYTHON=$env:VEYR_BASE_PYTHON" >> $env:GITHUB_ENV
           $baseline = Get-Content scripts/devtools/baseline.json -Raw | ConvertFrom-Json
           $entry = $baseline.ci_environments.($env:VEYR_CI_ENVIRONMENT)
           $ninja = $baseline.tools.ninja
           if ($entry.tools.ninja) { $ninja = $entry.tools.ninja }
           $env:PIP_CONFIG_FILE = if ($IsWindows) { 'NUL' } else { '/dev/null' }
-          python -I -m venv .veyr-dev/tools/ci-prerequisites
+          & $env:VEYR_BASE_PYTHON -I -m venv .veyr-dev/tools/ci-prerequisites
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $bin = if ($IsWindows) { '.veyr-dev/tools/ci-prerequisites/Scripts' } else { '.veyr-dev/tools/ci-prerequisites/bin' }
           $toolPython = Join-Path $bin $(if ($IsWindows) { 'python.exe' } else { 'python' })
@@ -401,13 +412,13 @@ jobs:
 
       - name: Bootstrap project-owned Conan CLI only
         run: |
-          python -B scripts/dev.py setup --tools-only --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/tools-only.log
+          & $env:VEYR_BASE_PYTHON -B scripts/dev.py setup --tools-only --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/tools-only.log
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Strict read-only prerequisite doctor
         id: doctor
         run: |
-          python -B scripts/dev.py doctor --json --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/doctor.json
+          & $env:VEYR_BASE_PYTHON -B scripts/dev.py doctor --json --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/doctor.json
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $report = Get-Content .veyr-dev/ci/doctor.json -Raw | ConvertFrom-Json
           "conan=$($report.selection.conan_executable)" >> $env:GITHUB_OUTPUT
@@ -426,7 +437,7 @@ jobs:
       - name: Explicit Conan dependency setup (downloads/source builds allowed)
         run: |
           $start = Get-Date
-          python -B scripts/dev.py setup --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/setup.log
+          & $env:VEYR_BASE_PYTHON -B scripts/dev.py setup --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/setup.log
           $code = $LASTEXITCODE
           "setup_exit=$code elapsed_seconds=$(((Get-Date) - $start).TotalSeconds) cold_build=${{ inputs.cold_build }}" | Set-Content .veyr-dev/ci/setup-timing.txt
           # Runner memory/disk peaks are not measured by this wall-clock record; remain evidence gaps.
@@ -434,32 +445,32 @@ jobs:
 
       - name: Native cache-only configure
         run: |
-          python -B scripts/dev.py configure --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/configure.log
+          & $env:VEYR_BASE_PYTHON -B scripts/dev.py configure --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/configure.log
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Native incremental build
         run: |
-          python -B scripts/dev.py build --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/build.log
+          & $env:VEYR_BASE_PYTHON -B scripts/dev.py build --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/build.log
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Native test
         run: |
-          python -B scripts/dev.py test --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/test.log
+          & $env:VEYR_BASE_PYTHON -B scripts/dev.py test --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/test.log
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Native verify
         run: |
-          python -B scripts/dev.py verify --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/verify.log
+          & $env:VEYR_BASE_PYTHON -B scripts/dev.py verify --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/verify.log
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Foundation prepared native acceptance
         run: |
-          python -B scripts/check_foundation.py --case prepared --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/foundation.log
+          & $env:VEYR_BASE_PYTHON -B scripts/check_foundation.py --case prepared --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/foundation.log
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Foundation acquisition-disabled empty-cache rejection
         run: |
-          python -B scripts/check_foundation.py --case offline --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/offline.log
+          & $env:VEYR_BASE_PYTHON -B scripts/check_foundation.py --case offline --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/offline.log
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Upload observations, logs and native records (including failed bootstrap)
