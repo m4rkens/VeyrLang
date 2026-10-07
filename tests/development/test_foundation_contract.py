@@ -297,14 +297,18 @@ class FoundationContractTests(ConanOperationsFixture, unittest.TestCase):
 
 
 class CIWorkflowPolicyTests(unittest.TestCase):
-    def test_reviewed_candidates_cannot_enable_ci_execution(self):
+    def test_authorized_ci_execution_retains_policy_gates(self):
         workflow = (Path(__file__).resolve().parents[2] / ".github/workflows/build-foundation.yml").read_text(encoding="utf-8")
-        self.assertIn("VEYR_CI_EXECUTION_AUTHORIZED: 'false'", workflow)
+        self.assertIn("VEYR_CI_EXECUTION_AUTHORIZED: 'true'", workflow)
         gate = workflow.index("if ($env:VEYR_CI_EXECUTION_AUTHORIZED -ne 'true')")
         self.assertLess(gate, workflow.index("- name: Select exact reviewed base Python"))
         self.assertLess(gate, workflow.index("- name: Bootstrap project-owned Conan CLI only"))
         self.assertLess(gate, workflow.index("- name: Explicit Conan dependency setup"))
         self.assertIn("requires separate owner authorization", workflow)
+        lock_gate = workflow.index("Required tracked native Conan lock missing")
+        self.assertLess(lock_gate, workflow.index("- name: Restore/save Conan-owned cache only"))
+        self.assertLess(lock_gate, workflow.index("- name: Explicit Conan dependency setup"))
+        self.assertIn("if ($entry.status -notin @('selected', 'reviewed'))", workflow)
 
     def test_windows_compiler_selection_follows_devshell_and_uses_absolute_standalone_paths(self):
         workflow = (Path(__file__).resolve().parents[2] / ".github/workflows/build-foundation.yml").read_text(encoding="utf-8")

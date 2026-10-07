@@ -8,7 +8,8 @@ reviewed `.planning/` artifacts and authorized infrastructure implementation;
 no prior-run implementation or evidence was imported. Windows and Linux remain
 Tier 1; available native evidence currently covers the Omarchy/Arch Linux host.
 Windows developer evidence and independent Windows/Ubuntu CI acceptance remain
-pending; CI toolchain candidates are reviewed; CI bootstrap/package/native execution remains explicitly blocked.
+pending; CI toolchain candidates are reviewed and their execution is owner-authorized,
+subject to prerequisite and tracked-lock checks. This is not native/package acceptance.
 
 ## Developer quick start
 
@@ -48,11 +49,15 @@ The owner now reviewed Ubuntu Clang 18.1.3 with explicit GCC-13/libstdc++11 and
 Windows standalone Clang 20.1.8 with observed VC/CRT/SDK/linker inputs. These CI
 candidates are separate from both developer baselines. Git version/path are
 utility observations; Git drift alone is not an ABI/package prerequisite failure.
-The workflow's independent execution flag stays false. Project-owned Conan
-validation, native/package acceptance, cold-build capacity and Windows locks
-remain pending. See [CI policy](docs/development/CI_MATRIX_POLICY.md) and the
+The workflow's independent execution flag is now true under separate owner
+authorization. After separately approved publication, Linux may proceed through
+setup/package/build/test only if policy and prerequisite checks pass. Windows
+remains blocked before package/native work until reviewed Debug/Release locks
+exist. Project-owned Conan validation, native/package acceptance and cold-build
+capacity remain pending. See [CI policy](docs/development/CI_MATRIX_POLICY.md) and the
 [acceptance ledger](docs/development/FOUNDATION_ACCEPTANCE.md). Progress remains
-7/8; macOS deferred. No new CI run, setup or Phase 1 completion is authorized.
+7/8; macOS deferred. No CI run has occurred under this new authorization;
+commit/publication remain separate owner gates. No Phase 1 completion is claimed.
 
 ## What Veyr is
 

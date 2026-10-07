@@ -2,8 +2,9 @@
 
 **Status:** Plan 01-08 remains open, progress 7/8. Owner-reviewed CI toolchain
 candidates are based on run 37643695998. Native/package acceptance and CI
-prerequisite bootstrap remain unverified. `VEYR_CI_EXECUTION_AUTHORIZED: 'false'`
-blocks all installation/package/native steps, independently of baseline review.
+prerequisite bootstrap remain unverified. `VEYR_CI_EXECUTION_AUTHORIZED: 'true'`
+now authorizes execution for the reviewed CI toolchains; policy/prerequisite and
+tracked-lock gates remain mandatory. Commit/publication are separately gated.
 
 ## Required matrix and entry points
 
@@ -77,13 +78,17 @@ this is not a native ABI acceptance result.
 
 ## Required next owner gate
 
-The workflow's independent execution flag remains **false**. The first policy
-step throws before setup-python, CMake/Ninja tool installation, project-owned
-Conan bootstrap, cache or dependency work even though the candidates are reviewed.
-Review/commit/publication and any later execution flag change each require exact
-owner authorization. This policy update does not authorize a new CI run.
+The owner separately authorized changing the workflow's independent execution
+flag to **true**. That permits the existing setup/package/build/test/verify path
+for reviewed toolchains after policy, real prerequisite and tracked-lock checks;
+it does not certify successful native/package acceptance. Linux may proceed if
+those checks pass. Windows can perform prerequisite/bootstrap checks but remains
+blocked before cache/package/native work until reviewed Debug/Release locks exist.
+Lock creation is separately authorized Conan work; the workflow never bypasses
+or creates missing locks. Commit/publication require exact owner requests, and
+no CI run has occurred under this new execution authorization.
 
-Under later separately authorized execution, strict read-only doctor must match
+Under this authorized execution path, strict read-only doctor must match
 actual Python/Conan/CMake/Ninja/compiler/native identities; Git reports availability
 and observations. Conan is inspected via isolated venv metadata, never launched
 by doctor. Actual tools-only setup is the sole Conan CLI validation/bootstrap path.

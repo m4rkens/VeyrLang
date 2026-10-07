@@ -56,9 +56,15 @@ an available utility with observed version/path, not an exact ABI/package pin.
 Bundled Clang 19.1.5 observations remain; absolute standalone queries after
 DevShell retain its VC/SDK/linker environment without selecting the bundled tools.
 
-Both baseline entries now say `reviewed` as candidate policy only. The workflow
-independently blocks execution with `VEYR_CI_EXECUTION_AUTHORIZED: 'false'` before
-any tool installation. Omarchy and Windows developer baselines are unchanged.
+Both baseline entries say `reviewed` as candidate policy only. Under separate
+owner authorization the workflow now sets `VEYR_CI_EXECUTION_AUTHORIZED: 'true'`.
+After separately approved publication, Linux may proceed through setup/package/
+build/test only after policy/prerequisite checks pass. Windows remains blocked
+before cache/package/native work until reviewed Debug/Release locks exist.
+This authorizes execution, not successful native/package acceptance.
+Omarchy and Windows developer baselines are unchanged. Baseline evidence notes
+retain the prior policy-alignment checkpoint; the workflow flag records the
+current execution authorization. No baseline identities were changed.
 Project-owned Conan 2.33.0 validation, Windows locks, four native CI outcomes,
 ABI/package acceptance and actual cold/warm capacity remain pending. Backend
 LLVM stays 23.1.2; no native CI row, plan or phase is closed by this policy update.
@@ -231,7 +237,7 @@ The approved runner correction checks final returncode after EOF before returnin
 
 Approximately 60 quiet seconds remains a soft liveness checkpoint. Plan 01-07 combined durations include read-only metadata scans, not an expensive quiet dependency build. No healthy command was automatically terminated. Existing supervision fixtures establish policy behavior; native Windows process-tree handling and expensive-build quiet telemetry are not established by these short native commands.
 
-Remaining gaps: actual Windows developer SDK/toolset/CRT/iterator/runtime identities, Windows locks and native Debug/Release execution; real prerequisite validation of the independently reviewed Windows/Ubuntu CI candidates and all four passing CI combinations; cold-runner source-build capacity; broader ABI surfaces; arbitrary external LLVM installations; native spaced-path behavior (historical Linux profile quotation warnings remain). These gaps are not waived by available-Linux closeout or current policy alignment. CI execution remains explicitly blocked. All eight waves and discussion decisions remain unchanged; no phase-wide requirements marked complete.
+Remaining gaps: actual Windows developer SDK/toolset/CRT/iterator/runtime identities, Windows locks and native Debug/Release execution; real prerequisite validation of the independently reviewed Windows/Ubuntu CI candidates and all four passing CI combinations; cold-runner source-build capacity; broader ABI surfaces; arbitrary external LLVM installations; native spaced-path behavior (historical Linux profile quotation warnings remain). These gaps are not waived by available-Linux closeout or execution authorization. Linux execution is authorized subject to policy/prerequisite checks; Windows remains blocked before package/native work by missing reviewed locks. All eight waves and discussion decisions remain unchanged; progress 7/8, macOS deferred, no phase-wide requirements marked complete.
 
 Platform impact:
 - Windows: Native developer/CI Debug/Release evidence remains pending; mocked selection/process checks do not certify CRT/SDK or native execution.

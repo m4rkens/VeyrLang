@@ -4,10 +4,13 @@
 **Status:** Local Tasks 1–2 drafted and required mocked/static task checks passed.
 The owner subsequently authorized checkpoint commits, publication and expanded
 observations. Run 37643695998 supplied four successful observations followed by
-expected pending-policy failures. The owner now approved the bounded toolchain
-policy alignment: both CI candidates are reviewed; CI execution remains explicitly
-disabled before tool/bootstrap/package/native work. Task 3 remains a blocking
-owner-review/execution-authorization/locks/native-evidence checkpoint, not a completed plan.
+expected pending-policy failures. The bounded toolchain-policy alignment is now
+committed in `098430781abae7f07c401786ef89a23bd44be919`. The owner subsequently
+authorized the existing reviewed CI execution path: the flag is true, acceptance
+pending. After separately approved publication, Linux may proceed through setup/
+package/build/test if policy/prerequisite checks pass. Windows remains blocked
+before cache/package/native work until reviewed Debug/Release locks exist.
+Task 3 remains a publication/locks/native-evidence checkpoint, not a completed plan.
 Progress remains 7/8 execution plans, zero completed phases. No SUMMARY created.
 
 ## Authorization and preserved work
@@ -211,12 +214,13 @@ comparisons, and keeps project-owned Conan checks package-metadata-only/read-onl
 Computed build fingerprints now exclude observation metadata and Git; historical
 Linux build paths/results are retained, not revalidated under the new fingerprint.
 
-Both CI entries have `status: reviewed` for toolchain policy only. The workflow
-retains an independent `VEYR_CI_EXECUTION_AUTHORIZED: 'false'` gate before Python,
+Both CI entries have `status: reviewed` for toolchain policy only. At that
+alignment checkpoint, the workflow retained an independent
+`VEYR_CI_EXECUTION_AUTHORIZED: 'false'` gate before Python,
 CMake/Ninja installation, Conan bootstrap, locks/cache and native operations.
 Reviewing candidates cannot implicitly authorize any of those steps.
 
-Current bounded edit scope (13 files):
+Committed alignment scope (13 files, checkpoint `098430781abae7f07c401786ef89a23bd44be919`):
 
 - `.github/workflows/build-foundation.yml`
 - `scripts/devtools/baseline.json`
@@ -256,24 +260,51 @@ step. No installation, CI rerun, commit, push or phase advancement occurred.
 
 ## Task 3 blocking owner decision
 
-The reviewed policy alignment is ready for owner review. Plan 01-08 remains open
-and progress stays 7/8; no SUMMARY or phase-completion claim. Remaining steps:
+The owner approved the one-line execution authorization change and this bounded
+consistency update. `VEYR_CI_EXECUTION_AUTHORIZED` is now true; no other workflow
+semantics changed. The mocked foundation test expects authorized execution and
+retains the explicit authorization/policy gate, Windows compiler selection and
+lock-before-cache/package ordering checks. Current docs/checkpoints distinguish
+authorized execution from pending acceptance. Toolchain baselines, profiles,
+doctor, dependencies and locks are unchanged; baseline evidence notes preserve
+the prior alignment checkpoint rather than defining the current workflow flag.
 
-1. Review this bounded policy/toolchain packet. A dedicated sensitive-file commit
+The current nine-file packet comprises workflow, test_foundation_contract.py,
+README.md, DEVELOPER_BOOTSTRAP.md, CI_MATRIX_POLICY.md, FOUNDATION_ACCEPTANCE.md,
+STATE.md, ROADMAP.md and this execution record. No Windows lock created. Linux
+may proceed after real policy/prerequisite checks; Windows can validate/bootstrap
+prerequisites but stops before cache/package/native work until reviewed
+Debug/Release locks exist. Cold-build capacity and all four native/package CI
+outcomes remain pending; macOS deferred. No CI run, installation, package/native
+operation, commit or push has occurred in this authorization/consistency step.
+
+Consistency checks completed from `/home/m4rkens/Projects/VeyrLang`:
+
+- `/usr/bin/python3 -B -m unittest discover -s tests/development -p test_foundation_contract.py`:
+  18/18 mocked/static tests passed, exit 0; suite time 0.076s. No real package/native command.
+- Read-only YAML/Python AST and input comparisons passed: true is the only
+  workflow change; policy/prerequisite/lock-before-cache/package order retained;
+  native steps require prior success; no `--init-lock` or Windows lock creation;
+  toolchain baseline/profiles/doctor/dependency inputs unchanged; 7/8 plans,
+  zero completed phases. Exact diff/scope and whitespace checks passed.
+
+Plan 01-08 remains open and progress stays 7/8; no SUMMARY or phase-completion
+claim. Remaining steps:
+
+1. Review this bounded authorization/consistency packet. A dedicated sensitive-file commit
    and publication require separate concrete owner requests.
-2. Separately authorize the CI execution-gate change and the exact prerequisite
-   bootstrap/doctor scope; publication or observations alone do not grant this.
-   Project-owned Conan 2.33.0 and strict real prerequisite checks must pass before
-   dependency work. Windows locks require separately approved initialization and
+2. After separately approved publication, the authorized workflow may execute
+   the existing reviewed path. Project-owned Conan 2.33.0 and strict real policy/
+   prerequisite checks must pass before dependency work. Windows locks require separately approved initialization and
    review; missing locks remain a hard stop, never silent generation or bypass.
-3. Under separately approved package/native CI execution, collect four passing actual job URLs,
+3. Under the authorized path after publication and required gates, collect four passing actual job URLs,
    native/runtime/configuration/compile-database evidence, warm-cache benefit,
    deliberate cold-source wall time and actual peak resource/capacity findings.
    Capacity failure requires an adequate runner decision; do not reduce Tier 1
    or introduce a custom SDK/package service.
 
-Current sensitive output: workflow, baseline, Linux profile, doctor and mocked/static
-tests. Other outputs: CI_MATRIX_POLICY.md, DEVELOPER_BOOTSTRAP.md,
+Current sensitive output: one-line workflow flag change and mocked/static foundation
+test consistency. Other outputs: CI_MATRIX_POLICY.md, DEVELOPER_BOOTSTRAP.md,
 FOUNDATION_ACCEPTANCE.md, README.md and normal STATE/ROADMAP/this execution record.
 No SUMMARY, REQUIREMENTS changes
 or phase completion; completed native evidence and discussion/plans preserved.

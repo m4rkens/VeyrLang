@@ -37,8 +37,8 @@ prerequisites are not a general ABI/package-readiness claim.
 |---|---|---|
 | Omarchy/Arch x86_64 developer | Python 3.14.7; Conan 2.33.0; CMake 4.4.3; Ninja 1.13.2; Clang 22.1.8; Git 2.55.0; GCC/libstdc++ 16.2.1; glibc 2.44; Binutils 2.47; Omarchy 4.0.4 | Read-only doctor 22/22 and separate native Debug/Release foundation acceptance recorded |
 | Windows x86_64 developer candidate | Python 3.13.15; Conan 2.33.0; CMake 3.31.8; Ninja 1.13.2; Clang 20.1.8; Git 2.55.0.windows.5; VS candidate 17.14.37710.0 and SDK candidate 10.0.26100.0 | Actual VC tools/CRT/linker/paths and native inspection pending; candidate unchanged |
-| Ubuntu 24.04 x86_64 CI | Reviewed candidate: Python 3.12.3; CMake 3.31.6; Ninja 1.13.2; Clang 18.1.3; explicit GCC-13/libstdc++11; glibc 2.39; Binutils 2.42 | Run 37643695998 observations passed; CLI/bootstrap/native/package acceptance unverified; execution blocked |
-| Windows 2022 x86_64 CI | Reviewed candidate: Python 3.12.10; CMake 3.31.6; Ninja 1.13.2; standalone Clang 20.1.8; VS 17.14.37710.0; VC 14.44.35207; CRT 14.44.35220.0; SDK 10.0.26100.0; link.exe 14.44.35229.0 | Run 37643695998 observations passed; Windows developer evidence, locks and CI acceptance independently pending; execution blocked |
+| Ubuntu 24.04 x86_64 CI | Reviewed candidate: Python 3.12.3; CMake 3.31.6; Ninja 1.13.2; Clang 18.1.3; explicit GCC-13/libstdc++11; glibc 2.39; Binutils 2.42 | Run 37643695998 observations passed; execution authorized after policy/prerequisite checks; CLI/native/package acceptance unverified |
+| Windows 2022 x86_64 CI | Reviewed candidate: Python 3.12.10; CMake 3.31.6; Ninja 1.13.2; standalone Clang 20.1.8; VS 17.14.37710.0; VC 14.44.35207; CRT 14.44.35220.0; SDK 10.0.26100.0; link.exe 14.44.35229.0 | Run 37643695998 observations passed; execution authorized, but missing reviewed Debug/Release locks block package/native work; developer/CI acceptance independently pending |
 
 Git versions in the table are recorded observations, not exact prerequisites or
 ABI/package pins. Git must remain available for repository queries; actual
@@ -49,8 +49,12 @@ The Linux profile receives the reviewed Clang major from the wrapper (Omarchy 22
 Ubuntu CI 18), with explicit per-environment GCC/compiler/linker paths. Windows CI
 selects `C:\Program Files\LLVM\bin\clang-cl.exe` for both C and C++ after
 DevShell provides VC/SDK/linker inputs. Bundled LLVM 19.1.5 is not selected by PATH.
-The workflow execution flag remains false; reviewing candidates does not enable
-CI tools-only bootstrap, package setup or native work. See [CI policy](CI_MATRIX_POLICY.md).
+The workflow execution flag is now true under separate owner authorization.
+After separately approved publication, Linux may proceed through setup/package/
+build/test only if policy/prerequisite checks pass. Windows stops before package/
+native work until reviewed Debug/Release locks exist. Execution authorization is
+not native/package acceptance; cold-build capacity remains pending, progress 7/8,
+macOS deferred. See [CI policy](CI_MATRIX_POLICY.md).
 
 LLVM backend 23.1.2 is distinct from the host Clang version. Linux's observed
 static optimized LLVM Support compatibility covers this selected host and the
@@ -120,7 +124,8 @@ includes setup. Equivalent work is reused within one composed invocation.
 The Linux developer baseline is the observed Omarchy/Arch x86_64 host
 with Python 3.14.7. Windows developer evidence remains independently pending.
 Ubuntu/Windows CI candidate identities are independently reviewed from run
-37643695998; CI prerequisite/native/package acceptance and execution remain gated.
+37643695998; execution is authorized subject to policy/prerequisite and lock checks,
+while CI prerequisite/native/package acceptance remains pending.
 These environments cannot inherit Omarchy observations. Implemented Windows path handling and mocked tests
 are not native Windows evidence. macOS remains deferred. A real installation is
 an execution action requiring owner authorization; mocked checks do not install

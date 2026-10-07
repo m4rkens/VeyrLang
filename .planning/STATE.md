@@ -5,10 +5,10 @@ milestone_name: Compiler Walking Skeleton
 current_phase: 1
 current_phase_name: Conan and Compiler Build Foundation
 status: executing
-stopped_at: Plan 01-08 Task 3 bounded CI policy alignment from run 37643695998 implemented for owner review; reviewed candidates, execution blocked; native/package/locks/capacity pending. Progress 7/8.
-last_updated: "2026-10-07T16:01:23Z"
+stopped_at: Plan 01-08 Task 3 execution authorization and consistency packet ready for owner review; flag true, publication gated, prerequisites/Windows locks/native/package/capacity pending. Progress 7/8.
+last_updated: "2026-10-07T16:44:27Z"
 last_activity: 2026-10-07
-last_activity_desc: Owner-approved CI policy/toolchain alignment only; mocked/static checks, no CLI/package/native execution, commit, push, rerun or phase advancement.
+last_activity_desc: Owner-approved CI execution flag and bounded test/docs/checkpoint consistency update; mocked/static checks only, no real CI/package/native operations, commit, push or phase advancement.
 progress:
   total_phases: 10
   completed_phases: 0
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-03)
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
-**Current focus:** Plan 01-08 Task 3 owner review of bounded CI policy/toolchain alignment; independent execution authorization and native/package/locks/capacity gates remain. Progress 7/8.
+**Current focus:** Plan 01-08 Task 3 owner review of execution authorization/consistency packet; reviewed CI execution authorized, publication and prerequisite/Windows-lock/native/package/capacity gates remain. Progress 7/8.
 
 ## Current Position
 
 Phase: 1 of 10 (Conan and Compiler Build Foundation)
 Plan: 01-08 local Tasks 1–2 drafted/checked and published; Task 3 owner policy-review/execution/native-evidence gate
 Status: Executing; 7/8 complete, zero phases complete. Four native CI results and cold-runner capacity remain pending.
-Last activity: 2026-10-07T16:01:23Z — Run 37643695998 observations reviewed; CI candidates now reviewed policy only. Workflow execution flag remains false.
+Last activity: 2026-10-07T16:44:27Z — Workflow execution flag true under explicit owner authorization; mocked test/docs/checkpoints aligned. No CI execution or acceptance yet.
 
 Progress: [█████████░] 7/8 Phase 1 execution plans; no phase completed
 
@@ -65,11 +65,14 @@ Progress: [█████████░] 7/8 Phase 1 execution plans; no phase
 
 ### Pending Todos
 
-Review the bounded CI toolchain-policy alignment and mocked/static results.
-Both CI entries are reviewed candidate policy, not accepted CI execution. The
-workflow execution flag remains false. Commit/publication and subsequent real
-CI bootstrap/package/native actions require separate concrete owner approval;
-Windows locks remain pending. Plan 01-08 is incomplete, progress 7/8.
+Review the execution-authorization and consistency packet. The owner-authorized
+workflow flag is true; acceptance remains pending. After separately approved
+publication, Linux may proceed through setup/package/build/test only if policy
+and prerequisite checks pass. Windows can bootstrap prerequisites but remains
+blocked before cache/package/native work until reviewed Debug/Release locks exist.
+Lock initialization/review requires separate owner authorization; no locks were
+created. Commit/publication remain concrete owner gates. Cold-build capacity is
+pending; Plan 01-08 incomplete, progress 7/8, macOS deferred.
 
 ### Blockers/Concerns
 
@@ -93,15 +96,15 @@ Future probes are tracked in REQUIREMENTS.md v2 and canonical milestone strategy
 
 ## Session Continuity
 
-Last session: 2026-10-07T16:01:23Z
-Stopped at: Plan 01-08 Task 3 owner review of bounded CI policy alignment; workflow execution flag false.
+Last session: 2026-10-07T16:44:27Z
+Stopped at: Plan 01-08 Task 3 owner review of execution authorization/consistency; workflow flag true, publication gated.
 Resume file: .planning/phases/01-conan-and-compiler-build-foundation/01-08-EXECUTION.md
 Completed summaries: 01-01 through 01-07, available Linux developer scope only.
-Last completed step: Run 37643695998 completed all expanded observations and expected pending-policy stops; owner approved bounded candidate/profile/doctor/workflow/Git policy alignment. No new CI/native work in this step.
-First incomplete execution step: Review and separately commit/publish alignment if authorized; explicit owner authorization to open CI execution gate, then real CLI/prerequisite checks and separately gated Windows lock/package/native/capacity acceptance.
-Continuation authorization: Current owner request permits bounded policy/toolchain/test/docs/checkpoint edits and mocked/static checks only; no installation, package/native work, commit, push, rerun, phase verification or advancement.
-Preserved artifacts: Completed native Linux evidence, discussion, all eight PLAN files, requirements, locks and recipes unchanged. Only approved CI alignment/profile/doctor/workflow/tests/docs/checkpoint edits; no real Conan/native commands.
-Current outputs: baseline.json, Linux profile, doctor.py, doctor/foundation tests, workflow, DEVELOPER_BOOTSTRAP.md, CI_MATRIX_POLICY.md, FOUNDATION_ACCEPTANCE.md, README.md, STATE.md, ROADMAP.md and 01-08-EXECUTION.md. No SUMMARY or phase/requirement completion.
+Last completed step: Reviewed toolchain-policy alignment committed in 098430781abae7f07c401786ef89a23bd44be919. Owner approved the execution flag change and bounded consistency update; no new CI/native evidence.
+First incomplete execution step: Review and separately commit/publish authorization/consistency packet, then observe real policy/CLI/prerequisite checks. Windows reviewed locks remain separately gated before package/native work; four native outcomes and capacity pending.
+Continuation authorization: Current owner request permits bounded consistency edits and mocked/static checks only; no installation, real package/native work, commit, push, CI run, phase verification or advancement in this step. Reviewed CI execution path authorized for later separately approved publication.
+Preserved artifacts: Toolchain baselines, profiles, doctor semantics, dependencies, locks, recipes, completed native Linux evidence, discussion, all eight PLAN files and requirements unchanged.
+Current outputs: existing one-line workflow authorization change, test_foundation_contract.py, DEVELOPER_BOOTSTRAP.md, CI_MATRIX_POLICY.md, FOUNDATION_ACCEPTANCE.md, README.md, STATE.md, ROADMAP.md and 01-08-EXECUTION.md. No SUMMARY or phase/requirement completion.
 Sub-agents: None; execution inline under explicit-request policy.
 Planning commit: f4d8335d0c09eef7eb9ec3bb756e92ff9f7fd5a8; baseline correction: 8336e13e7a85b2bf4661828a7bdf4aa6b1211937.
 Execution checkpoints: 01-01 941c70da327b2977cf35b59938795599aaa4b4e4; 01-02 3f0636bda87da69a8526b0c57bf9844b8448c831; 01-03 9531def3e372d0bbb27aaf2d96e88fdca26b3f3c; 01-04 71c254d10cc495231453e2847a608128d06d2762; 01-05 d34a793575e140680804b45058b68c6436cb0c0e; 01-06 f476fa8d5f5e5e20d61adb8abdc196d7bfe5a267; 01-07 ddec666b43546d8820d7eacd28e6ce4ef2b068ed plus missed Task 1 lifetime test eef4780faa9063a50ae5ede89fc40f55408279bb; 01-08 open draft 01acd22be35226c9c2aa0310da28f89d0a63efcc plus startup fix c4f27d086370c8d63d0b81990eba04044bdbe98f.
