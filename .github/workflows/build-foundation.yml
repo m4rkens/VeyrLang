@@ -95,10 +95,14 @@ jobs:
             & g++ '-print-file-name=libstdc++.so' | Tee-Object -Append .veyr-dev/ci/native-tools.txt
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
             # Query/dry-run flags only: no frontend, assembler or linker is executed by -###.
-            $clangCpp = (Get-Command clang++ -CommandType Application -ErrorAction Stop).Source
+            # Preserve executable resolution order; extract Source only after selecting one match.
+            $clangCpp = (Get-Command clang++ -CommandType Application -All -ErrorAction Stop | Select-Object -First 1).Source
+            $gxx = (Get-Command g++ -CommandType Application -All -ErrorAction Stop | Select-Object -First 1).Source
+            "selected_clang_cpp_path=$clangCpp" | Tee-Object -Append .veyr-dev/ci/installed-tools.txt
+            "selected_gxx_path=$gxx" | Tee-Object -Append .veyr-dev/ci/native-tools.txt
             & $clangCpp '-print-search-dirs' 2>&1 | Tee-Object .veyr-dev/ci/compiler-search-paths.txt
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-            & g++ '-print-search-dirs' 2>&1 | Tee-Object -Append .veyr-dev/ci/compiler-search-paths.txt
+            & $gxx '-print-search-dirs' 2>&1 | Tee-Object -Append .veyr-dev/ci/compiler-search-paths.txt
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
             $trace = & $clangCpp '-###' '-x' 'c++' '/dev/null' 2>&1
             if ($LASTEXITCODE -ne 0) { $trace | Write-Output; exit $LASTEXITCODE }
@@ -120,7 +124,7 @@ jobs:
               }
             }
             $libraries = @()
-            foreach ($driver in @($clangCpp, (Get-Command g++ -CommandType Application -ErrorAction Stop).Source)) {
+            foreach ($driver in @($clangCpp, $gxx)) {
               $library = & $driver '-print-file-name=libstdc++.so'
               if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
               "driver=$driver reported_libstdcxx=$library" | Tee-Object -Append .veyr-dev/ci/stdlib-runtime.txt
@@ -147,7 +151,8 @@ jobs:
             $linker = & $clangCpp '-print-prog-name=ld'
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
             "clang_reported_linker=$linker" | Tee-Object .veyr-dev/ci/selected-linker.txt
-            $linkerPath = (Get-Command $linker -CommandType Application -ErrorAction Stop).Source
+            $linkerPath = (Get-Command $linker -CommandType Application -All -ErrorAction Stop | Select-Object -First 1).Source
+            "selected_linker_path=$linkerPath" | Tee-Object -Append .veyr-dev/ci/selected-linker.txt
             $resolvedLinker = & readlink '-f' $linkerPath
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
             "linker_path=$linkerPath resolved_linker=$resolvedLinker" | Tee-Object -Append .veyr-dev/ci/selected-linker.txt
