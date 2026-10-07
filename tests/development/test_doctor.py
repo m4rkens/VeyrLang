@@ -326,6 +326,134 @@ class PrerequisiteTests(unittest.TestCase):
         self.assertEqual(observed["tools.conan"], "2.33.0")
 
 
+class CIObservationCompatibilityTests(unittest.TestCase):
+    """Replay CI identities with all commands/files mocked; no native acceptance."""
+
+    def observe(self, environment, config="Debug", ninja="1.13.2.git.kitware.jobserver-pipe-1",
+                target=None, linker="14.44.35229.0", linker_failure=False, missing_linker=False):
+        baseline = read_baseline()
+        entry = baseline["ci_environments"][environment]
+        paths = entry["paths"]
+        target = entry["target"] if target is None else target
+        calls = []
+        crt = "\n".join(f"#define _VC_CRT_{part}_VERSION {number}" for part, number in
+                        zip(("MAJOR", "MINOR", "BUILD", "RBUILD"), entry["native"].get("crt", "0.0.0.0").split(".")))
+
+        def fake_probe(argv, **kwargs):
+            calls.append((argv, kwargs))
+            if argv[0] in {"cmake", "ninja", "git"}:
+                return {"cmake": "cmake version " + entry["tools"]["cmake"],
+                        "ninja": ninja, "git": "git version 2.56.0.windows.1"}[argv[0]]
+            if argv[0] in {paths["c_compiler"], paths["cpp_compiler"]}:
+                if argv[-1] == "--version":
+                    return "clang version " + entry["tools"]["clang"] + (f"\nTarget: {target}\nThread model: posix" if target else "")
+                self.assertEqual(entry["os"], "Linux", "clang-cl must not receive -dumpmachine")
+                self.assertEqual(argv[-1], "-dumpmachine")
+                return target
+            if argv[0].endswith("vswhere.exe"):
+                return json.dumps([{"installationPath": paths["vs_root"],
+                                    "installationVersion": entry["native"]["vs_installation"]}])
+            if argv[0].endswith("powershell.exe"):
+                self.assertEqual(argv[0], r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe")
+                self.assertEqual(argv[1:5], ["-NoLogo", "-NoProfile", "-NonInteractive", "-Command"])
+                self.assertIn("FileVersionInfo]::GetVersionInfo($env:VEYR_DOCTOR_VERSION_FILE).FileVersion", argv[-1])
+                self.assertNotIn(paths["linker"], argv[-1])  # Path is data, never PowerShell source.
+                self.assertEqual(kwargs["env"]["VEYR_DOCTOR_VERSION_FILE"], paths["linker"])
+                if linker_failure:
+                    raise BaselineError("fixture metadata query failed")
+                return linker
+            self.assertEqual(entry["os"], "Linux", "Windows linker must never be launched")
+            outputs = {
+                ("gcc", "-dumpfullversion"): entry["native"]["gcc"],
+                ("g++", "-dumpfullversion"): entry["native"]["gcc"],
+                ("ldd", "--version"): "ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39",
+                (paths["linker"], "--version"): "GNU ld (GNU Binutils for Ubuntu) 2.42",
+                ("gcc", "-print-libgcc-file-name"): paths["gcc_install_dir"] + "/libgcc.a",
+                ("g++", "-print-file-name=libstdc++.so"): paths["stdlib_library"],
+            }
+            return outputs[tuple(argv)]
+
+        shell = {"SystemRoot": r"C:\Windows", "ProgramFiles(x86)": r"C:\Program Files (x86)"}
+        if entry["os"] == "Windows":
+            shell.update({"VSINSTALLDIR": paths["vs_root"] + "\\",
+                          "VCToolsInstallDir": paths["vctools_root"] + "\\",
+                          "WindowsSdkDir": paths["sdk_root"] + "\\",
+                          "VCToolsVersion": entry["native"]["vctools"],
+                          "WindowsSDKVersion": entry["native"]["sdk"] + "\\"})
+        with patch.object(doctor, "_probe", side_effect=fake_probe), \
+             patch.object(doctor, "inspect_conan_tool", return_value="2.33.0") as inspect, \
+             patch.object(doctor.platform, "python_version", return_value=entry["tools"]["python"]), \
+             patch.object(doctor.platform, "freedesktop_os_release", return_value={"NAME": "Ubuntu", "VERSION_ID": "24.04"}), \
+             patch.object(doctor.shutil, "which", side_effect=lambda name: name), \
+             patch.object(Path, "is_dir", return_value=True), \
+             patch.object(Path, "is_file", side_effect=lambda path: not (missing_linker and str(path) == paths["linker"]), autospec=True), \
+             patch.object(Path, "read_text", return_value=crt), \
+             patch.object(Path, "mkdir") as mkdir, patch.object(Path, "write_text") as write, \
+             patch.object(doctor.subprocess, "run") as native_run, \
+             patch.dict(os.environ, shell, clear=True):
+            observed = collect_observations(entry, config)
+        mkdir.assert_not_called()
+        write.assert_not_called()
+        native_run.assert_not_called()
+        inspect.assert_called_once_with(doctor.conan_tool_paths(entry["os"])[1], entry["tools"]["python"])
+        selected = select_inputs(baseline, entry["profile"], config, environment=environment)
+        checks = check_prerequisites(baseline, selected, observed)
+        return observed, {check["identity"]: check for check in checks}, calls
+
+    def test_all_four_ci_prerequisite_replays_pass_with_vendor_ninja_and_read_only_queries(self):
+        for environment in ("ubuntu-ci", "windows-ci"):
+            for config in ("Debug", "Release"):
+                with self.subTest(environment=environment, config=config):
+                    observed, checks, calls = self.observe(environment, config)
+                    self.assertTrue(all(check["status"] == "ok" for check in checks.values()), checks)
+                    self.assertEqual(observed["tools.ninja"], "1.13.2")
+                    self.assertEqual(observed["tools.ninja.raw"], "1.13.2.git.kitware.jobserver-pipe-1")
+                    self.assertIn(observed["tools.ninja.raw"], checks["tools.ninja"]["detail"])
+                    self.assertEqual(sum(argv == ["ninja", "--version"] for argv, _ in calls), 1)
+                    if environment == "windows-ci":
+                        self.assertFalse(any("-dumpmachine" in argv or "/?" in argv for argv, _ in calls))
+                        self.assertEqual(observed["native.linker"], "14.44.35229.0")
+
+    def test_ninja_semantic_version_is_exact_and_malformed_banners_fail(self):
+        for banner, status in (("1.13.2", "ok"), ("1.13.2.git.kitware.jobserver-pipe-1", "ok"),
+                               ("1.13.1.git.kitware.jobserver-pipe-1", "mismatch"),
+                               ("1.13.3", "mismatch"), ("1.13.20.git.kitware", "mismatch"),
+                               ("1.13.2.1", "missing"), ("1.13.2-rc1", "missing"),
+                               ("ninja 1.13.2", "missing"), ("1.13.2garbage", "missing"),
+                               ("1.13.2\n1.14.0", "missing")):
+            for environment in ("ubuntu-ci", "windows-ci"):
+                with self.subTest(banner=banner, environment=environment):
+                    observed, checks, _ = self.observe(environment, ninja=banner)
+                    self.assertEqual(checks["tools.ninja"]["status"], status)
+                    self.assertEqual(observed["tools.ninja.raw"], banner)
+                    self.assertIn(banner, checks["tools.ninja"]["detail"])
+
+    def test_windows_target_banner_must_report_exact_native_triple(self):
+        for target, status in (("aarch64-pc-windows-msvc", "mismatch"),
+                               ("x86_64-pc-linux-gnu", "mismatch"), ("", "missing")):
+            with self.subTest(target=target):
+                observed, checks, calls = self.observe("windows-ci", target=target)
+                self.assertEqual(checks["compiler_target"]["status"], status)
+                self.assertEqual(checks["tools.clang"]["status"], "ok")
+                self.assertIn("clang version 20.1.8", observed["compiler_target.raw"])
+                self.assertFalse(any("-dumpmachine" in argv for argv, _ in calls))
+
+    def test_windows_linker_metadata_is_exact_and_failures_are_not_retried(self):
+        for version, status in (("14.44.35229.1", "mismatch"), ("14.43.35229.0", "mismatch"),
+                                ("14.44.35229", "missing"), ("", "missing"),
+                                ("14.44.35229.0 vendor", "missing")):
+            with self.subTest(version=version):
+                _, checks, calls = self.observe("windows-ci", linker=version)
+                self.assertEqual(checks["native.linker"]["status"], status)
+                self.assertEqual(sum(argv[0].endswith("powershell.exe") for argv, _ in calls), 1)
+        _, checks, calls = self.observe("windows-ci", linker_failure=True)
+        self.assertEqual(checks["native.linker"]["status"], "missing")
+        self.assertIn("fixture metadata query failed", checks["native.linker"]["detail"])
+        self.assertEqual(sum(argv[0].endswith("powershell.exe") for argv, _ in calls), 1)
+        _, checks, _ = self.observe("windows-ci", missing_linker=True)
+        self.assertEqual(checks["paths.linker"]["status"], "missing")
+
+
 class BuildSelectionTests(unittest.TestCase):
     def setUp(self):
         self.baseline = reviewed_fixture()

@@ -298,9 +298,11 @@ def collect_observations(entry, configuration="Debug", conan_home=None, conan_ex
         observed["tools.conan"] = None
         errors["tools.conan"] = str(error)
 
-    def probe(label, argv, pattern=None, env=None):
+    def probe(label, argv, pattern=None, env=None, retain_raw=False):
         try:
             output = _probe(argv, env=env)
+            if retain_raw:
+                observed[f"{label}.raw"] = output
             if pattern is not None:
                 match = re.search(pattern, output)
                 if not match:
@@ -313,19 +315,25 @@ def collect_observations(entry, configuration="Debug", conan_home=None, conan_ex
 
     for name, pattern in (
         ("cmake", r"cmake version (\d+\.\d+\.\d+)"),
-        ("ninja", r"^(\d+\.\d+\.\d+)$"),
+        # Wheels may append a vendor/build suffix; compare the exact semantic base.
+        ("ninja", r"^(\d+\.\d+\.\d+)(?:\.[A-Za-z][A-Za-z0-9-]*(?:\.[A-Za-z0-9][A-Za-z0-9-]*)*)?\Z"),
         ("git", r"git version (\d+\.\d+\.\d+(?:\.windows\.\d+)?)"),
     ):
         executable = shutil.which(name)
         if name == "git":
             observed["git_path"] = executable
         if executable:
-            probe(f"tools.{name}", [executable, "--version"], pattern)
+            probe(f"tools.{name}", [executable, "--version"], pattern, retain_raw=name == "ninja")
         else:
             observed[f"tools.{name}"] = None
     probe("tools.clang", [paths["c_compiler"], "--version"], r"clang version (\d+\.\d+\.\d+)")
     probe("tools.clang_cpp", [paths["cpp_compiler"], "--version"], r"clang version (\d+\.\d+\.\d+)")
-    probe("compiler_target", [paths["c_compiler"], "-dumpmachine"])
+    if system == "Windows":
+        # clang-cl's supported version banner reports its selected native target.
+        probe("compiler_target", [paths["c_compiler"], "--version"], r"(?m)^Target:[ \t]*(\S+)[ \t]*$",
+              retain_raw=True)
+    else:
+        probe("compiler_target", [paths["c_compiler"], "-dumpmachine"])
     for field, value in paths.items():
         path = Path(value)
         is_directory = field in {"gcc_install_dir", "stdlib_headers", "vs_root", "vctools_root", "sdk_root"}
@@ -364,7 +372,20 @@ def collect_observations(entry, configuration="Debug", conan_home=None, conan_ex
                     break
         except (BaselineError, ValueError, TypeError) as error:
             errors["native.vs_installation"] = str(error)
-        probe("native.linker", [paths["linker"], "/?"], r"Version (\d+\.\d+\.\d+(?:\.\d+)?)")
+        # MSVC link /? is not a zero-exit identity API. Read only the selected
+        # executable's version resource through Windows' built-in PowerShell.
+        try:
+            powershell = ntpath.join(_required(os.environ.get("SystemRoot"), "SystemRoot"),
+                                    "System32", "WindowsPowerShell", "v1.0", "powershell.exe")
+            probe("native.linker", [powershell, "-NoLogo", "-NoProfile", "-NonInteractive", "-Command",
+                                   "$ErrorActionPreference = 'Stop'; "
+                                   "[System.Diagnostics.FileVersionInfo]::GetVersionInfo("
+                                   "$env:VEYR_DOCTOR_VERSION_FILE).FileVersion"],
+                  r"^(\d+\.\d+\.\d+\.\d+)\Z",
+                  env={**os.environ, "VEYR_DOCTOR_VERSION_FILE": paths["linker"]}, retain_raw=True)
+        except BaselineError as error:
+            observed["native.linker"] = None
+            errors["native.linker"] = str(error)
         try:
             header = (Path(paths["vctools_root"]) / "include" / "crtversion.h").read_text(encoding="utf-8")
             values = [re.search(r"#define\s+_VC_CRT_" + part + r"_VERSION\s+(\d+)", header)
@@ -409,9 +430,13 @@ def check_prerequisites(baseline, selected, observed):
         remedy = (conan_tool_remedy(observed.get("conan_executable") or conan_tool_paths(entry["os"])[1])
                   if label == "tools.conan" else
                   "Use the reviewed native toolchain/developer environment; report changes for owner review. No automatic repair.")
+        detail = observed.get("errors", {}).get(label, "")
+        raw = observed.get(f"{label}.raw")
+        if raw is not None:
+            detail = (detail + "\n" if detail else "") + f"Raw identity output: {raw}"
         checks.append({"identity": label, "expected": value, "actual": actual,
                        "status": status, "remedy": remedy if status != "ok" else "",
-                       "detail": observed.get("errors", {}).get(label, "")})
+                       "detail": detail})
     git = observed.get("tools.git")
     checks.append({"identity": "tools.git", "expected": "available; version observational",
                    "actual": git, "path": observed.get("git_path"),
