@@ -158,6 +158,75 @@ jobs:
             "linker_path=$linkerPath resolved_linker=$resolvedLinker" | Tee-Object -Append .veyr-dev/ci/selected-linker.txt
             & $linkerPath '--version' 2>&1 | Tee-Object -Append .veyr-dev/ci/selected-linker.txt
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            # Additional explicit GCC-13 observations; keep the default GCC-14 trace/files intact.
+            # These query/dry-run flags do not compile, link, or select CI/profile policy.
+            $gcc13Root = '/usr/lib/gcc/x86_64-linux-gnu/13'
+            $gcc13Flag = "--gcc-install-dir=$gcc13Root"
+            if (-not (Test-Path -LiteralPath $gcc13Root -PathType Container)) {
+              throw "Explicit GCC-13 observation root missing: $gcc13Root. No fallback selection."
+            }
+            "clang_cpp_path=$clangCpp gcc_selection=$gcc13Flag policy=pending" | Tee-Object .veyr-dev/ci/linux-gcc13-search-paths.txt
+            & $clangCpp $gcc13Flag '--version' 2>&1 | Tee-Object -Append .veyr-dev/ci/linux-gcc13-search-paths.txt
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            & $clangCpp $gcc13Flag '-print-search-dirs' 2>&1 | Tee-Object -Append .veyr-dev/ci/linux-gcc13-search-paths.txt
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            & $clangCpp $gcc13Flag '-print-libgcc-file-name' 2>&1 | Tee-Object -Append .veyr-dev/ci/linux-gcc13-search-paths.txt
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            $gcc13Trace = & $clangCpp $gcc13Flag '-###' '-std=c++23' '-x' 'c++' '/dev/null' 2>&1
+            if ($LASTEXITCODE -ne 0) { $gcc13Trace | Write-Output; exit $LASTEXITCODE }
+            $gcc13Trace | Tee-Object .veyr-dev/ci/linux-gcc13-driver.txt
+            $gcc13HeaderRoots = [regex]::Matches(($gcc13Trace -join "`n"), '"-internal-(?:externc-)?isystem" "([^"]+)"') |
+              ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique
+            foreach ($root in $gcc13HeaderRoots) {
+              "header_search_root=$root exists=$(Test-Path -LiteralPath $root -PathType Container)" | Tee-Object -Append .veyr-dev/ci/linux-gcc13-headers.txt
+              $configHeader = Join-Path $root 'bits/c++config.h'
+              if (Test-Path -LiteralPath $configHeader -PathType Leaf) {
+                $resolvedHeader = & readlink '-f' $configHeader
+                if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+                "resolved_config_header=$resolvedHeader" | Tee-Object -Append .veyr-dev/ci/linux-gcc13-headers.txt
+                Get-FileHash -LiteralPath $configHeader -Algorithm SHA256 | Format-List | Out-String | Tee-Object -Append .veyr-dev/ci/linux-gcc13-headers.txt
+                # Capture '# define' as well as '#define'; these are raw conditional definitions,
+                # not evidence of an effective preprocessed ABI or native compatibility.
+                $definitions = @(Get-Content -LiteralPath $configHeader | Select-String '^\s*#\s*define\s+(?:_GLIBCXX_RELEASE|__GLIBCXX__|_GLIBCXX_USE_CXX11_ABI)\b' |
+                  ForEach-Object { $_.Line })
+                $definitions | Tee-Object -Append .veyr-dev/ci/linux-gcc13-headers.txt
+                if (-not ($definitions -match '_GLIBCXX_USE_CXX11_ABI\b')) {
+                  '_GLIBCXX_USE_CXX11_ABI: not observed in raw configuration header' | Tee-Object -Append .veyr-dev/ci/linux-gcc13-headers.txt
+                }
+                & dpkg-query '-S' $resolvedHeader 2>&1 | Tee-Object -Append .veyr-dev/ci/linux-gcc13-headers.txt
+                if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+              }
+            }
+            & dpkg-query '--show' '--showformat=${binary:Package} ${Version}\n' 'libstdc++-13-dev' 2>&1 | Tee-Object -Append .veyr-dev/ci/linux-gcc13-headers.txt
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            $gcc13Library = & $clangCpp $gcc13Flag '-print-file-name=libstdc++.so'
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            "driver=$clangCpp gcc_selection=$gcc13Flag reported_libstdcxx=$gcc13Library" | Tee-Object .veyr-dev/ci/linux-gcc13-runtime.txt
+            if (Test-Path -LiteralPath $gcc13Library -PathType Leaf) {
+              $gcc13ResolvedLibrary = & readlink '-f' $gcc13Library
+              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+              "resolved_libstdcxx=$gcc13ResolvedLibrary" | Tee-Object -Append .veyr-dev/ci/linux-gcc13-runtime.txt
+              Get-FileHash -LiteralPath $gcc13ResolvedLibrary -Algorithm SHA256 | Format-List | Out-String | Tee-Object -Append .veyr-dev/ci/linux-gcc13-runtime.txt
+              & dpkg-query '-S' $gcc13ResolvedLibrary 2>&1 | Tee-Object -Append .veyr-dev/ci/linux-gcc13-runtime.txt
+              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+              $gcc13Versions = & readelf '--version-info' $gcc13ResolvedLibrary 2>&1
+              if ($LASTEXITCODE -ne 0) { $gcc13Versions | Write-Output; exit $LASTEXITCODE }
+              $gcc13Versions | Select-String 'Name: (?:GLIBCXX|CXXABI)_' |
+                ForEach-Object { $_.Line } | Tee-Object -Append .veyr-dev/ci/linux-gcc13-runtime.txt
+            } else {
+              'Resolved runtime unavailable; identity remains pending.' | Tee-Object -Append .veyr-dev/ci/linux-gcc13-runtime.txt
+            }
+            & dpkg-query '--show' '--showformat=${binary:Package} ${Version}\n' 'libstdc++6' 2>&1 | Tee-Object -Append .veyr-dev/ci/linux-gcc13-runtime.txt
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            $gcc13Linker = & $clangCpp $gcc13Flag '-print-prog-name=ld'
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            "gcc_selection=$gcc13Flag clang_reported_linker=$gcc13Linker" | Tee-Object .veyr-dev/ci/linux-gcc13-linker.txt
+            $gcc13LinkerPath = (Get-Command $gcc13Linker -CommandType Application -All -ErrorAction Stop | Select-Object -First 1).Source
+            $gcc13ResolvedLinker = & readlink '-f' $gcc13LinkerPath
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            "selected_linker_path=$gcc13LinkerPath resolved_linker=$gcc13ResolvedLinker" | Tee-Object -Append .veyr-dev/ci/linux-gcc13-linker.txt
+            & $gcc13LinkerPath '--version' 2>&1 | Tee-Object -Append .veyr-dev/ci/linux-gcc13-linker.txt
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           } else {
             $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
             & $vswhere -all -format json -utf8 | Tee-Object .veyr-dev/ci/vs-installations.json
@@ -219,6 +288,33 @@ jobs:
               Get-FileHash -LiteralPath $path -Algorithm SHA256 | Format-List | Out-String | Tee-Object -Append .veyr-dev/ci/windows-runtime-files.txt
             }
             # ucrtbase.dll is the observed OS runtime, distinct from selected SDK/UCRT link inputs.
+            # Observe standalone LLVM in the same DevShell, using absolute paths only.
+            # Preserve bundled LLVM observations and all VC/SDK variables; do not export a selection.
+            'Absolute standalone compiler queries in observed DevShell; CI policy remains pending.' | Tee-Object .veyr-dev/ci/windows-standalone-tools.txt
+            foreach ($path in @('C:\Program Files\LLVM\bin\clang.exe', 'C:\Program Files\LLVM\bin\clang++.exe', 'C:\Program Files\LLVM\bin\clang-cl.exe')) {
+              if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+                throw "Standalone LLVM executable missing: $path. No PATH fallback."
+              }
+              $item = Get-Item -LiteralPath $path
+              "path=$($item.FullName) file_version=$($item.VersionInfo.FileVersion) product_version=$($item.VersionInfo.ProductVersion)" | Tee-Object -Append .veyr-dev/ci/windows-standalone-tools.txt
+              $standaloneVersion = & $item.FullName '--version' 2>&1
+              $standaloneExit = $LASTEXITCODE
+              $standaloneVersion | Tee-Object -Append .veyr-dev/ci/windows-standalone-tools.txt
+              if ($standaloneExit -ne 0) { exit $standaloneExit }
+              $standaloneBanner = $standaloneVersion -join "`n"
+              if ($standaloneBanner -notmatch '(?m)^clang version 20\.1\.8(?:\s|$)' -or
+                  $standaloneBanner -notmatch '(?m)^Target:\s*x86_64-pc-windows-msvc\s*$') {
+                throw "Standalone observation mismatch for ${path}: expected Clang 20.1.8 / x86_64-pc-windows-msvc; see recorded banner. CI policy remains pending."
+              }
+            }
+            # Record and compare the retained shell environment, including native linker resolution.
+            foreach ($name in @('PATH', 'INCLUDE', 'LIB', 'LIBPATH', 'VSINSTALLDIR', 'VCToolsInstallDir', 'VCToolsVersion', 'VCToolsRedistDir', 'WindowsSdkDir', 'WindowsSDKVersion', 'WindowsSDKLibVersion', 'UniversalCRTSdkDir', 'UCRTVersion', 'VSCMD_VER', 'VSCMD_ARG_HOST_ARCH', 'VSCMD_ARG_TGT_ARCH')) {
+              $value = [Environment]::GetEnvironmentVariable($name)
+              "$name=$value" | Tee-Object -Append .veyr-dev/ci/windows-standalone-tools.txt
+              if ($value -cne $shell[$name]) { throw "DevShell observation environment changed: $name. Stop without policy selection." }
+            }
+            $retainedLinker = (Get-Command link -CommandType Application -All -ErrorAction Stop | Select-Object -First 1).Source
+            "retained_linker_path=$retainedLinker" | Tee-Object -Append .veyr-dev/ci/windows-standalone-tools.txt
           }
 
       - name: Require independently reviewed CI policy before tool/package setup
