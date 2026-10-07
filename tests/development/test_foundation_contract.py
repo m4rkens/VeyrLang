@@ -296,5 +296,26 @@ class FoundationContractTests(ConanOperationsFixture, unittest.TestCase):
         self.assertEqual(self.calls, [])
 
 
+class CIWorkflowPolicyTests(unittest.TestCase):
+    def test_reviewed_candidates_cannot_enable_ci_execution(self):
+        workflow = (Path(__file__).resolve().parents[2] / ".github/workflows/build-foundation.yml").read_text(encoding="utf-8")
+        self.assertIn("VEYR_CI_EXECUTION_AUTHORIZED: 'false'", workflow)
+        gate = workflow.index("if ($env:VEYR_CI_EXECUTION_AUTHORIZED -ne 'true')")
+        self.assertLess(gate, workflow.index("- name: Select exact reviewed base Python"))
+        self.assertLess(gate, workflow.index("- name: Bootstrap project-owned Conan CLI only"))
+        self.assertLess(gate, workflow.index("- name: Explicit Conan dependency setup"))
+        self.assertIn("requires separate owner authorization", workflow)
+
+    def test_windows_compiler_selection_follows_devshell_and_uses_absolute_standalone_paths(self):
+        workflow = (Path(__file__).resolve().parents[2] / ".github/workflows/build-foundation.yml").read_text(encoding="utf-8")
+        setup = workflow[workflow.index("- name: Set up conventional isolated CMake/Ninja prerequisites"):
+                         workflow.index("- name: Bootstrap project-owned Conan CLI only")]
+        self.assertLess(setup.index("Enter-VsDevShell"), setup.index("$standaloneBin ="))
+        self.assertIn("$standaloneBin = 'C:\\Program Files\\LLVM\\bin'", setup)
+        self.assertIn("$banner = & $executable '--version'", setup)
+        self.assertIn('$env:PATH = "$standaloneBin;$env:PATH"', setup)
+        self.assertIn("no bundled LLVM fallback", setup)
+
+
 if __name__ == "__main__":
     unittest.main()

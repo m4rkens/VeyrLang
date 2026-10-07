@@ -1,9 +1,9 @@
 # CI Matrix Policy
 
-**Status:** Plan 01-08 published workflow; run 37356855017 supplied four
-successful observation steps, followed by pending-policy failures. Both CI
-candidates remain pending/unselected. Complete identity review, all four native
-results and cold-runner capacity remain blocking evidence gaps; progress 7/8.
+**Status:** Plan 01-08 remains open, progress 7/8. Owner-reviewed CI toolchain
+candidates are based on run 37643695998. Native/package acceptance and CI
+prerequisite bootstrap remain unverified. `VEYR_CI_EXECUTION_AUTHORIZED: 'false'`
+blocks all installation/package/native steps, independently of baseline review.
 
 ## Required matrix and entry points
 
@@ -20,92 +20,79 @@ and `workflow_dispatch` triggers. Its matrix is exactly:
 `fail-fast: false` retains independent row failures; `max-parallel: 1` preserves
 the approved serial policy. Windows and Linux are Tier 1; macOS remains deferred.
 
-## Independent bootstrap and native stages
+## Reviewed toolchain candidates and separate execution gate
 
-Publication/run authorization is separate from local implementation. The
-owner-approved pushes published the draft and its startup correction. Run
-37355569361 failed workflow validation with zero jobs; the committed correction
-in `c4f27d086370c8d63d0b81990eba04044bdbe98f` moved CONAN_HOME into step-level
-env and persisted it through GITHUB_ENV. Its automatic push run
-[37356855017](https://github.com/m4rkens/VeyrLang/actions/runs/37356855017)
-reported installed runner tools, paths, image version and VS candidates.
-All four observation steps and artifact uploads succeeded; all four jobs then
-failed at the expected pending-policy gate. Both tracked `ci_environments` remain `pending`:
-the existing read-only doctor fails before CLI installation, cache restore or
-dependency setup. A pending-policy observation run is not a passing native row.
+The owner approved policy alignment after
+[run 37643695998](https://github.com/m4rkens/VeyrLang/actions/runs/37643695998),
+commit `63c275d175e727830a6c30ba8204dcc3e102bdca`. All four hosted runners
+were acquired; all expanded observations and uploads succeeded; every job then
+stopped at the expected pending-policy gate. No bootstrap/package/native work ran.
+The earlier run 37356855017 observations are retained in baseline.json's
+`prior_observations` and the acceptance/checkpoint history; they are not current
+selected toolchain inputs. Startup and observation fixes remain separate commits.
 
-## Observed CI candidates, not selected policy
-
-Debug and Release reported the same observed identities within each platform.
-`baseline.json` stores them under `observed_candidate`, separate from executable
-policy inputs; this evidence does not select either CI entry or enable setup.
-
-| Identity | Ubuntu CI candidate | Windows CI candidate |
+| Contract | ubuntu-ci | windows-ci |
 |---|---|---|
-| Runner / ImageOS / image version | ubuntu-24.04 / ubuntu24 / 20260927.320.1 | windows-2022 / win22 / 20260927.320.1 |
-| Runner agent | 2.337.0 | 2.337.0 |
-| OS / architecture | Ubuntu 24.04.5 LTS / x86_64 | Windows Server 2022 Datacenter 10.0.20348 / x86_64 |
-| Python | 3.12.3 | 3.12.10 |
-| CMake / Ninja | 3.31.6 / 1.13.2 | 3.31.6 / 1.13.2 |
-| Clang / clang++ / clang-cl | 18.1.3 / 18.1.3 / missing | 20.1.8 / 20.1.8 / 20.1.8 |
-| Compiler target | x86_64-pc-linux-gnu | x86_64-pc-windows-msvc |
-| GCC / G++ | 13.3.0 / 13.3.0 | Not applicable |
-| glibc / Binutils | 2.39 / 2.42 | Not applicable |
-| Visual Studio installation | Not applicable | Enterprise 2022 / 17.14.37710.0 |
-| Git | 2.55.0 | 2.55.0.windows.5 |
-| Project-owned Conan | Validation pending; installation/version unobserved | Validation pending; installation/version unobserved |
+| Runner / native target | ubuntu-24.04 x86_64 / x86_64-pc-linux-gnu | windows-2022 x64 / x86_64-pc-windows-msvc |
+| Python / CMake / Ninja | 3.12.3 / 3.31.6 / 1.13.2 | 3.12.10 / 3.31.6 / 1.13.2 |
+| Host Clang | 18.1.3 at /usr/bin/clang and /usr/bin/clang++ | Standalone 20.1.8 at C:\Program Files\LLVM\bin; C/C++ driver is absolute clang-cl.exe |
+| GCC / library inputs | GCC/G++ 13.3.0; explicit /usr/lib/gcc/x86_64-linux-gnu/13; GCC-13 headers; libstdc++11 | VS Enterprise 2022 17.14.37710.0; VC tools 14.44.35207; dynamic v143 CRT |
+| Runtime / SDK | libstdc++.so.6.0.33, libstdc++6 14.2.0-4ubuntu2~24.04.1; glibc 2.39 | CRT header 14.44.35220.0; Windows/UCRT SDK 10.0.26100.0 |
+| Linker | /usr/bin/ld resolves to x86_64-linux-gnu-ld.bfd; GNU Binutils 2.42 | Native MSVC link.exe 14.44.35229.0 under the selected VC toolset |
 
-Exact observed tool paths and the four job URLs are in
-[FOUNDATION_ACCEPTANCE.md](FOUNDATION_ACCEPTANCE.md) and baseline.json. Conan
-2.33.0 remains required; LLVM backend remains 23.1.2. No ambient Conan was
-accepted or used. Windows developer candidates and the Omarchy baseline are
-unchanged and independent of these CI observations.
+Both entries have `status: reviewed`: exact candidate policy, not installed CI
+Conan or native/package readiness. Conan remains exactly 2.33.0; backend LLVM
+remains 23.1.2. Omarchy developer Clang 22/GCC 16 and the independently pending
+Windows developer candidate are unchanged. No developer baseline certifies CI.
 
-Remaining Ubuntu gaps: observed Clang 18 conflicts with the existing Clang-22
-developer/profile/doctor policy; resolved libstdc++ runtime/path, standard-library
-header identity and exact linker path are not established. The libstdc++ locator
-returned only `libstdc++`. Current doctor libc/linker parsers do not accept the
-observed Ubuntu banner formats. Neither profile settings nor parsers changed.
+Linux's shared explicit profile receives `VEYR_CLANG_MAJOR` from the reviewed
+environment: 22 for Omarchy, 18 for Ubuntu. The wrapper supplies the explicit GCC
+root and compiler/linker paths; there is no profile detection or arbitrary
+compiler selection. GCC-13 configuration records `_GLIBCXX_RELEASE 13`,
+`__GLIBCXX__ 20240904`, and raw `_GLIBCXX_USE_CXX11_ABI 1`. These header/dry-run
+observations are not an effective compiled ABI proof. Doctor now accepts the
+observed Ubuntu GLIBC and Binutils banners while retaining strict exact-version
+comparison and the existing GNU banner support.
 
-Remaining Windows gaps: VC tools, CRT, Windows SDK, exact linker identity/path
-and selected developer-shell/toolchain environment are not established. The
-observed VS installation is not evidence of selected runtime/SDK/toolset values.
+Windows DevShell supplies VC/CRT/SDK/linker inputs only. After entering the
+selected shell, the future prerequisite step queries standalone clang, clang++
+and clang-cl by absolute paths, verifies 20.1.8/native target, and puts the
+standalone directory first in the job-local PATH. C/C++ Conan/CMake inputs remain
+absolute clang-cl.exe paths. Bundled 19.1.5 is retained as an observation, never
+selected through DevShell precedence. No persistent machine PATH modification.
 
-Both environments still lack project-owned Conan validation, native ABI/package
-acceptance and cold-build capacity evidence. Windows Debug/Release locks remain
-pending. Shared platform identity across configurations does not waive separate
-native Debug/Release and Windows runtime validation. No additional run or setup
-is authorized by recording these candidates.
+## Git is an observed utility
 
-## Requirements before policy activation
+Git must be available for repository identity queries. Record its actual version
+and path; do not require an exact Git version or include Git observations in the
+build selection's ABI/toolchain fingerprint. No pre-existing minimum Git version
+requirement was found. Compiler/runtime mismatches still fail; Git version drift
+alone does not reject CI. Image version remains observed cache-isolation metadata.
 
-After actual observations and owner review, each CI entry must have its own
-complete `environment`, `runner`, `profile`, `os`, `arch`, `target`, `git`, exact
-`tools`, `native` and `paths` values compatible with the existing doctor schema.
-Runner labels are scheduling choices, not compiler/CRT/SDK identities. Never
-copy Omarchy developer policy into Ubuntu CI or promote Windows developer
-candidates as CI evidence. Windows developer inspection remains independent.
+Run 37643695998 observed Linux Git 2.55.0. Windows Debug used image
+20261004.326.1/Git 2.56.0.windows.1; Windows Release used image
+20260927.320.1/Git 2.55.0.windows.5. Windows compiler/VC/CRT/SDK/linker inputs and
+runtime file hashes matched. Image/Git/PATH and VS installation metadata differed;
+this is not a native ABI acceptance result.
 
-The existing Linux profile fixes Clang major 22/libstdc++11; Windows fixes Clang
-major 20/v143 dynamic CRT with separate Debug/Release runtime selection. Actual
-CI tools outside these inputs require owner review and a bounded profile/doctor
-ownership correction before use. No `profile detect`, automatic candidate
-promotion, extra profile or compiler-major change is authorized by this draft.
+## Required next owner gate
 
-Once reviewed, upstream setup-python selects the exact CI base Python. Standard
-venv/isolated pip installs only exact tracked CMake/Ninja prerequisites into
-`.veyr-dev/tools/ci-prerequisites`; no system Python/global pip changes. Installed
-host Clang/GCC or VS/SDK must match reviewed native identities. Windows uses the
-selected Microsoft VS developer shell; strict doctor checks actual VC tools,
-CRT/SDK/linker/paths. Missing compiler provisioning remains an owner gate; no
-backend SDK acquisition or automatic drift acceptance. Explicit tools-only setup
-creates project-owned Conan 2.33.0; doctor reads isolated package metadata without
-executing Conan or mutating its home.
+The workflow's independent execution flag remains **false**. The first policy
+step throws before setup-python, CMake/Ninja tool installation, project-owned
+Conan bootstrap, cache or dependency work even though the candidates are reviewed.
+Review/commit/publication and any later execution flag change each require exact
+owner authorization. This policy update does not authorize a new CI run.
 
-A required native lock must already be tracked. Both Linux locks exist;
-Windows Debug/Release locks remain pending. Missing locks stop before cache
-restore or package work. CI never runs `--init-lock`; lock initialization and
-review require a separately approved bounded execution step.
+Under later separately authorized execution, strict read-only doctor must match
+actual Python/Conan/CMake/Ninja/compiler/native identities; Git reports availability
+and observations. Conan is inspected via isolated venv metadata, never launched
+by doctor. Actual tools-only setup is the sole Conan CLI validation/bootstrap path.
+
+Required tracked native locks must exist before package/cache work. Linux locks
+exist as reference/recipe pins, not CI package/ABI proof. Windows Debug/Release
+locks remain pending; lock initialization/review is a separately authorized
+Conan operation, never silently generated by CI. Four native acceptance results
+and measured cold/warm runner capacity remain pending. macOS remains deferred.
 
 ## Shared commands and Conan ownership
 
@@ -192,10 +179,10 @@ Remote publication/dispatch, sensitive commit, dedicated phase verification and
 Phase 2 require their own exact owner actions.
 
 Platform impact:
-- Windows: Independent VS/VC/CRT/SDK/linker and clang-cl identities, native
-  Debug/Release runtime evidence and locks remain pending; PowerShell calls
+- Windows: Reviewed CI VS/VC/CRT/SDK/linker and standalone clang-cl candidate identities; native
+  Debug/Release evidence, developer inspection and locks remain pending; PowerShell calls
   shared Python operations with the selected absolute Conan executable.
 - Linux: Ubuntu CI remains distinct from validated Omarchy developer evidence;
-  exact compiler/GCC/libstdc++/libc/linker review precedes packages.
+  reviewed Clang 18/GCC-13 candidate policy stays separate; execution/acceptance precede any readiness claim.
 - macOS future: No Darwin matrix or acceptance; Conan/CMake/Python boundaries
   remain without extending active platform scope.

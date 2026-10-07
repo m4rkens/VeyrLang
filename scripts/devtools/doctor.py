@@ -24,7 +24,9 @@ PATH_FIELDS = {
     "Linux": ("c_compiler", "cpp_compiler", "linker", "gcc_install_dir", "stdlib_headers", "stdlib_library"),
     "Windows": ("c_compiler", "cpp_compiler", "linker", "vs_root", "vctools_root", "sdk_root"),
 }
-TOOLS = ("python", "conan", "cmake", "ninja", "clang", "git")
+TOOLS = ("python", "conan", "cmake", "ninja", "clang")
+CLANG_MAJORS = {"linux-developer": "22", "ubuntu-ci": "18",
+                "windows-developer": "20", "windows-ci": "20"}
 CONAN_VERSION = "2.33.0"
 
 
@@ -70,11 +72,12 @@ def read_baseline(path=DEFAULT_BASELINE):
 def expected_tools(baseline, entry):
     if not isinstance(entry.get("tools"), dict):
         raise BaselineError("Each environment requires its own tool identities")
-    tools = {**baseline["tools"], **entry.get("tools", {}), "git": entry.get("git")}
+    tools = {**baseline["tools"], **entry.get("tools", {})}
+    # Git is a required utility, observed separately; its version is not an ABI pin.
+    tools.pop("git", None)
     for tool in TOOLS:
         version = _required(tools.get(tool), f"tools.{tool}")
-        pattern = r"\d+\.\d+\.\d+(?:\.windows\.\d+)?" if tool == "git" else r"\d+\.\d+\.\d+"
-        if not re.fullmatch(pattern, version):
+        if not re.fullmatch(r"\d+\.\d+\.\d+", version):
             raise BaselineError(f"tools.{tool} requires an exact version, got {version!r}")
     return tools
 
@@ -118,7 +121,7 @@ def select_inputs(baseline, profile, configuration="Debug", root=ROOT, environme
             _required(values.get(field), f"{profile}.{section}.{field}")
     if system == "Linux" and native["stdlib_abi"] != "libstdc++11":
         raise BaselineError("Linux profile requires libstdc++11")
-    required_major = {"Linux": "22", "Windows": "20"}[system]
+    required_major = CLANG_MAJORS.get(entry["environment"])
     if tools["clang"].split(".")[0] != required_major:
         raise BaselineError(f"{system} profile requires Clang major {required_major}; profile changes need owner review")
     env = {
@@ -126,6 +129,7 @@ def select_inputs(baseline, profile, configuration="Debug", root=ROOT, environme
         "VEYR_C_COMPILER": paths["c_compiler"],
         "VEYR_CPP_COMPILER": paths["cpp_compiler"],
         "VEYR_LINKER": paths["linker"],
+        "VEYR_CLANG_MAJOR": required_major,
     }
     if system == "Linux":
         env["VEYR_GCC_INSTALL_DIR"] = paths["gcc_install_dir"]
@@ -184,8 +188,11 @@ def make_selection(baseline, selected, provider="managed", llvm_dir=None,
     if expected_tools(baseline, entry)["conan"] != CONAN_VERSION:
         raise BaselineError(f"Project tool bootstrap requires Conan {CONAN_VERSION}; review policy changes first")
     _, conan_executable = conan_tool_paths(entry["os"], root)
+    # Observation metadata (including Git and runner image history) is not ABI identity.
     identity = hashlib.sha256(json.dumps(
-        {"tools": expected_tools(baseline, entry), "entry": entry, "llvm_dir": str(llvm_dir)},
+        {"tools": expected_tools(baseline, entry), "os": entry["os"], "arch": entry["arch"],
+         "target": entry["target"], "native": entry["native"], "paths": entry["paths"],
+         "llvm_dir": str(llvm_dir)},
         sort_keys=True).encode()).hexdigest()[:12]
     build_dir = root / "build" / selected["target"] / provider / f"{profile}-{selected['environment_name']}-{identity}" / config
     return BuildSelection(selected["host"], selected["target"], profile, profile, config,
@@ -310,6 +317,8 @@ def collect_observations(entry, configuration="Debug", conan_home=None, conan_ex
         ("git", r"git version (\d+\.\d+\.\d+(?:\.windows\.\d+)?)"),
     ):
         executable = shutil.which(name)
+        if name == "git":
+            observed["git_path"] = executable
         if executable:
             probe(f"tools.{name}", [executable, "--version"], pattern)
         else:
@@ -331,10 +340,10 @@ def collect_observations(entry, configuration="Debug", conan_home=None, conan_ex
             errors["native.distribution"] = str(error)
         probe("native.gcc", ["gcc", "-dumpfullversion"], r"^(\d+\.\d+\.\d+)$")
         probe("native.gxx", ["g++", "-dumpfullversion"], r"^(\d+\.\d+\.\d+)$")
-        probe("native.libc", ["ldd", "--version"], r"ldd \(GNU libc\) (\d+\.\d+)")
+        probe("native.libc", ["ldd", "--version"], r"^ldd \((?:GNU libc|Ubuntu GLIBC [^)\r\n]+)\) (\d+\.\d+)")
         if observed.get("native.libc"):
             observed["native.libc"] = "glibc " + observed["native.libc"]
-        probe("native.linker", [paths["linker"], "--version"], r"GNU ld \(GNU Binutils\) (\d+\.\d+(?:\.\d+)?)")
+        probe("native.linker", [paths["linker"], "--version"], r"^GNU ld \(GNU Binutils(?: for Ubuntu)?\) (\d+\.\d+(?:\.\d+)?)")
         if observed.get("native.linker"):
             observed["native.linker"] = "GNU Binutils " + observed["native.linker"]
         probe("gcc_library_file", ["gcc", "-print-libgcc-file-name"])
@@ -403,4 +412,10 @@ def check_prerequisites(baseline, selected, observed):
         checks.append({"identity": label, "expected": value, "actual": actual,
                        "status": status, "remedy": remedy if status != "ok" else "",
                        "detail": observed.get("errors", {}).get(label, "")})
+    git = observed.get("tools.git")
+    checks.append({"identity": "tools.git", "expected": "available; version observational",
+                   "actual": git, "path": observed.get("git_path"),
+                   "status": "ok" if git else "missing",
+                   "remedy": "" if git else "Make Git available for repository identity queries; no exact version pin.",
+                   "detail": observed.get("errors", {}).get("tools.git", "")})
     return checks

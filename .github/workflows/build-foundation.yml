@@ -50,6 +50,8 @@ jobs:
       VEYR_CI_CONFIG: ${{ matrix.config }}
       PYTHONDONTWRITEBYTECODE: '1'
       PYTHONNOUSERSITE: '1'
+      # Reviewed toolchain candidates do not authorize any CI installation/package/native work.
+      VEYR_CI_EXECUTION_AUTHORIZED: 'false'
 
     steps:
       - name: Checkout reviewed inputs
@@ -320,6 +322,9 @@ jobs:
       - name: Require independently reviewed CI policy before tool/package setup
         id: policy
         run: |
+          if ($env:VEYR_CI_EXECUTION_AUTHORIZED -ne 'true') {
+            throw 'CI bootstrap/package/native execution requires separate owner authorization; reviewed toolchain candidates are policy only.'
+          }
           $baseline = Get-Content scripts/devtools/baseline.json -Raw | ConvertFrom-Json
           $entry = $baseline.ci_environments.($env:VEYR_CI_ENVIRONMENT)
           if ($entry.status -notin @('selected', 'reviewed')) {
@@ -368,6 +373,25 @@ jobs:
             $module = Join-Path $entry.paths.vs_root 'Common7/Tools/Microsoft.VisualStudio.DevShell.dll'
             Import-Module $module
             Enter-VsDevShell -VsInstallPath $entry.paths.vs_root -SkipAutomaticLocation -DevCmdArguments "-arch=x64 -host_arch=x64 -vcvars_ver=$($entry.native.vctools) -winsdk=$($entry.native.sdk)"
+            # VC/CRT/SDK/linker come from DevShell; compiler identity is standalone LLVM only.
+            $standaloneBin = 'C:\Program Files\LLVM\bin'
+            $expectedClangCl = Join-Path $standaloneBin 'clang-cl.exe'
+            if ($entry.paths.c_compiler -ne $expectedClangCl -or $entry.paths.cpp_compiler -ne $expectedClangCl) {
+              throw 'Reviewed Windows compiler inputs must select absolute standalone clang-cl.exe paths.'
+            }
+            foreach ($tool in @('clang.exe', 'clang++.exe', 'clang-cl.exe')) {
+              $executable = Join-Path $standaloneBin $tool
+              $banner = & $executable '--version' 2>&1
+              if ($LASTEXITCODE -ne 0) { $banner | Write-Output; exit $LASTEXITCODE }
+              $text = $banner -join "`n"
+              if ($text -notmatch '(?m)^clang version 20\.1\.8(?:\s|$)' -or
+                  $text -notmatch '(?m)^Target:\s*x86_64-pc-windows-msvc\s*$') {
+                $banner | Write-Output
+                throw "Standalone compiler drift at $executable; no bundled LLVM fallback."
+              }
+            }
+            # Job-local precedence also prevents incidental PATH lookups from selecting bundled 19.1.5.
+            $env:PATH = "$standaloneBin;$env:PATH"
             foreach ($name in @('PATH', 'INCLUDE', 'LIB', 'LIBPATH', 'VSINSTALLDIR', 'VCToolsInstallDir', 'VCToolsVersion', 'WindowsSdkDir', 'WindowsSDKVersion')) {
               $value = [Environment]::GetEnvironmentVariable($name)
               if (-not $value -or $value.Contains("`n") -or $value.Contains("`r")) { throw "Invalid developer environment $name" }

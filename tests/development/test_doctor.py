@@ -27,6 +27,9 @@ WINDOWS = "windows-x86_64-clangcl"
 
 def reviewed_fixture():
     baseline = read_baseline()
+    # Historical pending-policy fixtures remain synthetic; tracked CI is now reviewed.
+    for entry in baseline["ci_environments"].values():
+        entry["status"] = "pending"
     for entry in baseline["platforms"].values():
         entry["status"] = "selected"
         for field, value in entry["native"].items():
@@ -38,9 +41,11 @@ def reviewed_fixture():
     return baseline
 
 
-def matching_observations(baseline, profile):
-    entry = baseline["platforms"][profile]
+def matching_observations(baseline, profile, environment=None):
+    entry = policy_entry(baseline, profile, environment)
     observed = {f"tools.{key}": value for key, value in expected_tools(baseline, entry).items()}
+    observed["tools.git"] = "2.55.0.windows.5" if entry["os"] == "Windows" else "2.55.0"
+    observed["git_path"] = "C:\\Fixture Tools\\git.exe" if entry["os"] == "Windows" else "/fixture/bin/git"
     observed["tools.clang_cpp"] = observed["tools.clang"]
     observed["compiler_target"] = entry["target"]
     observed.update({f"native.{key}": value for key, value in entry["native"].items() if key != "stdlib_abi"})
@@ -82,10 +87,7 @@ class DoctorSelectionTests(unittest.TestCase):
         for profile in (LINUX, WINDOWS):
             for tool in doctor.TOOLS:
                 baseline = reviewed_fixture()
-                if tool == "git":
-                    baseline["platforms"][profile]["git"] = "pending"
-                else:
-                    baseline["platforms"][profile]["tools"][tool] = "pending"
+                baseline["platforms"][profile]["tools"][tool] = "pending"
                 with self.subTest(profile=profile, tool=tool), self.assertRaisesRegex(BaselineError, f"tools.{tool}"):
                     select_inputs(baseline, profile)
         for version in (">=3.14.7", "3.14.*", "3.x", " pending "):
@@ -107,7 +109,7 @@ class DoctorSelectionTests(unittest.TestCase):
         baseline = reviewed_fixture()
         ci = copy.deepcopy(baseline["platforms"][LINUX])
         ci.update({"profile": LINUX, "environment": "ubuntu-ci"})
-        ci["tools"] = {"python": "3.13.15", "cmake": "3.31.8", "clang": "22.1.9"}
+        ci["tools"] = {"python": "3.13.15", "cmake": "3.31.8", "clang": "18.1.3"}
         ci["native"].update({"distribution": "Ubuntu", "distribution_version": "24.04"})
         baseline["ci_environments"]["ubuntu-ci"] = ci
         selected = select_inputs(baseline, LINUX, environment="ubuntu-ci")
@@ -118,8 +120,8 @@ class DoctorSelectionTests(unittest.TestCase):
         checks = check_prerequisites(baseline, selected, observed)
         self.assertTrue(any(check["status"] == "mismatch" for check in checks))
 
-    def test_missing_git_target_and_wrong_native_settings_fail(self):
-        for field, value in (("git", None), ("target", None), ("os", "Windows"), ("arch", "armv8")):
+    def test_missing_target_and_wrong_native_settings_fail(self):
+        for field, value in (("target", None), ("os", "Windows"), ("arch", "armv8")):
             baseline = reviewed_fixture()
             baseline["platforms"][LINUX][field] = value
             with self.subTest(field=field), self.assertRaises(BaselineError):
@@ -178,6 +180,8 @@ class PrerequisiteTests(unittest.TestCase):
             observed = matching_observations(baseline, profile)
             self.assertTrue(all(check["status"] == "ok" for check in check_prerequisites(baseline, selected, observed)))
             for label in observed:
+                if label in {"tools.git", "git_path"}:
+                    continue  # Git version/path are utility observations, not exact ABI expectations.
                 for wrong, status in ((None, "missing"), ("unexpected", "mismatch")):
                     candidate = {**observed, label: wrong}
                     checks = check_prerequisites(baseline, selected, candidate)
@@ -192,6 +196,79 @@ class PrerequisiteTests(unittest.TestCase):
         observed["paths.vs_root"] = "c:/fixture tools/VS_ROOT"
         checks = check_prerequisites(baseline, select_inputs(baseline, WINDOWS), observed)
         self.assertTrue(all(check["status"] == "ok" for check in checks))
+
+    def test_ci_selection_is_independent_and_profile_major_matches_reviewed_environment(self):
+        baseline = read_baseline()
+        for profile, environment, major in ((LINUX, "ubuntu-ci", "18"), (WINDOWS, "windows-ci", "20")):
+            for config in ("Debug", "Release"):
+                selected = select_inputs(baseline, profile, config, environment=environment)
+                self.assertEqual(selected["environment"]["VEYR_CLANG_MAJOR"], major)
+                self.assertEqual(selected["build_configuration"], "Release")
+                checks = check_prerequisites(baseline, selected, matching_observations(baseline, profile, environment))
+                self.assertTrue(all(c["status"] == "ok" for c in checks))
+        self.assertEqual(select_inputs(baseline, LINUX)["environment"]["VEYR_CLANG_MAJOR"], "22")
+        self.assertEqual(select_inputs(baseline, LINUX, environment="ubuntu-ci")["environment"]["VEYR_GCC_INSTALL_DIR"],
+                         "/usr/lib/gcc/x86_64-linux-gnu/13")
+        with self.assertRaisesRegex(BaselineError, "not owner-selected"):
+            select_inputs(baseline, WINDOWS)
+
+    def test_git_drift_is_observational_but_missing_git_is_actionable(self):
+        baseline = read_baseline()
+        selected = select_inputs(baseline, WINDOWS, environment="windows-ci")
+        observed = matching_observations(baseline, WINDOWS, "windows-ci")
+        for version in ("2.55.0.windows.5", "2.56.0.windows.1"):
+            observed["tools.git"] = version
+            checks = check_prerequisites(baseline, selected, observed)
+            self.assertTrue(all(c["status"] == "ok" for c in checks))
+            git = next(c for c in checks if c["identity"] == "tools.git")
+            self.assertEqual(git["actual"], version)
+            self.assertEqual(git["path"], observed["git_path"])
+        observed["tools.git"] = None
+        git = next(c for c in check_prerequisites(baseline, selected, observed) if c["identity"] == "tools.git")
+        self.assertEqual(git["status"], "missing")
+        self.assertIn("Make Git available", git["remedy"])
+
+    def test_ci_compiler_and_runtime_drift_still_fails(self):
+        baseline = read_baseline()
+        for profile, environment, labels in (
+            (LINUX, "ubuntu-ci", ("tools.clang", "native.gcc", "native.libc", "native.linker")),
+            (WINDOWS, "windows-ci", ("tools.clang", "native.vctools", "native.crt", "native.sdk", "native.linker")),
+        ):
+            selected = select_inputs(baseline, profile, environment=environment)
+            for label in labels:
+                observed = matching_observations(baseline, profile, environment)
+                observed[label] = "19.1.5" if label == "tools.clang" else "unexpected"
+                check = next(c for c in check_prerequisites(baseline, selected, observed) if c["identity"] == label)
+                self.assertEqual(check["status"], "mismatch")
+
+    def test_ubuntu_banners_are_read_only_and_unknown_formats_are_rejected(self):
+        entry = read_baseline()["ci_environments"]["ubuntu-ci"]
+        for libc, linker, accepted in (
+            ("ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39", "GNU ld (GNU Binutils for Ubuntu) 2.42", True),
+            ("ldd (GNU libc) 2.44", "GNU ld (GNU Binutils) 2.47", True),
+            ("ldd (unknown vendor) 2.39", "LLD 2.42", False),
+        ):
+            calls = []
+            def fake_probe(argv, **kwargs):
+                calls.append(argv)
+                if argv[0] == "ldd":
+                    return libc
+                if argv[0] == entry["paths"]["linker"]:
+                    return linker
+                raise BaselineError("unneeded fixture probe")
+            with patch.object(doctor, "_probe", side_effect=fake_probe), \
+                 patch.object(doctor, "inspect_conan_tool", return_value="2.33.0"), \
+                 patch.object(doctor.shutil, "which", return_value=None), \
+                 patch.object(doctor.platform, "freedesktop_os_release", return_value={"NAME": "Ubuntu", "VERSION_ID": "24.04"}), \
+                 patch.object(Path, "is_dir", return_value=True), patch.object(Path, "is_file", return_value=True):
+                observed = collect_observations(entry)
+            if accepted:
+                self.assertEqual(observed["native.libc"], "glibc " + libc.split()[-1])
+                self.assertEqual(observed["native.linker"], "GNU Binutils " + linker.split()[-1])
+            else:
+                self.assertIsNone(observed["native.libc"])
+                self.assertIsNone(observed["native.linker"])
+            self.assertFalse(any("conan" in argv[0] for argv in calls))
 
     def test_read_only_linux_probes_parse_exact_native_identities(self):
         entry = reviewed_fixture()["platforms"][LINUX]
@@ -278,6 +355,13 @@ class BuildSelectionTests(unittest.TestCase):
         self.assertFalse(self.cache.exists())
         self.assertEqual(debug.lockfile.name, "linux-x86_64-clang-Debug.lock")
         self.assertEqual(debug.conan_executable, self.root / ".veyr-dev/tools/conan-2.33.0/bin/conan")
+
+    def test_git_observation_does_not_change_build_identity(self):
+        before = self.selection().build_dir
+        self.baseline["platforms"][LINUX]["git"] = "2.56.0"
+        self.assertEqual(self.selection().build_dir, before)
+        self.baseline["platforms"][LINUX]["observed_candidate"] = {"git": "2.57.0", "image_version": "new"}
+        self.assertEqual(self.selection().build_dir, before)
 
     def test_missing_external_config_and_implicit_fallback_fail(self):
         for provider in ("system", "custom"):

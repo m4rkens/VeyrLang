@@ -1,11 +1,11 @@
-# Owner-selected Omarchy/Arch developer candidate; doctor must check prerequisites.
-# Ubuntu CI identity is independently pending; native ABI/package acceptance is unproven.
+# Reviewed Omarchy developer (Clang 22) and Ubuntu CI (Clang 18) policies are separate.
+# Doctor supplies the reviewed major and explicit GCC root; CI execution remains gated.
 # Paths come from the reviewed native environment, never profile detect.
 [settings]
 os=Linux
 arch=x86_64
 compiler=clang
-compiler.version=22
+compiler.version={{ os.environ["VEYR_CLANG_MAJOR"] }}
 compiler.cppstd=23
 compiler.libcxx=libstdc++11
 llvm/*:build_type=Release

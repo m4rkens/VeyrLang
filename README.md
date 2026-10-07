@@ -8,7 +8,7 @@ reviewed `.planning/` artifacts and authorized infrastructure implementation;
 no prior-run implementation or evidence was imported. Windows and Linux remain
 Tier 1; available native evidence currently covers the Omarchy/Arch Linux host.
 Windows developer evidence and independent Windows/Ubuntu CI acceptance remain
-pending; CI tool observations are recorded as pending, unselected candidates.
+pending; CI toolchain candidates are reviewed; CI bootstrap/package/native execution remains explicitly blocked.
 
 ## Developer quick start
 
@@ -41,19 +41,18 @@ those environments. LLVM 23.1.2 and GoogleTest/GoogleMock remain Conan-owned;
 future language packages and `Veyr.lock` are separate product features.
 
 The published [CI workflow](.github/workflows/build-foundation.yml) covers
-Ubuntu 24.04 and Windows 2022 × Debug/Release. Owner-approved push run
-[37356855017](https://github.com/m4rkens/VeyrLang/actions/runs/37356855017)
-completed all four observation steps, then failed at pending CI policy before
-CLI/package setup or native builds. Both CI candidates remain pending/unselected.
-Ubuntu's observed Clang 18 conflicts with the existing Clang-22 developer/profile
-policy; its stdlib/header/linker-path observations and doctor banner parsing need
-separate review. Windows VC tools/CRT/SDK/linker and selected shell remain
-unestablished. Project-owned Conan validation, ABI/package acceptance, cold-build
-capacity and Windows locks remain pending; developer baselines are unchanged.
-See [CI policy](docs/development/CI_MATRIX_POLICY.md) and the
-[acceptance ledger](docs/development/FOUNDATION_ACCEPTANCE.md) for pending
-runtime/lock/cold-capacity evidence. Progress remains 7/8; macOS deferred.
-No Phase 1 completion or additional CI/setup authorization is claimed.
+Ubuntu 24.04 and Windows 2022 × Debug/Release. Run
+[37643695998](https://github.com/m4rkens/VeyrLang/actions/runs/37643695998)
+completed all expanded observations and stopped at pending policy before setup.
+The owner now reviewed Ubuntu Clang 18.1.3 with explicit GCC-13/libstdc++11 and
+Windows standalone Clang 20.1.8 with observed VC/CRT/SDK/linker inputs. These CI
+candidates are separate from both developer baselines. Git version/path are
+utility observations; Git drift alone is not an ABI/package prerequisite failure.
+The workflow's independent execution flag stays false. Project-owned Conan
+validation, native/package acceptance, cold-build capacity and Windows locks
+remain pending. See [CI policy](docs/development/CI_MATRIX_POLICY.md) and the
+[acceptance ledger](docs/development/FOUNDATION_ACCEPTANCE.md). Progress remains
+7/8; macOS deferred. No new CI run, setup or Phase 1 completion is authorized.
 
 ## What Veyr is
 

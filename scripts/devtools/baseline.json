@@ -69,130 +69,252 @@
   },
   "ci_environments": {
     "ubuntu-ci": {
-      "status": "pending",
+      "status": "reviewed",
       "profile": "linux-x86_64-clang",
       "environment": "ubuntu-ci",
       "runner": "ubuntu-24.04",
-      "evidence": "Observed candidate from run 37356855017 only; pending and unselected. Incomplete native identities and Clang/profile conflict block activation; Omarchy developer identity is separate.",
+      "evidence": "Owner-reviewed toolchain candidate from run 37643695998. CI execution separately blocked; prerequisites/native/package acceptance unverified; developer baselines independent.",
+      "remaining_gaps": [
+        "Separate owner authorization before CI bootstrap/package/native execution.",
+        "Project-owned Conan 2.33.0 and strict CI prerequisite validation pending.",
+        "Four native CI outcomes, ABI/package acceptance and cold/warm capacity pending.",
+        "Windows Debug/Release locks and Windows developer evidence independently pending."
+      ],
+      "prior_observations": [
+        {
+          "run_id": 37356855017,
+          "commit": "c4f27d086370c8d63d0b81990eba04044bdbe98f",
+          "image_os": "ubuntu24",
+          "image_version": "20260927.320.1",
+          "runner_agent": "2.337.0",
+          "os": "Linux",
+          "os_description": "Ubuntu 24.04.5 LTS",
+          "arch": "x86_64",
+          "target": "x86_64-pc-linux-gnu",
+          "tools": {
+            "python": "3.12.3",
+            "conan": null,
+            "cmake": "3.31.6",
+            "ninja": "1.13.2",
+            "clang": "18.1.3",
+            "clang_cpp": "18.1.3",
+            "clang_cl": null,
+            "git": "2.55.0"
+          },
+          "native": {
+            "distribution": "Ubuntu",
+            "distribution_version": "24.04.5",
+            "distribution_version_id": "24.04",
+            "gcc": "13.3.0",
+            "gxx": "13.3.0",
+            "gcc_package": "13.3.0-6ubuntu2~24.04.1",
+            "libc": "glibc 2.39",
+            "linker": "GNU Binutils 2.42"
+          },
+          "paths": {
+            "python": "/usr/bin/python",
+            "cmake": "/usr/local/bin/cmake",
+            "ninja": "/usr/local/bin/ninja",
+            "clang": "/usr/bin/clang",
+            "clang_cpp": "/usr/bin/clang++",
+            "git": "/usr/bin/git",
+            "gcc_library_file": "/usr/lib/gcc/x86_64-linux-gnu/13/libgcc.a",
+            "stdlib_library": null,
+            "stdlib_headers": null,
+            "linker": null
+          },
+          "stdlib_locator_output": "libstdc++",
+          "jobs": {
+            "Debug": "https://github.com/m4rkens/VeyrLang/actions/runs/37356855017/job/111921336171",
+            "Release": "https://github.com/m4rkens/VeyrLang/actions/runs/37356855017/job/111921336214"
+          }
+        }
+      ],
+      "os": "Linux",
+      "arch": "x86_64",
+      "target": "x86_64-pc-linux-gnu",
+      "tools": {
+        "python": "3.12.3",
+        "cmake": "3.31.6",
+        "clang": "18.1.3"
+      },
+      "native": {
+        "distribution": "Ubuntu",
+        "distribution_version": "24.04",
+        "gcc": "13.3.0",
+        "stdlib_abi": "libstdc++11",
+        "libc": "glibc 2.39",
+        "linker": "GNU Binutils 2.42"
+      },
+      "paths": {
+        "c_compiler": "/usr/bin/clang",
+        "cpp_compiler": "/usr/bin/clang++",
+        "linker": "/usr/bin/ld",
+        "gcc_install_dir": "/usr/lib/gcc/x86_64-linux-gnu/13",
+        "stdlib_headers": "/usr/include/c++/13",
+        "stdlib_library": "/usr/lib/gcc/x86_64-linux-gnu/13/libstdc++.so"
+      },
       "observed_candidate": {
-        "run_id": 37356855017,
-        "commit": "c4f27d086370c8d63d0b81990eba04044bdbe98f",
+        "run_id": 37643695998,
+        "commit": "63c275d175e727830a6c30ba8204dcc3e102bdca",
+        "result": "All hosted runners acquired; observations and artifacts succeeded; expected pending-policy exit 1. No bootstrap/package/native work.",
+        "os_description": "Ubuntu 24.04.5 LTS",
         "image_os": "ubuntu24",
         "image_version": "20260927.320.1",
-        "runner_agent": "2.337.0",
-        "os": "Linux",
-        "os_description": "Ubuntu 24.04.5 LTS",
-        "arch": "x86_64",
-        "target": "x86_64-pc-linux-gnu",
-        "tools": {
-          "python": "3.12.3",
-          "conan": null,
-          "cmake": "3.31.6",
-          "ninja": "1.13.2",
-          "clang": "18.1.3",
-          "clang_cpp": "18.1.3",
-          "clang_cl": null,
-          "git": "2.55.0"
+        "gcc_selection": "--gcc-install-dir=/usr/lib/gcc/x86_64-linux-gnu/13",
+        "gcc_package": "13.3.0-6ubuntu2~24.04.1",
+        "stdlib_config_header": "/usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h",
+        "stdlib_config_header_sha256": "335E3585A6D6626CC9C9264C8C19716EB827CBCBC777516B0CE5BA1840A59F1C",
+        "raw_header_definitions": {
+          "_GLIBCXX_RELEASE": 13,
+          "__GLIBCXX__": 20240904,
+          "_GLIBCXX_USE_CXX11_ABI": 1
         },
-        "native": {
-          "distribution": "Ubuntu",
-          "distribution_version": "24.04.5",
-          "distribution_version_id": "24.04",
-          "gcc": "13.3.0",
-          "gxx": "13.3.0",
-          "gcc_package": "13.3.0-6ubuntu2~24.04.1",
-          "libc": "glibc 2.39",
-          "linker": "GNU Binutils 2.42"
+        "stdlib_headers": [
+          "/usr/include/c++/13",
+          "/usr/include/x86_64-linux-gnu/c++/13",
+          "/usr/include/c++/13/backward"
+        ],
+        "stdlib_runtime": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33",
+        "stdlib_runtime_sha256": "1FD75FE70354A416D75AEF22BCAE68C47BD25D20E2D0568C30B1A9838CF62F11",
+        "stdlib_runtime_package": "libstdc++6:amd64 14.2.0-4ubuntu2~24.04.1",
+        "resolved_linker": "/usr/bin/x86_64-linux-gnu-ld.bfd",
+        "git": {
+          "version": "2.55.0",
+          "path": "/usr/bin/git"
         },
-        "paths": {
-          "python": "/usr/bin/python",
-          "cmake": "/usr/local/bin/cmake",
-          "ninja": "/usr/local/bin/ninja",
-          "clang": "/usr/bin/clang",
-          "clang_cpp": "/usr/bin/clang++",
-          "git": "/usr/bin/git",
-          "gcc_library_file": "/usr/lib/gcc/x86_64-linux-gnu/13/libgcc.a",
-          "stdlib_library": null,
-          "stdlib_headers": null,
-          "linker": null
-        },
-        "stdlib_locator_output": "libstdc++",
         "jobs": {
-          "Debug": "https://github.com/m4rkens/VeyrLang/actions/runs/37356855017/job/111921336171",
-          "Release": "https://github.com/m4rkens/VeyrLang/actions/runs/37356855017/job/111921336214"
-        }
-      },
-      "remaining_gaps": [
-        "Observed Clang 18 conflicts with the existing Clang-22 developer/profile and doctor policy; no profile change authorized.",
-        "Resolved libstdc++ runtime/path and standard-library header identity not established.",
-        "Exact linker path not established.",
-        "Current doctor libc/linker parsers do not accept the observed Ubuntu banner formats.",
-        "Project-owned Conan 2.33.0 validation pending; CLI installation/version unobserved and tools-only bootstrap skipped.",
-        "Native ABI/package acceptance and cold-build capacity pending.",
-        "Windows Debug/Release locks remain independently pending."
-      ]
+          "Debug": "https://github.com/m4rkens/VeyrLang/actions/runs/37643695998/job/112868833273",
+          "Release": "https://github.com/m4rkens/VeyrLang/actions/runs/37643695998/job/112868833146"
+        },
+        "equivalence": "GCC-13 header/search/runtime/linker files match; trace differs only by temporary object name. Default GCC-14 observations preserved."
+      }
     },
     "windows-ci": {
-      "status": "pending",
+      "status": "reviewed",
       "profile": "windows-x86_64-clangcl",
       "environment": "windows-ci",
       "runner": "windows-2022",
-      "evidence": "Observed candidate from run 37356855017 only; pending and unselected. VS installation does not establish VC tools/CRT/SDK/linker identity; Windows developer evidence is separate.",
-      "observed_candidate": {
-        "run_id": 37356855017,
-        "commit": "c4f27d086370c8d63d0b81990eba04044bdbe98f",
-        "image_os": "win22",
-        "image_version": "20260927.320.1",
-        "runner_agent": "2.337.0",
-        "os": "Windows",
-        "os_description": "Windows Server 2022 Datacenter",
-        "os_version": "10.0.20348",
-        "arch": "x86_64",
-        "target": "x86_64-pc-windows-msvc",
-        "tools": {
-          "python": "3.12.10",
-          "conan": null,
-          "cmake": "3.31.6",
-          "ninja": "1.13.2",
-          "clang": "20.1.8",
-          "clang_cpp": "20.1.8",
-          "clang_cl": "20.1.8",
-          "git": "2.55.0.windows.5"
-        },
-        "native": {
-          "vs_product": "Visual Studio Enterprise 2022",
-          "vs_installation": "17.14.37710.0",
-          "vctools": null,
-          "crt": null,
-          "sdk": null,
-          "linker": null
-        },
-        "paths": {
-          "python": "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
-          "cmake": "C:\\Program Files\\CMake\\bin\\cmake.exe",
-          "ninja": "C:\\ProgramData\\Chocolatey\\bin\\ninja.exe",
-          "clang": "C:\\Program Files\\LLVM\\bin\\clang.exe",
-          "clang_cpp": "C:\\Program Files\\LLVM\\bin\\clang++.exe",
-          "clang_cl": "C:\\Program Files\\LLVM\\bin\\clang-cl.exe",
-          "git": "C:\\Program Files\\Git\\bin\\git.exe",
-          "vs_root": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise",
-          "vctools_root": null,
-          "sdk_root": null,
-          "linker": null
-        },
-        "jobs": {
-          "Debug": "https://github.com/m4rkens/VeyrLang/actions/runs/37356855017/job/111921336225",
-          "Release": "https://github.com/m4rkens/VeyrLang/actions/runs/37356855017/job/111921336313"
-        }
-      },
+      "evidence": "Owner-reviewed toolchain candidate from run 37643695998. CI execution separately blocked; prerequisites/native/package acceptance unverified; developer baselines independent.",
       "remaining_gaps": [
-        "VC tools, CRT and Windows SDK identities not established.",
-        "Exact linker identity/path not established.",
-        "Selected developer-shell/toolchain environment not established; VS installation is an observation only.",
-        "Project-owned Conan 2.33.0 validation pending; CLI installation/version unobserved and tools-only bootstrap skipped.",
-        "Native ABI/package acceptance and cold-build capacity pending.",
-        "Windows Debug/Release locks pending."
-      ]
+        "Separate owner authorization before CI bootstrap/package/native execution.",
+        "Project-owned Conan 2.33.0 and strict CI prerequisite validation pending.",
+        "Four native CI outcomes, ABI/package acceptance and cold/warm capacity pending.",
+        "Windows Debug/Release locks and Windows developer evidence independently pending."
+      ],
+      "prior_observations": [
+        {
+          "run_id": 37356855017,
+          "commit": "c4f27d086370c8d63d0b81990eba04044bdbe98f",
+          "image_os": "win22",
+          "image_version": "20260927.320.1",
+          "runner_agent": "2.337.0",
+          "os": "Windows",
+          "os_description": "Windows Server 2022 Datacenter",
+          "os_version": "10.0.20348",
+          "arch": "x86_64",
+          "target": "x86_64-pc-windows-msvc",
+          "tools": {
+            "python": "3.12.10",
+            "conan": null,
+            "cmake": "3.31.6",
+            "ninja": "1.13.2",
+            "clang": "20.1.8",
+            "clang_cpp": "20.1.8",
+            "clang_cl": "20.1.8",
+            "git": "2.55.0.windows.5"
+          },
+          "native": {
+            "vs_product": "Visual Studio Enterprise 2022",
+            "vs_installation": "17.14.37710.0",
+            "vctools": null,
+            "crt": null,
+            "sdk": null,
+            "linker": null
+          },
+          "paths": {
+            "python": "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
+            "cmake": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+            "ninja": "C:\\ProgramData\\Chocolatey\\bin\\ninja.exe",
+            "clang": "C:\\Program Files\\LLVM\\bin\\clang.exe",
+            "clang_cpp": "C:\\Program Files\\LLVM\\bin\\clang++.exe",
+            "clang_cl": "C:\\Program Files\\LLVM\\bin\\clang-cl.exe",
+            "git": "C:\\Program Files\\Git\\bin\\git.exe",
+            "vs_root": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise",
+            "vctools_root": null,
+            "sdk_root": null,
+            "linker": null
+          },
+          "jobs": {
+            "Debug": "https://github.com/m4rkens/VeyrLang/actions/runs/37356855017/job/111921336225",
+            "Release": "https://github.com/m4rkens/VeyrLang/actions/runs/37356855017/job/111921336313"
+          }
+        }
+      ],
+      "os": "Windows",
+      "arch": "x86_64",
+      "target": "x86_64-pc-windows-msvc",
+      "tools": {
+        "python": "3.12.10",
+        "cmake": "3.31.6",
+        "clang": "20.1.8"
+      },
+      "native": {
+        "vs_installation": "17.14.37710.0",
+        "vctools": "14.44.35207",
+        "crt": "14.44.35220.0",
+        "sdk": "10.0.26100.0",
+        "linker": "14.44.35229.0"
+      },
+      "paths": {
+        "c_compiler": "C:\\Program Files\\LLVM\\bin\\clang-cl.exe",
+        "cpp_compiler": "C:\\Program Files\\LLVM\\bin\\clang-cl.exe",
+        "linker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe",
+        "vs_root": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise",
+        "vctools_root": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207",
+        "sdk_root": "C:\\Program Files (x86)\\Windows Kits\\10"
+      },
+      "observed_candidate": {
+        "run_id": 37643695998,
+        "commit": "63c275d175e727830a6c30ba8204dcc3e102bdca",
+        "result": "All hosted runners acquired; observations and artifacts succeeded; expected pending-policy exit 1. No bootstrap/package/native work.",
+        "os_description": "Windows Server 2022 x64",
+        "image_os": "win22",
+        "vs_display_version": "17.14.41",
+        "standalone_tools": {
+          "clang": "C:\\Program Files\\LLVM\\bin\\clang.exe",
+          "clang++": "C:\\Program Files\\LLVM\\bin\\clang++.exe",
+          "clang-cl": "C:\\Program Files\\LLVM\\bin\\clang-cl.exe"
+        },
+        "standalone_version": "20.1.8",
+        "devshell_default_clang": "19.1.5",
+        "devshell_host_arch": "x64",
+        "devshell_target_arch": "x64",
+        "ucrt_sdk": "10.0.26100.0",
+        "os_ucrt_path": "C:\\Windows\\System32\\ucrtbase.dll",
+        "os_ucrt_version": "10.0.20348.5622",
+        "vctools_redist_root": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Redist\\MSVC\\14.44.35112",
+        "jobs": {
+          "Debug": "https://github.com/m4rkens/VeyrLang/actions/runs/37643695998/job/112868833261",
+          "Release": "https://github.com/m4rkens/VeyrLang/actions/runs/37643695998/job/112868832679"
+        },
+        "configuration_observations": {
+          "Debug": {
+            "image_version": "20261004.326.1",
+            "git_version": "2.56.0.windows.1",
+            "git_path": "C:\\Program Files\\Git\\bin\\git.exe"
+          },
+          "Release": {
+            "image_version": "20260927.320.1",
+            "git_version": "2.55.0.windows.5",
+            "git_path": "C:\\Program Files\\Git\\bin\\git.exe"
+          }
+        },
+        "equivalence": "Compiler/native/runtime identities match; image, Git/PATH and VS installation metadata differ. Git version is observational."
+      }
     }
+  },
+  "utility_policy": {
+    "git": "Required repository utility; observed version/path, not an ABI/package pin. No existing minimum version requirement."
   }
 }

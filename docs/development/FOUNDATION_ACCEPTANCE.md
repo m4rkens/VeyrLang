@@ -1,8 +1,8 @@
 # Foundation acceptance ledger
 
-**Status:** Plan 01-07 complete for the available Omarchy/Arch Linux developer scope, by explicit owner closeout. Windows developer evidence and independent Windows/Ubuntu CI acceptance remain pending; observed CI candidates are unselected; macOS deferred. Phase 1 remains executing, 7/8 plans complete and zero phases complete.
+**Status:** Plan 01-07 complete for the available Omarchy/Arch Linux developer scope, by explicit owner closeout. Windows developer evidence and independent Windows/Ubuntu CI acceptance remain pending; CI toolchain candidates are owner-reviewed but bootstrap/native/package acceptance is unverified; macOS deferred. Phase 1 remains executing, 7/8 plans complete and zero phases complete.
 
-This ledger records preserved execution-task observations from the current fresh lifecycle. No builds, tests, setup or Conan operations ran to create it. Dedicated phase verification and four-combination Tier 1 CI acceptance remain separate gates. Exact commands, timestamps, failures, approved corrections and logs are in [01-07-EXECUTION.md](../../.planning/phases/01-conan-and-compiler-build-foundation/01-07-EXECUTION.md).
+This ledger records preserved execution-task observations from the current fresh lifecycle. Current alignment uses mocked/static checks only; no native builds, setup or Conan operations run to update it. Dedicated phase verification and four-combination Tier 1 CI acceptance remain separate gates. Exact commands, timestamps, failures, approved corrections and logs are in [01-07-EXECUTION.md](../../.planning/phases/01-conan-and-compiler-build-foundation/01-07-EXECUTION.md).
 
 ## Native configuration matrix
 
@@ -15,10 +15,59 @@ This ledger records preserved execution-task observations from the current fresh
 
 Ubuntu and Windows CI acceptance remain independently pending. Ubuntu is not the Linux developer baseline. The owner authorized publication and the automatic observation run 37356855017; all four jobs reported candidates and stopped at pending CI policy before setup/package/build work. No native CI acceptance or cold-runner capacity is claimed. Windows developer candidates remain unchanged and uninspected independently of Windows CI observations.
 
-## Plan 01-08 independent CI evidence gate
+## Current reviewed CI candidate policy (run 37643695998)
+
+The owner approved policy alignment from
+[run 37643695998](https://github.com/m4rkens/VeyrLang/actions/runs/37643695998),
+commit `63c275d175e727830a6c30ba8204dcc3e102bdca`. All four jobs acquired hosted
+runners, completed both raw and explicitly selected toolchain observations,
+uploaded artifacts and stopped at the expected pending-policy gate, exit 1.
+No CLI/bootstrap, cache/package operation or native build/test ran.
+
+| Configuration | Observed toolchain | Observation job | Native acceptance |
+|---|---|---|---|
+| Ubuntu Debug | Clang 18.1.3, explicit GCC-13; image 20260927.320.1 | [112868833273](https://github.com/m4rkens/VeyrLang/actions/runs/37643695998/job/112868833273) | Pending |
+| Ubuntu Release | Same exact toolchain; driver trace differs only by random temporary object | [112868833146](https://github.com/m4rkens/VeyrLang/actions/runs/37643695998/job/112868833146) | Pending |
+| Windows Debug | Standalone 20.1.8 after DevShell; image 20261004.326.1; observed Git 2.56.0.windows.1 | [112868833261](https://github.com/m4rkens/VeyrLang/actions/runs/37643695998/job/112868833261) | Pending |
+| Windows Release | Same compiler/native inputs; image 20260927.320.1; observed Git 2.55.0.windows.5 | [112868832679](https://github.com/m4rkens/VeyrLang/actions/runs/37643695998/job/112868832679) | Pending |
+
+Reviewed Ubuntu candidate: Python 3.12.3, CMake 3.31.6, Ninja 1.13.2,
+Clang/clang++ 18.1.3, target x86_64-pc-linux-gnu, GCC/G++ 13.3.0 at explicit
+`/usr/lib/gcc/x86_64-linux-gnu/13`, GCC-13 C++ headers, glibc 2.39, and
+`/usr/bin/ld` resolving to `/usr/bin/x86_64-linux-gnu-ld.bfd` / Binutils 2.42.
+Header `/usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h` records release 13,
+`__GLIBCXX__ 20240904`, and raw `_GLIBCXX_USE_CXX11_ABI 1`; SHA256
+`335E3585A6D6626CC9C9264C8C19716EB827CBCBC777516B0CE5BA1840A59F1C`.
+The selected library `/usr/lib/gcc/x86_64-linux-gnu/13/libstdc++.so` resolves to
+`/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33`, package
+`libstdc++6:amd64 14.2.0-4ubuntu2~24.04.1`; SHA256
+`1FD75FE70354A416D75AEF22BCAE68C47BD25D20E2D0568C30B1A9838CF62F11`.
+These files/search paths match across Debug/Release. Default GCC-14 raw
+observations remain preserved. Raw definitions/dry-runs do not prove compiled ABI.
+
+Reviewed Windows candidate: Python 3.12.10, CMake 3.31.6, Ninja 1.13.2;
+standalone clang/clang++/clang-cl 20.1.8 in `C:\Program Files\LLVM\bin`, target
+x86_64-pc-windows-msvc; VS Enterprise 2022 17.14.37710.0, DevShell 17.14.41;
+VC tools 14.44.35207, CRT header 14.44.35220.0, SDK/UCRT SDK 10.0.26100.0,
+MSVC link.exe 14.44.35229.0. OS ucrtbase.dll is separately observed as
+10.0.20348.5622. Compiler/CRT/SDK/linker and runtime file hashes match across
+configurations. Image/Git/PATH and VS installation metadata differ. Git remains
+an available utility with observed version/path, not an exact ABI/package pin.
+Bundled Clang 19.1.5 observations remain; absolute standalone queries after
+DevShell retain its VC/SDK/linker environment without selecting the bundled tools.
+
+Both baseline entries now say `reviewed` as candidate policy only. The workflow
+independently blocks execution with `VEYR_CI_EXECUTION_AUTHORIZED: 'false'` before
+any tool installation. Omarchy and Windows developer baselines are unchanged.
+Project-owned Conan 2.33.0 validation, Windows locks, four native CI outcomes,
+ABI/package acceptance and actual cold/warm capacity remain pending. Backend
+LLVM stays 23.1.2; no native CI row, plan or phase is closed by this policy update.
+All earlier observation artifacts/history are retained.
+
+## Historical initial CI evidence gate (run 37356855017)
 
 The published `.github/workflows/build-foundation.yml` implements the four
-matrix rows below. CI policy remains pending and stopped before CLI or
+matrix rows below. At the initial run, CI policy was pending and stopped before CLI or
 package setup, after reporting installed runner observations. Publication and
 observation do not pass native CI. Its workflow inputs and blocking gates are
 documented in [CI_MATRIX_POLICY.md](CI_MATRIX_POLICY.md).
@@ -56,17 +105,16 @@ still pending. LLVM backend remains 23.1.2.
 | Visual Studio installation | Not applicable | Enterprise 2022 17.14.37710.0 at `C:\Program Files\Microsoft Visual Studio\2022\Enterprise` |
 | Git | 2.55.0 at `/usr/bin/git` | 2.55.0.windows.5 at `C:\Program Files\Git\bin\git.exe` |
 
-Ubuntu reported `/usr/lib/gcc/x86_64-linux-gnu/13/libgcc.a`, but its libstdc++
-locator returned only `libstdc++`. Resolved libstdc++ runtime/path, standard-library
-header identity and exact linker path are not established. Clang 18 conflicts
-with the existing Clang-22 developer/profile/doctor policy. Current doctor
-libc/linker parsers do not accept the observed Ubuntu banner formats.
+During the initial run, Ubuntu reported `/usr/lib/gcc/x86_64-linux-gnu/13/libgcc.a`, but its libstdc++
+locator returned only `libstdc++`. Runtime/header/linker identities and the
+Clang-18 profile decision were then missing; Ubuntu banner parsing was unsupported.
+The current approved alignment above supersedes those historical identity gaps.
 
-Windows VC tools, CRT, Windows SDK, exact linker identity/path and selected
-developer-shell/toolchain environment remain unobserved. Both platforms retain
+At that initial run, Windows VC tools, CRT, SDK, linker and selected shell
+identities were unobserved; the expanded current observations above resolve them. Both platforms retain
 project-owned Conan validation, native ABI/package acceptance and cold-build
-capacity gaps; Windows Debug/Release locks remain pending. Both CI entries stay
-pending/unselected. These observations do not modify either developer baseline,
+capacity gaps; Windows Debug/Release locks remain pending. At that run both CI entries remained
+pending/unselected; current reviewed policy is recorded above. These observations do not modify either developer baseline,
 authorize setup, or prove Debug/Release runtime compatibility.
 
 No runner/tool identities, resource peaks, cache hits or CI URLs are fabricated.
@@ -120,7 +168,7 @@ Conan remains the owner of dependency solving, acquisition, package storage/revi
 
 Both configurations reused the same LLVM package. GoogleTest configurations have distinct Conan package identities. Raw before/after observations from Conan list contain seven recipe/package identities, all unchanged across each separately explicit warm setup. Existing cached CMake identity is also retained; no dependency build is inferred from its presence.
 
-| Authoritative input | Recorded SHA256 |
+| Historical Plan 01-07 input | Recorded SHA256 |
 |---|---|
 | conan/locks/linux-x86_64-clang-Debug.lock and linux-x86_64-clang-Release.lock, each | b76a5f857ba40da4a59d2bdcd8690fba6d12d15d53bd3b0dc6aceb252585f30b |
 | conan/profiles/linux-x86_64-clang | f929ae7dd71317c578cb34d3954e01412cb81c87b24b0f1a1829291a8afa2ed9 |
@@ -183,7 +231,7 @@ The approved runner correction checks final returncode after EOF before returnin
 
 Approximately 60 quiet seconds remains a soft liveness checkpoint. Plan 01-07 combined durations include read-only metadata scans, not an expensive quiet dependency build. No healthy command was automatically terminated. Existing supervision fixtures establish policy behavior; native Windows process-tree handling and expensive-build quiet telemetry are not established by these short native commands.
 
-Remaining gaps: actual Windows developer SDK/toolset/CRT/iterator/runtime identities, Windows locks and native Debug/Release execution; independent Windows/Ubuntu CI identities and all four passing CI combinations; cold-runner source-build capacity; broader ABI surfaces; arbitrary external LLVM installations; native spaced-path behavior (existing Linux profile quotation warnings remain). These gaps are not waived by available-Linux closeout. All eight waves and discussion decisions remain unchanged; no phase-wide requirements marked complete.
+Remaining gaps: actual Windows developer SDK/toolset/CRT/iterator/runtime identities, Windows locks and native Debug/Release execution; real prerequisite validation of the independently reviewed Windows/Ubuntu CI candidates and all four passing CI combinations; cold-runner source-build capacity; broader ABI surfaces; arbitrary external LLVM installations; native spaced-path behavior (historical Linux profile quotation warnings remain). These gaps are not waived by available-Linux closeout or current policy alignment. CI execution remains explicitly blocked. All eight waves and discussion decisions remain unchanged; no phase-wide requirements marked complete.
 
 Platform impact:
 - Windows: Native developer/CI Debug/Release evidence remains pending; mocked selection/process checks do not certify CRT/SDK or native execution.
