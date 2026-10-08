@@ -238,13 +238,15 @@ class FoundationChecks:
                                                         "CONAN_HOME": str(home)})
             except subprocess.CalledProcessError as error:
                 text = "".join(output)
-                (self.output() / "offline-rejection.log").write_text(text)
+                # Keep raw evidence; disable Windows newline translation when writing it.
+                (self.output() / "offline-rejection.log").write_text(text, encoding="utf-8", newline="")
+                diagnostic_text = text.replace("\r\n", "\n")
                 missing_recipe = re.search(
                     r"^gtest/1\.18\.0: Not found in local cache, looking in remotes\.\.\.$",
-                    text, re.MULTILINE)
+                    diagnostic_text, re.MULTILINE)
                 no_remote = re.search(
                     r"^ERROR: Package 'gtest/1\.18\.0' not resolved: No remote defined\. Required by ''$",
-                    text, re.MULTILINE)
+                    diagnostic_text, re.MULTILINE)
                 if error.returncode != 1 or not (missing_recipe and no_remote) or re.search(
                         r"Downloading|Building from source|Calling build\(\)", text):
                     raise  # Unexpected exit/diagnostic remains a hard stop.

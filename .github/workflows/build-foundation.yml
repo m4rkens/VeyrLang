@@ -567,3 +567,6 @@ jobs:
             build/**/results.json
             build/**/Testing/Temporary/LastTest.log
             build/**/offline-rejection.log
+            build/**/CMakeFiles/CMakeConfigureLog.yaml
+            build/**/CMakeCache.txt
+            build/**/generators/conan_toolchain.cmake

@@ -243,51 +243,80 @@ class FoundationContractTests(ConanOperationsFixture, unittest.TestCase):
         self.assertNotEqual(foundation.tree_identity(self.selection.conan_home), before)
 
     def test_offline_expected_rejection_is_once_in_empty_external_home_not_real_cache(self):
-        homes = []
-        def reject(argv, **kwargs):
-            self.calls.append((argv, kwargs))
-            homes.append(Path(kwargs["env"]["CONAN_HOME"]))
-            self.addCleanup(lambda: __import__("shutil").rmtree(homes[-1]))
-            self.assertEqual(list(homes[-1].iterdir()), [])
-            self.assertIn("--no-remote", argv)
-            self.assertIn("--build=never", argv)
-            print("gtest/1.18.0: Not found in local cache, looking in remotes...")
-            print("Graph root\n    conanfile.py: /fixture/conanfile.py")
-            print("ERROR: Package 'gtest/1.18.0' not resolved: No remote defined. Required by ''")
-            raise subprocess.CalledProcessError(1, argv)
-        before = foundation.tree_identity(self.selection.conan_home)
-        with patch.object(foundation, "run_command", side_effect=reject):
-            self.harness.execute("offline")
-        self.assertEqual(len(self.calls), 1)
-        self.assertNotEqual(homes[0], self.selection.conan_home)
-        self.assertNotIn(self.root, homes[0].parents)
-        self.assertEqual(foundation.tree_identity(self.selection.conan_home), before)
-        self.assertEqual(self.harness.results["offline"]["expected_exit"], 1)
-        self.setup.assert_not_called()
+        write_text = Path.write_text
+        for newline in ("\n", "\r\n"):
+            with self.subTest(newline=repr(newline)):
+                self.calls.clear()
+                homes = []
+                raw = newline.join((
+                    "gtest/1.18.0: Not found in local cache, looking in remotes...",
+                    "Graph root", "    conanfile.py: /fixture/conanfile.py",
+                    "ERROR: Package 'gtest/1.18.0' not resolved: No remote defined. Required by ''",
+                    ""))
+                def reject(argv, **kwargs):
+                    self.calls.append((argv, kwargs))
+                    home = Path(kwargs["env"]["CONAN_HOME"])
+                    homes.append(home)
+                    self.addCleanup(lambda path=home: __import__("shutil").rmtree(path))
+                    self.assertEqual(list(home.iterdir()), [])
+                    self.assertIn("--no-remote", argv)
+                    self.assertIn("--build=never", argv)
+                    sys.stdout.write(raw)
+                    raise subprocess.CalledProcessError(1, argv)
+                before = foundation.tree_identity(self.selection.conan_home)
+                with patch.object(foundation, "run_command", side_effect=reject), \
+                     patch.object(Path, "write_text", autospec=True, side_effect=write_text) as writes:
+                    self.harness.execute("offline")
+                self.assertEqual(len(self.calls), 1)
+                self.assertNotEqual(homes[0], self.selection.conan_home)
+                self.assertNotIn(self.root, homes[0].parents)
+                self.assertEqual(foundation.tree_identity(self.selection.conan_home), before)
+                self.assertEqual(self.harness.results["offline"]["expected_exit"], 1)
+                log = self.harness.workspace / "offline-rejection.log"
+                self.assertEqual(log.read_bytes(), raw.encode("utf-8"))
+                evidence_writes = [call for call in writes.call_args_list if call.args[0] == log]
+                self.assertEqual(len(evidence_writes), 1)
+                self.assertEqual(evidence_writes[0].args[1], raw)
+                self.assertEqual(evidence_writes[0].kwargs, {"encoding": "utf-8", "newline": ""})
+                self.setup.assert_not_called()
+                self.bootstrap.assert_not_called()
 
     def test_offline_unexpected_success_or_nonzero_diagnostic_stops_without_retry(self):
         missing = "gtest/1.18.0: Not found in local cache, looking in remotes..."
         unresolved = "ERROR: Package 'gtest/1.18.0' not resolved: No remote defined. Required by ''"
         expected = f"{missing}\n{unresolved}"
-        for exit_code, message in ((0, "ok"), (7, expected), (1, "ERROR: compiler failed"),
-                                   (1, missing), (1, unresolved),
-                                   (1, expected.replace("gtest/1.18.0", "other/1.18.0")),
-                                   (1, f"Downloading package\n{expected}"),
-                                   (1, f"Building from source\n{expected}"),
-                                   (1, f"Calling build()\n{expected}")):
-            self.calls.clear()
-            def result(argv, **kwargs):
-                self.calls.append((argv, kwargs))
-                home = Path(kwargs["env"]["CONAN_HOME"])
-                self.addCleanup(lambda path=home: __import__("shutil").rmtree(path))
-                print(message)
-                if exit_code:
-                    raise subprocess.CalledProcessError(exit_code, argv)
-                return subprocess.CompletedProcess(argv, 0)
-            with patch.object(foundation, "run_command", side_effect=result), self.assertRaises(
-                    (BaselineError, subprocess.CalledProcessError)):
-                self.harness.offline()
-            self.assertEqual(len(self.calls), 1)
+        for newline in ("\n", "\r\n"):
+            for exit_code, message in ((0, "ok"), (7, expected), (1, "ERROR: compiler failed"),
+                                       (1, missing), (1, unresolved),
+                                       (1, expected.replace("gtest/1.18.0", "other/1.18.0")),
+                                       (1, expected.replace("No remote defined", "No remote available")),
+                                       (1, expected + " unexpected suffix"),
+                                       (1, expected.replace("\n", "\r")),
+                                       (1, f"Downloading package\n{expected}"),
+                                       (1, f"Building from source\n{expected}"),
+                                       (1, f"Calling build()\n{expected}")):
+                with self.subTest(newline=repr(newline), exit_code=exit_code, message=message):
+                    self.calls.clear()
+                    raw = message.replace("\n", newline) + newline
+                    def result(argv, **kwargs):
+                        self.calls.append((argv, kwargs))
+                        self.assertIn("--no-remote", argv)
+                        self.assertIn("--build=never", argv)
+                        home = Path(kwargs["env"]["CONAN_HOME"])
+                        self.addCleanup(lambda path=home: __import__("shutil").rmtree(path))
+                        sys.stdout.write(raw)
+                        if exit_code:
+                            raise subprocess.CalledProcessError(exit_code, argv)
+                        return subprocess.CompletedProcess(argv, 0)
+                    with patch.object(foundation, "run_command", side_effect=result), self.assertRaises(
+                            (BaselineError, subprocess.CalledProcessError)):
+                        self.harness.offline()
+                    self.assertEqual(len(self.calls), 1)
+                    if exit_code:
+                        log = self.harness.workspace / "offline-rejection.log"
+                        self.assertEqual(log.read_bytes(), raw.encode("utf-8"))
+                    self.setup.assert_not_called()
+                    self.bootstrap.assert_not_called()
 
     def test_pending_windows_and_ci_do_not_inherit_linux_evidence(self):
         with patch.object(foundation, "read_baseline", return_value=self.baseline), \
@@ -302,6 +331,42 @@ class FoundationContractTests(ConanOperationsFixture, unittest.TestCase):
 
 
 class CIWorkflowPolicyTests(unittest.TestCase):
+    def test_failure_artifacts_preserve_configure_diagnostics_with_narrow_paths(self):
+        workflow = (Path(__file__).resolve().parents[2] / ".github/workflows/build-foundation.yml").read_text(encoding="utf-8")
+        upload = workflow[workflow.index("      - name: Upload observations, logs and native records"):]
+        self.assertIn("if: ${{ always() }}", upload)
+        self.assertIn("include-hidden-files: true", upload)
+        self.assertIn("if-no-files-found: error", upload)
+        paths = [line.strip() for line in upload.split("          path: |\n", 1)[1].splitlines()]
+        self.assertEqual(paths, [
+            ".veyr-dev/ci/",
+            "build/**/compile_commands.json",
+            "build/**/results.json",
+            "build/**/Testing/Temporary/LastTest.log",
+            "build/**/offline-rejection.log",
+            "build/**/CMakeFiles/CMakeConfigureLog.yaml",
+            "build/**/CMakeCache.txt",
+            "build/**/generators/conan_toolchain.cmake",
+        ])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            build = root / "build/windows-x86_64-msvc/managed/profile/Release"
+            diagnostics = {
+                "build/**/CMakeFiles/CMakeConfigureLog.yaml": build / "CMakeFiles/CMakeConfigureLog.yaml",
+                "build/**/CMakeCache.txt": build / "CMakeCache.txt",
+                "build/**/generators/conan_toolchain.cmake": build / "generators/conan_toolchain.cmake",
+            }
+            unrelated = build / "CMakeFiles/unrelated.obj"
+            unrelated.parent.mkdir(parents=True)
+            unrelated.touch()
+            for pattern, evidence in diagnostics.items():
+                with self.subTest(pattern=pattern):
+                    self.assertEqual(list(root.glob(pattern)), [])  # Optional until created.
+                    evidence.parent.mkdir(parents=True, exist_ok=True)
+                    evidence.write_text("diagnostic fixture\n")
+                    self.assertEqual(list(root.glob(pattern)), [evidence])
+            self.assertFalse(any(unrelated in root.glob(pattern) for pattern in paths))
+
     def test_authorized_ci_execution_retains_policy_gates(self):
         workflow = (Path(__file__).resolve().parents[2] / ".github/workflows/build-foundation.yml").read_text(encoding="utf-8")
         self.assertIn("VEYR_CI_EXECUTION_AUTHORIZED: 'true'", workflow)
