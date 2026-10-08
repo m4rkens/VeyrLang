@@ -7,7 +7,7 @@ from dataclasses import replace
 import io
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 import re
 import subprocess
 import sys
@@ -353,7 +353,28 @@ class WindowsDevShellProfileTests(unittest.TestCase):
         self.assertEqual(self.profile["conf"]["tools.build:compiler_executables"],
                          '{{ {"c": os.environ["VEYR_C_COMPILER"], "cpp": os.environ["VEYR_CPP_COMPILER"]} | tojson }}')
         self.assertEqual(self.profile["conf"]["tools.cmake.cmaketoolchain:extra_variables"],
-                         '{{ {"CMAKE_LINKER": os.environ["VEYR_LINKER"]} | tojson }}')
+                         r'{{ {"CMAKE_LINKER": os.environ["VEYR_LINKER"].replace("\\", "/")} | tojson }}')
+
+    def test_profile_serializes_the_same_windows_linker_with_cmake_safe_separators(self):
+        native = (r"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools"
+                  r"\MSVC\14.44.35207\bin\HostX64\x64\link.exe")
+        expected = ("C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools"
+                    "/MSVC/14.44.35207/bin/HostX64/x64/link.exe")
+        template = self.profile["conf"]["tools.cmake.cmaketoolchain:extra_variables"]
+        self.assertTrue(template.startswith("{{ ") and template.endswith(" | tojson }}"))
+        # This profile expression is Python-compatible; evaluate the actual value
+        # without requiring Jinja/Conan or launching package/native commands.
+        expression = template.removeprefix("{{ ").removesuffix(" | tojson }}")
+        for supplied in (native, expected):
+            with self.subTest(supplied=supplied), patch.dict(os.environ, {"VEYR_LINKER": supplied}):
+                variables = eval(expression, {"__builtins__": {}, "os": os})
+                serialized = json.dumps(variables)
+                derived = json.loads(serialized)
+                self.assertEqual(derived, {"CMAKE_LINKER": expected})
+                self.assertNotIn("\\", derived["CMAKE_LINKER"])
+                self.assertNotIn("\\", serialized)
+                self.assertEqual(PureWindowsPath(derived["CMAKE_LINKER"]), PureWindowsPath(native))
+                self.assertEqual(os.environ["VEYR_LINKER"], supplied)
 
     def test_devshell_vc_sdk_environment_remains_explicit(self):
         expected = {
