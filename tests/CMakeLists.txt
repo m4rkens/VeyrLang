@@ -94,6 +94,79 @@ endif()
 veyr_add_policy_negative(WrongHeaderABI "package header ABI checks must be disabled"
   "file(WRITE \"\${LLVM_INCLUDE_DIRS}/llvm/Config/abi-breaking.h\" \"#define LLVM_ENABLE_ABI_BREAKING_CHECKS 1\\n\")")
 
+# Synthetic Windows consumer fixtures run on either host without a compiler,
+# package operations or native acceptance. Every rejection checks the CRT diagnostic.
+function(veyr_add_consumer_crt_fixture name configuration runtime accepted)
+  set(fixture "${CMAKE_CURRENT_BINARY_DIR}/policy/ConsumerCRT/${name}")
+  file(MAKE_DIRECTORY "${fixture}")
+  set(module "${PROJECT_SOURCE_DIR}/cmake/VeyrTargets.cmake")
+  if(configuration STREQUAL "Debug")
+    set(expected MultiThreadedDebugDLL)
+  else()
+    set(expected MultiThreadedDLL)
+  endif()
+  string(CONFIGURE [=[
+cmake_minimum_required(VERSION 3.31)
+set(WIN32 TRUE)
+set(CMAKE_CXX_COMPILER_FRONTEND_VARIANT MSVC)
+set(CMAKE_BUILD_TYPE "@configuration@")
+set(CMAKE_MSVC_RUNTIME_LIBRARY [==[@runtime@]==])
+include("@module@")
+if(NOT VEYR_MSVC_RUNTIME STREQUAL "@expected@" OR
+   NOT CMAKE_MSVC_RUNTIME_LIBRARY STREQUAL "@expected@")
+  message(FATAL_ERROR "Selected consumer CRT was not retained")
+endif()
+]=] fixture_contents @ONLY)
+  file(WRITE "${fixture}/input.cmake" "${fixture_contents}")
+  string(CONFIGURE [=[
+execute_process(COMMAND "@CMAKE_COMMAND@" -P "@fixture@/input.cmake"
+  RESULT_VARIABLE result OUTPUT_VARIABLE output ERROR_VARIABLE errors)
+if(@accepted@)
+  if(NOT result EQUAL 0)
+    message(FATAL_ERROR "Expected @name@ acceptance; actual=${result}: ${output}${errors}")
+  endif()
+elseif(result EQUAL 0 OR NOT "${output}${errors}" MATCHES "Consumer CRT" OR
+       NOT "${output}${errors}" MATCHES "differs from")
+  message(FATAL_ERROR "Expected @name@ CRT rejection; actual=${result}: ${output}${errors}")
+endif()
+message(STATUS "Expected @name@ CRT policy result observed: ${result}")
+]=] runner_contents @ONLY)
+  file(WRITE "${fixture}/check.cmake" "${runner_contents}")
+  add_test(NAME "ConsumerCRT.${name}" COMMAND "${CMAKE_COMMAND}" -P "${fixture}/check.cmake")
+endfunction()
+
+veyr_add_consumer_crt_fixture(DebugLiteral Debug MultiThreadedDebugDLL TRUE)
+veyr_add_consumer_crt_fixture(ReleaseLiteral Release MultiThreadedDLL TRUE)
+veyr_add_consumer_crt_fixture(DebugConan Debug
+  "$<$<CONFIG:Debug>:MultiThreadedDebugDLL>" TRUE)
+veyr_add_consumer_crt_fixture(ReleaseConan Release
+  "$<$<CONFIG:Release>:MultiThreadedDLL>$<$<CONFIG:Debug>:MultiThreadedDebugDLL>" TRUE)
+veyr_add_consumer_crt_fixture(DebugCombinedConan Debug
+  "$<$<CONFIG:Release>:MultiThreadedDLL>$<$<CONFIG:Debug>:MultiThreadedDebugDLL>" TRUE)
+foreach(configuration Debug Release)
+  veyr_add_consumer_crt_fixture(${configuration}Canonical "${configuration}"
+    "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" TRUE)
+endforeach()
+
+veyr_add_consumer_crt_fixture(DebugStatic Debug MultiThreadedDebug FALSE)
+veyr_add_consumer_crt_fixture(ReleaseStatic Release MultiThreaded FALSE)
+veyr_add_consumer_crt_fixture(DebugOppositeLiteral Debug MultiThreadedDLL FALSE)
+veyr_add_consumer_crt_fixture(ReleaseOppositeLiteral Release MultiThreadedDebugDLL FALSE)
+veyr_add_consumer_crt_fixture(ReleaseDebugOnlyExpression Release
+  "$<$<CONFIG:Debug>:MultiThreadedDebugDLL>" FALSE)
+foreach(configuration Debug Release)
+  veyr_add_consumer_crt_fixture(${configuration}OppositeExpression "${configuration}"
+    "$<$<CONFIG:Release>:MultiThreadedDebugDLL>$<$<CONFIG:Debug>:MultiThreadedDLL>" FALSE)
+  veyr_add_consumer_crt_fixture(${configuration}UnsupportedRuntime "${configuration}"
+    UnsupportedCRT FALSE)
+  veyr_add_consumer_crt_fixture(${configuration}UnsupportedExpression "${configuration}"
+    "$<IF:$<CONFIG:Debug>,MultiThreadedDebugDLL,MultiThreadedDLL>" FALSE)
+  veyr_add_consumer_crt_fixture(${configuration}MalformedExpression "${configuration}"
+    "$<$<CONFIG:Release>:MultiThreadedDLL>$<$<CONFIG:Debug>:MultiThreadedDebugDLL" FALSE)
+  veyr_add_consumer_crt_fixture(${configuration}AmbiguousExpression "${configuration}"
+    "$<$<CONFIG:Release>:MultiThreadedDLL>$<$<CONFIG:Debug>:MultiThreadedDebugDLL>$<$<CONFIG:Debug>:MultiThreadedDLL>" FALSE)
+endforeach()
+
 add_test(NAME include-policy
   COMMAND "${VEYR_PYTHON}" -B "${PROJECT_SOURCE_DIR}/scripts/check_includes.py"
     --root "${PROJECT_SOURCE_DIR}")

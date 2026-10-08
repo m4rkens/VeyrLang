@@ -9,10 +9,22 @@ if(WIN32)
   else()
     set(VEYR_MSVC_RUNTIME MultiThreadedDLL)
   endif()
-  if(NOT CMAKE_MSVC_RUNTIME_LIBRARY STREQUAL VEYR_MSVC_RUNTIME AND
-     NOT CMAKE_MSVC_RUNTIME_LIBRARY STREQUAL "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+  # Recognize only known runtime serializations, never arbitrary generator expressions.
+  set(_veyr_consumer_runtime "${CMAKE_MSVC_RUNTIME_LIBRARY}")
+  if(CMAKE_MSVC_RUNTIME_LIBRARY STREQUAL "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+    set(_veyr_consumer_runtime "${VEYR_MSVC_RUNTIME}")
+  elseif(CMAKE_BUILD_TYPE STREQUAL "Debug" AND
+         (CMAKE_MSVC_RUNTIME_LIBRARY STREQUAL "$<$<CONFIG:Debug>:MultiThreadedDebugDLL>" OR
+          CMAKE_MSVC_RUNTIME_LIBRARY STREQUAL "$<$<CONFIG:Release>:MultiThreadedDLL>$<$<CONFIG:Debug>:MultiThreadedDebugDLL>"))
+    set(_veyr_consumer_runtime MultiThreadedDebugDLL)
+  elseif(CMAKE_BUILD_TYPE STREQUAL "Release" AND
+         CMAKE_MSVC_RUNTIME_LIBRARY STREQUAL "$<$<CONFIG:Release>:MultiThreadedDLL>$<$<CONFIG:Debug>:MultiThreadedDebugDLL>")
+    set(_veyr_consumer_runtime MultiThreadedDLL)
+  endif()
+  if(NOT _veyr_consumer_runtime STREQUAL VEYR_MSVC_RUNTIME)
     message(FATAL_ERROR "Consumer CRT '${CMAKE_MSVC_RUNTIME_LIBRARY}' differs from selected ${VEYR_MSVC_RUNTIME}; restore reviewed Conan inputs")
   endif()
+  unset(_veyr_consumer_runtime)
   set(CMAKE_MSVC_RUNTIME_LIBRARY "${VEYR_MSVC_RUNTIME}")
 endif()
 
