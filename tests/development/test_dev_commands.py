@@ -43,9 +43,12 @@ class DeveloperCommandsTests(ConanOperationsFixture, unittest.TestCase):
             (directory / name).write_text("fixture\n")
         (directory / "tests").mkdir(exist_ok=True)
         (directory / "tests/CTestTestfile.cmake").write_text('add_test("include-policy" "python")\n')
+        compiler = self.context.selected["environment"]["VEYR_CPP_COMPILER"]
+        if doctor.PROFILES[self.context.selection.profile] == "Windows":
+            compiler = f'"{compiler}"'
         (directory / "compile_commands.json").write_text(json.dumps([{
             "directory": str(directory), "file": str(self.root / "fixture.cpp"),
-            "command": self.context.selected["environment"]["VEYR_CPP_COMPILER"] + " -std=c++23 -c fixture.cpp"}]))
+            "command": compiler + " -std=c++23 -c fixture.cpp"}]))
 
     def fake_run(self, argv, **kwargs):
         self.calls.append((argv, kwargs))
@@ -235,8 +238,9 @@ class DeveloperCommandsTests(ConanOperationsFixture, unittest.TestCase):
             self.assertIn(f"-DVEYR_LLVM_DIR={llvm}", self.calls[1][0])
             self.assert_cache_only()
 
-    def test_windows_release_fixture_paths_and_executable_suffix(self):
-        selected = select_inputs(self.baseline, WINDOWS, "Release", root=self.root)
+    def windows_verify_fixture(self, configuration="Debug"):
+        selected = select_inputs(self.baseline, WINDOWS, configuration, root=self.root)
+        selected["environment"]["VEYR_CPP_COMPILER"] = r"C:\Program Files\LLVM\bin\clang-cl.exe"
         with patch.object(doctor, "_probe", return_value=str(self.root / ".git")):
             selection = make_selection(self.baseline, selected, root=self.root,
                                        conan_home=self.directory / "Windows Conan cache")
@@ -247,16 +251,114 @@ class DeveloperCommandsTests(ConanOperationsFixture, unittest.TestCase):
         for path in (*selected["host_profiles"], *selected["build_profiles"]):
             path.touch()
         self.context = dev.Operations(selection, selected, root=self.root)
-        self.context.test()
+        self.context.build()
+        self.calls.clear()
         database = selection.build_dir / "compile_commands.json"
         entry = json.loads(database.read_text())[0]
-        entry["arguments"] = [selected["environment"]["VEYR_CPP_COMPILER"].replace("/", "\\"),
+        return database, entry, selected["environment"]["VEYR_CPP_COMPILER"]
+
+    def test_windows_release_fixture_paths_and_executable_suffix(self):
+        database, entry, compiler = self.windows_verify_fixture("Release")
+        self.context.test()
+        entry["arguments"] = [compiler,
                               "/std:c++latest", "/c", "fixture.cpp"]
         entry.pop("command")
         database.write_text(json.dumps([entry]))
-        self.context.verify()
-        self.assertTrue((selection.build_dir / "veyrc.exe").is_file())
+        with patch.object(dev.os.path, "samefile", return_value=True) as samefile:
+            self.context.verify()
+        samefile.assert_called_once_with(compiler, compiler)
+        self.assertTrue((self.context.selection.build_dir / "veyrc.exe").is_file())
         self.assertEqual(len([a for a, _ in self.calls if a[0] == "ctest"]), 1)
+        self.assert_cache_only()
+
+    def test_windows_verify_accepts_native_short_long_compiler_alias_and_forwarded_cpp23(self):
+        database, entry, compiler = self.windows_verify_fixture()
+        short = r"C:\PROGRA~1\LLVM\bin\clang-cl.exe"
+        entry["command"] = short + " /nologo -TP -clang:-std=c++23 -MDd /c fixture.cpp"
+        database.write_text(json.dumps([entry]))
+        with patch.object(dev.os.path, "samefile", return_value=True) as samefile:
+            self.context.verify()
+        samefile.assert_called_once_with(short, compiler)
+        self.assertEqual([argv[0] for argv, _ in self.calls], ["ctest"])
+        self.assert_cache_only()
+
+    def test_windows_verify_accepts_existing_and_forwarded_standard_tokens(self):
+        database, entry, compiler = self.windows_verify_fixture()
+        for representation in ("command", "arguments"):
+            for standard in ("-std=c++23", "/std:c++23", "/std:c++latest", "-clang:-std=c++23"):
+                with self.subTest(representation=representation, standard=standard):
+                    payload = {k: v for k, v in entry.items() if k not in {"command", "arguments"}}
+                    payload[representation] = (f'"{compiler}" {standard} /c fixture.cpp'
+                                               if representation == "command" else
+                                               [compiler, standard, "/c", "fixture.cpp"])
+                    database.write_text(json.dumps([payload]))
+                    self.context.done.difference_update({"verify", "ctest"})
+                    self.calls.clear()
+                    with patch.object(dev.os.path, "samefile", return_value=True) as samefile:
+                        self.context.verify()
+                    samefile.assert_called_once_with(compiler, compiler)
+                    self.assertEqual([argv[0] for argv, _ in self.calls], ["ctest"])
+        self.assert_cache_only()
+
+    def test_windows_verify_rejects_different_compiler_even_with_same_basename(self):
+        database, entry, compiler = self.windows_verify_fixture()
+        different = r"C:\Different LLVM\bin\clang-cl.exe"
+        # Mentioning the reviewed compiler as another argument must not satisfy identity.
+        entry["command"] = f'"{different}" -clang:-std=c++23 "{compiler}" /c fixture.cpp'
+        database.write_text(json.dumps([entry]))
+        with patch.object(dev.os.path, "samefile", return_value=False) as samefile:
+            with self.assertRaisesRegex(BaselineError, "Invalid compilation database"):
+                self.context.verify()
+        samefile.assert_called_once_with(different, compiler)
+        self.assertEqual(self.calls, [])
+
+    def test_windows_verify_rejects_unresolvable_or_malformed_compiler_identity(self):
+        database, entry, compiler = self.windows_verify_fixture()
+        with patch.object(dev.os.path, "samefile", side_effect=FileNotFoundError("compiler missing")):
+            database.write_text(json.dumps([entry]))
+            with self.assertRaisesRegex(BaselineError, "Invalid compilation database"):
+                self.context.verify()
+        for command in ('"C:\\Program Files\\LLVM\\bin\\clang-cl.exe -clang:-std=c++23',
+                        'clang-cl.exe -clang:-std=c++23',
+                        f'"{compiler}"extra -clang:-std=c++23'):
+            with self.subTest(command=command):
+                entry["command"] = command
+                database.write_text(json.dumps([entry]))
+                with patch.object(dev.os.path, "samefile") as samefile:
+                    with self.assertRaisesRegex(BaselineError, "Invalid compilation database"):
+                        self.context.verify()
+                samefile.assert_not_called()
+        self.assertEqual(self.calls, [])
+
+    def test_windows_verify_rejects_wrong_forwarded_standard_or_unrelated_argument(self):
+        database, entry, compiler = self.windows_verify_fixture()
+        for standard in ("-clang:-std=c++20", "-clang:-std=c++26", "-clang:-Wall",
+                         "-clang:-std=c++23-extra", "-Dexample=-clang:-std=c++23"):
+            with self.subTest(standard=standard):
+                entry["command"] = f'"{compiler}" {standard} /c fixture.cpp'
+                database.write_text(json.dumps([entry]))
+                with patch.object(dev.os.path, "samefile", return_value=True):
+                    with self.assertRaisesRegex(BaselineError, "Invalid compilation database"):
+                        self.context.verify()
+        self.assertEqual(self.calls, [])
+
+    def test_windows_verify_rejects_wrong_selected_build_directory(self):
+        database, entry, compiler = self.windows_verify_fixture()
+        entry["directory"] = str(self.context.selection.build_dir.with_name("Release"))
+        entry["command"] = f'"{compiler}" -clang:-std=c++23 /c fixture.cpp'
+        database.write_text(json.dumps([entry]))
+        with patch.object(dev.os.path, "samefile", return_value=True):
+            with self.assertRaisesRegex(BaselineError, "Invalid compilation database"):
+                self.context.verify()
+        self.assertEqual(self.calls, [])
+
+    def test_linux_verify_keeps_cpp23_matching_without_windows_file_identity(self):
+        self.context.build()
+        self.calls.clear()
+        with patch.object(dev.os.path, "samefile") as samefile:
+            self.context.verify()
+        samefile.assert_not_called()
+        self.assertEqual([argv[0] for argv, _ in self.calls], ["ctest"])
         self.assert_cache_only()
 
     def test_clean_preserves_other_config_tool_environment_and_cache(self):

@@ -6,6 +6,7 @@ import json
 import hashlib
 import re
 import os
+import ntpath
 from pathlib import Path
 import platform
 import subprocess
@@ -222,13 +223,25 @@ class Operations:
             compiler = self.selected["environment"]["VEYR_CPP_COMPILER"]
             for entry in entries:
                 command = entry.get("command") or " ".join(entry.get("arguments", []))
+                standard_forms = r'-std=c\+\+23|/std:c\+\+(?:23|latest)'
                 if PROFILES[self.selection.profile] == "Windows":
-                    compiler = compiler.replace("\\", "/").casefold()
-                    command = command.replace("\\", "/").casefold()
-                compiler_pattern = r"(?:^|[\s\"'])" + re.escape(compiler) + r"(?:[\s\"']|$)"
-                standard_pattern = r'(?:^|\s)(?:-std=c\+\+23|/std:c\+\+(?:23|latest))(?:\s|$)'
+                    if entry.get("command"):
+                        # CMake emits a quoted long path or an unquoted 8.3 path.
+                        executable = re.match(r'\s*(?:"([^"]+)"|([^\s"]+))(?=\s|$)', command)
+                        candidate = (executable.group(1) or executable.group(2)) if executable else ""
+                    else:
+                        arguments = entry.get("arguments", [])
+                        candidate = arguments[0] if arguments else ""
+                    # Native stat identity, not text/basename similarity, proves aliases.
+                    compiler_matches = ntpath.isabs(candidate) and os.path.samefile(candidate, compiler)
+                    command = command.casefold()
+                    standard_forms += r'|-clang:-std=c\+\+23'
+                else:
+                    compiler_pattern = r"(?:^|[\s\"'])" + re.escape(compiler) + r"(?:[\s\"']|$)"
+                    compiler_matches = re.search(compiler_pattern, command)
+                standard_pattern = r'(?:^|\s)(?:' + standard_forms + r')(?:\s|$)'
                 if (not entry.get("file") or Path(entry["directory"]).resolve() != self.selection.build_dir.resolve()
-                        or not re.search(compiler_pattern, command) or not re.search(standard_pattern, command)):
+                        or not compiler_matches or not re.search(standard_pattern, command)):
                     raise ValueError("entry lacks selected directory/compiler/C++23 identity")
         except (OSError, ValueError, KeyError, TypeError, AttributeError) as error:
             raise BaselineError(f"Invalid compilation database {database}: {error}; run explicit configure/build") from error
