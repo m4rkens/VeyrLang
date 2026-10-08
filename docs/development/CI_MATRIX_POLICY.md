@@ -132,19 +132,54 @@ framework or language-level `Veyr.lock` behavior is introduced.
 ## Cache and deliberate source build
 
 Each job uses a fresh external home beneath `runner.temp`, isolated by run ID,
-attempt, environment and consumer configuration. Only Conan's home is cached.
-Keys include OS/architecture, environment/configuration, actual image version and
-hashes of baseline, profiles, recipes/options, locks, root consumer and CMake
-presets. Doctor first matches actual tool/runtime identities to baseline inputs.
-No broad restore prefixes or cross-OS archives; save occurs only after job
-success. Failed/bootstrap-only runs publish no package cache.
+attempt, environment and consumer configuration. The live home is never cached
+or restored directly. After doctor and the tracked-lock gate, pinned
+`actions/cache/restore` retrieves only the stable relative archive
+`.veyr-dev/conan-cache/dependencies.tgz`. Conan 2.33.0 imports a restored archive
+into the current home through its absolute project-owned executable. Conan owns
+package IDs/revisions and archive serialization; remotes/configuration, CLI venvs
+and project build output are not restored as policy authority.
 
-Manual `cold_build: true` skips restore and save. The new job-owned home has no
+Explicit dependency setup always runs, including on a cache hit. Only after it
+succeeds, Conan checks package integrity and exports a fresh archive containing
+recipes, sources and completed packages/revisions, excluding temporary binary
+build/download folders. Pinned `actions/cache/save` saves that archive immediately
+before project configure/build/test/verify. A later project failure does not
+discard a successfully saved dependency snapshot. Failed setup, integrity checks
+or export stop without publishing a new snapshot; bootstrap-only jobs cannot
+publish one. No automatic repair, retry or acceptance bypass is introduced.
+
+The compatibility prefix contains cache schema `conan-v2`, OS/architecture, CI
+environment, native profile, actual runner image, and two SHA256 hashes. The
+toolchain-policy hash includes only the selected CI entry's OS/architecture,
+target, Python/Conan/CMake/Ninja/Clang versions, native runtime identities, paths,
+and the fixed LLVM backend version. Git, historical observations, status/progress
+prose and unrelated baselines are excluded. The dependency-input hash covers the
+selected platform profile, both Debug/Release overlays, matching platform locks,
+LLVM recipe inputs, and root `conanfile.py` options. Project `CMakePresets.json`
+does not define dependency-package identity and is excluded.
+
+Immutable snapshot keys append run ID, attempt and configuration as a writer
+suffix. Debug/Release share the complete compatibility prefix; it is the only
+restore prefix, with no broader fallback or cross-OS archives. Each serial job
+can restore an earlier compatible snapshot into its own home and add genuinely
+missing packages. Matching Linux LLVM package IDs may be reused; GoogleTest
+Debug/Release and Windows CRT/runtime package IDs remain distinct and coexist.
+Conan profiles, locks and explicit setup remain authoritative. A cache hit or
+integrity check is not native/package acceptance.
+
+Manual `cold_build: true` skips Actions restore, Conan import, archive
+integrity/export and Actions save. The new job-owned home has no
 dependency packages; explicit setup uses standard source-built LLVM 23.1.2 and
 `--build=missing`. No forced rebuild, active-home deletion, cache purge or foreign
 backend archive. Isolated CMake/Ninja and Conan CLI tools are distinct from LLVM
 package state. No CLI venv or build directory is cached/published as a package.
 Normal developer clean preserves tools, package home and other selections.
+
+Conan's portable cache format is experimental and version-bound; the pinned
+Conan version and cache schema isolate snapshots. Cache upload, archive size,
+eviction and actual cross-job reuse require observed CI evidence. This policy
+does not claim cache retention or native acceptance before a successful run.
 
 ## Supervision, capacity and evidence
 

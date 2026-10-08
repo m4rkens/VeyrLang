@@ -1,13 +1,17 @@
 """Acceptance boundaries in temporary trees; all native/package commands mocked."""
 
 import contextlib
+import copy
 from dataclasses import replace
 import io
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
+import tempfile
+import textwrap
 import unittest
 from unittest.mock import patch
 
@@ -306,7 +310,7 @@ class CIWorkflowPolicyTests(unittest.TestCase):
         self.assertLess(gate, workflow.index("- name: Explicit Conan dependency setup"))
         self.assertIn("requires separate owner authorization", workflow)
         lock_gate = workflow.index("Required tracked native Conan lock missing")
-        self.assertLess(lock_gate, workflow.index("- name: Restore/save Conan-owned cache only"))
+        self.assertLess(lock_gate, workflow.index("- name: Restore portable Conan package archive only"))
         self.assertLess(lock_gate, workflow.index("- name: Explicit Conan dependency setup"))
         self.assertIn("if ($entry.status -notin @('selected', 'reviewed'))", workflow)
 
@@ -319,6 +323,189 @@ class CIWorkflowPolicyTests(unittest.TestCase):
         self.assertIn("$banner = & $executable '--version'", setup)
         self.assertIn('$env:PATH = "$standaloneBin;$env:PATH"', setup)
         self.assertIn("no bundled LLVM fallback", setup)
+
+
+class ConanCacheWorkflowTests(unittest.TestCase):
+    """Evaluate actual workflow guards and key code without launching any CLI."""
+
+    def setUp(self):
+        self.root = Path(__file__).resolve().parents[2]
+        self.workflow = (self.root / ".github/workflows/build-foundation.yml").read_text(encoding="utf-8")
+        self.blocks = dict(re.findall(
+            r"^      - name: ([^\n]+)\n(.*?)(?=^      - name: |\Z)",
+            self.workflow, re.MULTILINE | re.DOTALL))
+        self.names = list(self.blocks)
+        self.keys = "Compute Conan cache compatibility and snapshot keys"
+        self.restore = "Restore portable Conan package archive only (optimization)"
+        self.import_archive = "Import restored archive into the isolated Conan home"
+        self.setup = "Explicit Conan dependency setup (downloads/source builds allowed)"
+        self.export = "Check dependency integrity and export portable Conan archive"
+        self.save = "Save completed Conan package snapshot before project validation"
+        self.baseline = json.loads((self.root / "scripts/devtools/baseline.json").read_text())
+
+    def enabled(self, name, *, cold=False, success=True, outcomes=None, matched="snapshot"):
+        guard = re.search(r"^\s+if: \$\{\{ (.*?) \}\}$", self.blocks[name], re.MULTILINE)
+        if guard is None:
+            return success  # GitHub's default step guard.
+        expression = guard.group(1).replace("success()", str(success))
+        expression = expression.replace("inputs.cold_build", str(cold))
+        expression = expression.replace("steps.cache_restore.outputs.cache-matched-key", repr(matched))
+        expression = re.sub(r"steps\.([a-z_]+)\.outcome",
+                            lambda match: repr((outcomes or {}).get(match.group(1), "skipped")),
+                            expression)
+        expression = expression.replace("&&", " and ")
+        expression = re.sub(r"!(?!=)", " not ", expression)
+        return eval(expression.strip(), {"__builtins__": {}}, {})
+
+    def test_restore_import_setup_export_save_order_and_windows_lock_gate(self):
+        order = ("Strict read-only prerequisite doctor", self.keys, self.restore,
+                 self.import_archive, self.setup, self.export, self.save,
+                 "Native cache-only configure", "Native incremental build", "Native test",
+                 "Native verify", "Foundation prepared native acceptance",
+                 "Foundation acquisition-disabled empty-cache rejection")
+        self.assertEqual(sorted(order, key=self.names.index), list(order))
+        self.assertIn("Required tracked native Conan lock missing",
+                      self.blocks["Strict read-only prerequisite doctor"])
+        self.assertIn("if ($code -ne 0) { exit $code }", self.blocks[self.setup])
+        for name in (self.import_archive, self.export):
+            block = self.blocks[name]
+            self.assertIn("VEYR_CONAN_EXECUTABLE: ${{ steps.doctor.outputs.conan }}", block)
+            self.assertIn("& $env:VEYR_CONAN_EXECUTABLE cache ", block)
+            self.assertIn("if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }", block)
+        export = self.blocks[self.export]
+        self.assertLess(export.index("cache check-integrity"), export.index("exit $LASTEXITCODE"))
+        self.assertLess(export.index("exit $LASTEXITCODE"), export.index("cache save"))
+        self.assertEqual(export.count("exit $LASTEXITCODE"), 2)
+        self.assertIn("cache save '*#*:*#*'", export)
+        self.assertNotIn("package_id", export)  # Conan retains the distinct IDs/revisions.
+        self.assertNotIn("if:", self.blocks[self.setup])
+        self.assertIn("if (-not (Test-Path -LiteralPath $archive -PathType Leaf))",
+                      self.blocks[self.import_archive])
+
+    def test_archive_only_pinned_actions_and_complete_restore_prefix(self):
+        pin = "5a3ec84eff668545956fd18022155c47e93e2684"
+        for name, action in ((self.restore, "restore"), (self.save, "save")):
+            block = self.blocks[name]
+            self.assertIn(f"actions/cache/{action}@{pin}", block)
+            self.assertIn("path: .veyr-dev/conan-cache/dependencies.tgz", block)
+            self.assertIn("key: ${{ steps.cache_keys.outputs.key }}", block)
+            self.assertIn("enableCrossOsArchive: false", block)
+            self.assertNotIn("CONAN_HOME", block)
+        self.assertIn("restore-keys: ${{ steps.cache_keys.outputs.prefix }}",
+                      self.blocks[self.restore])
+        self.assertEqual(self.workflow.count("restore-keys:"), 1)
+        self.assertNotIn("uses: actions/cache@", self.workflow)
+        self.assertIn("veyr-conan-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.environment }}-${{ matrix.config }}",
+                      self.workflow)
+
+    def test_setup_or_integrity_export_failure_never_saves(self):
+        for dependencies, export in (("failure", "skipped"), ("skipped", "skipped"),
+                                     ("success", "failure"), ("success", "skipped")):
+            outcomes = {"dependencies": dependencies, "export_cache": export}
+            with self.subTest(outcomes=outcomes):
+                self.assertFalse(self.enabled(self.save, outcomes=outcomes))
+        self.assertFalse(self.enabled(self.export, outcomes={"dependencies": "failure"}))
+        self.assertTrue(self.enabled(self.save, outcomes={
+            "dependencies": "success", "export_cache": "success"}))
+
+    def test_later_project_failures_happen_after_successful_snapshot_save(self):
+        for failure in ("Native cache-only configure", "Native incremental build",
+                        "Native test", "Native verify"):
+            outcomes, saved, success = {}, False, True
+            for name in self.names:
+                if name == self.save and self.enabled(name, outcomes=outcomes, success=success):
+                    saved = True
+                if name == self.setup:
+                    outcomes["dependencies"] = "success"
+                if name == self.export:
+                    outcomes["export_cache"] = "success"
+                if name == failure:
+                    self.assertTrue(saved, failure)
+                    success = False
+            self.assertTrue(saved)  # No final-job-success post action controls this save.
+
+    def test_cold_build_bypasses_all_cache_transfer_but_not_explicit_setup(self):
+        outcomes = {"dependencies": "success", "export_cache": "success"}
+        for name in (self.keys, self.restore, self.import_archive, self.export, self.save):
+            with self.subTest(name=name):
+                self.assertFalse(self.enabled(name, cold=True, outcomes=outcomes))
+                self.assertFalse(self.enabled(name, success=False, outcomes=outcomes))
+        self.assertTrue(self.enabled(self.setup, cold=True))
+        self.assertFalse(self.enabled(self.import_archive, matched=""))
+        self.assertTrue(self.enabled(self.import_archive, matched="compatible-prefix-snapshot"))
+
+    def compute_keys(self, baseline=None, config="Debug", **overrides):
+        script = re.search(r"\$keyScript = @'\n(.*?)\n\s*'@",
+                           self.blocks[self.keys], re.DOTALL).group(1)
+        script = textwrap.dedent(script)
+        env = {"VEYR_CI_ENVIRONMENT": "ubuntu-ci", "VEYR_CI_PROFILE": LINUX,
+               "VEYR_CI_CONFIG": config, "RUNNER_OS": "Linux", "RUNNER_ARCH": "X64",
+               "VEYR_CACHE_IMAGE": "image-1", "VEYR_DEPENDENCY_INPUT_HASH": "a" * 64,
+               "GITHUB_RUN_ID": "123", "GITHUB_RUN_ATTEMPT": "1", **overrides}
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "github-output"
+            env["GITHUB_OUTPUT"] = str(output)
+            with patch.dict(os.environ, env, clear=True), \
+                 patch.object(Path, "read_text", return_value=json.dumps(baseline or self.baseline)), \
+                 contextlib.redirect_stdout(io.StringIO()):
+                exec(compile(script, "<workflow-cache-keys>", "exec"), {})
+            return dict(line.split("=", 1) for line in output.read_text().splitlines())
+
+    def test_debug_release_share_compatibility_but_have_distinct_snapshot_keys(self):
+        debug, release = self.compute_keys(), self.compute_keys(config="Release")
+        self.assertEqual(debug["prefix"], release["prefix"])
+        self.assertNotEqual(debug["key"], release["key"])
+        self.assertEqual(debug["key"], debug["prefix"] + "123-1-Debug")
+        self.assertEqual(release["key"], release["prefix"] + "123-1-Release")
+        self.assertNotEqual(debug["key"], self.compute_keys(GITHUB_RUN_ATTEMPT="2")["key"])
+        self.assertNotEqual(debug["key"], self.compute_keys(GITHUB_RUN_ID="124")["key"])
+        self.assertIn("conan-v2-Linux-X64-ubuntu-ci-linux-x86_64-clang-image-1-", debug["prefix"])
+        windows = {"VEYR_CI_ENVIRONMENT": "windows-ci",
+                   "VEYR_CI_PROFILE": "windows-x86_64-clangcl", "RUNNER_OS": "Windows"}
+        debug, release = self.compute_keys(**windows), self.compute_keys(config="Release", **windows)
+        self.assertEqual(debug["prefix"], release["prefix"])
+        self.assertNotEqual(debug["key"], release["key"])
+
+    def test_evidence_git_status_and_unrelated_baselines_do_not_change_prefix(self):
+        changed = copy.deepcopy(self.baseline)
+        changed["platforms"] = {"irrelevant": {"tools": {"clang": "99.0.0"}}}
+        changed["ci_environments"]["windows-ci"]["native"]["sdk"] = "unrelated"
+        entry = changed["ci_environments"]["ubuntu-ci"]
+        entry.update(status="selected", evidence="new run", remaining_gaps=[], prior_observations=[])
+        entry["observed_candidate"] = {"git": "new utility observation"}
+        entry["tools"]["git"] = "99.0.0"
+        changed["tools"]["git"] = "98.0.0"
+        self.assertEqual(self.compute_keys()["prefix"], self.compute_keys(changed)["prefix"])
+
+    def test_critical_toolchain_image_or_dependency_changes_isolate_snapshots(self):
+        before = self.compute_keys()["prefix"]
+        for section, name in (("tools", "clang"), ("native", "libc"), ("paths", "gcc_install_dir")):
+            changed = copy.deepcopy(self.baseline)
+            changed["ci_environments"]["ubuntu-ci"][section][name] = "changed"
+            self.assertNotEqual(before, self.compute_keys(changed)["prefix"])
+        for env in ({"VEYR_CACHE_IMAGE": "image-2"}, {"VEYR_DEPENDENCY_INPUT_HASH": "b" * 64},
+                    {"RUNNER_ARCH": "different"}):
+            self.assertNotEqual(before, self.compute_keys(**env)["prefix"])
+        for section, field in (("tools", "conan"), ("tools", "ninja"), ("backend", "llvm")):
+            changed = copy.deepcopy(self.baseline)
+            changed[section][field] = "changed"
+            self.assertNotEqual(before, self.compute_keys(changed)["prefix"])
+        windows = self.compute_keys(VEYR_CI_ENVIRONMENT="windows-ci",
+                                    VEYR_CI_PROFILE="windows-x86_64-clangcl", RUNNER_OS="Windows")
+        self.assertNotEqual(before, windows["prefix"])
+        with self.assertRaisesRegex(SystemExit, "Missing Conan dependency-input hash"):
+            self.compute_keys(VEYR_DEPENDENCY_INPUT_HASH="")
+
+    def test_dependency_hash_covers_only_selected_package_inputs(self):
+        expression = re.search(r"VEYR_DEPENDENCY_INPUT_HASH: (\$\{\{.*?\}\})",
+                               self.blocks[self.keys]).group(1)
+        for value in ("format('conan/profiles/{0}', matrix.profile)", "conan/profiles/debug",
+                      "conan/profiles/release", "format('conan/locks/{0}-*.lock', matrix.profile)",
+                      "conan/recipes/llvm/**", "conanfile.py"):
+            self.assertIn(value, expression)
+        for value in ("baseline.json", "CMakePresets.json", "matrix.config", "conan/profiles/**",
+                      "conan/locks/**"):
+            self.assertNotIn(value, expression)
 
 
 if __name__ == "__main__":

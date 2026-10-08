@@ -426,15 +426,75 @@ jobs:
             throw 'Required tracked native Conan lock missing; owner-reviewed lock initialization is a separate gate.'
           }
 
-      - name: Restore/save Conan-owned cache only (optimization)
+      - name: Compute Conan cache compatibility and snapshot keys
+        id: cache_keys
         if: ${{ success() && !inputs.cold_build }}
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        env:
+          VEYR_CACHE_IMAGE: ${{ steps.policy.outputs.image }}
+          VEYR_DEPENDENCY_INPUT_HASH: ${{ hashFiles(format('conan/profiles/{0}', matrix.profile), 'conan/profiles/debug', 'conan/profiles/release', format('conan/locks/{0}-*.lock', matrix.profile), 'conan/recipes/llvm/**', 'conanfile.py') }}
+        run: |
+          $keyScript = @'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          baseline = json.loads(Path("scripts/devtools/baseline.json").read_text(encoding="utf-8"))
+          environment = os.environ["VEYR_CI_ENVIRONMENT"]
+          profile = os.environ["VEYR_CI_PROFILE"]
+          entry = baseline["ci_environments"][environment]
+          toolchain = {
+              "os": entry["os"], "arch": entry["arch"], "target": entry["target"],
+              "tools": {name: entry["tools"].get(name, baseline["tools"].get(name))
+                        for name in ("python", "conan", "cmake", "ninja", "clang")},
+              "native": entry["native"], "paths": entry["paths"],
+              "llvm": baseline["backend"]["llvm"],
+          }
+          policy_hash = hashlib.sha256(json.dumps(toolchain, sort_keys=True).encode()).hexdigest()
+          dependency_hash = os.environ["VEYR_DEPENDENCY_INPUT_HASH"]
+          if not dependency_hash:
+              raise SystemExit("Missing Conan dependency-input hash; no broader cache fallback.")
+          prefix = (
+              f"conan-v2-{os.environ['RUNNER_OS']}-{os.environ['RUNNER_ARCH']}-"
+              f"{environment}-{profile}-{os.environ['VEYR_CACHE_IMAGE']}-"
+              f"{policy_hash}-{dependency_hash}-"
+          )
+          snapshot = (
+              f"{prefix}{os.environ['GITHUB_RUN_ID']}-{os.environ['GITHUB_RUN_ATTEMPT']}-"
+              f"{os.environ['VEYR_CI_CONFIG']}"
+          )
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"prefix={prefix}\nkey={snapshot}\n")
+          print(f"Conan cache compatibility prefix: {prefix}\nSnapshot key: {snapshot}")
+          '@
+          & $env:VEYR_BASE_PYTHON -B -c $keyScript
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Restore portable Conan package archive only (optimization)
+        id: cache_restore
+        if: ${{ success() && !inputs.cold_build }}
+        uses: actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
-          path: ${{ env.CONAN_HOME }}
-          key: conan-${{ runner.os }}-${{ runner.arch }}-${{ matrix.environment }}-${{ matrix.config }}-${{ steps.policy.outputs.image }}-${{ hashFiles('scripts/devtools/baseline.json', 'conan/profiles/**', 'conan/recipes/**', 'conan/locks/**', 'conanfile.py', 'CMakePresets.json') }}
+          path: .veyr-dev/conan-cache/dependencies.tgz
+          key: ${{ steps.cache_keys.outputs.key }}
+          restore-keys: ${{ steps.cache_keys.outputs.prefix }}
           enableCrossOsArchive: false
 
+      - name: Import restored archive into the isolated Conan home
+        id: cache_import
+        if: ${{ success() && !inputs.cold_build && steps.cache_restore.outputs.cache-matched-key != '' }}
+        env:
+          VEYR_CONAN_EXECUTABLE: ${{ steps.doctor.outputs.conan }}
+        run: |
+          $archive = '.veyr-dev/conan-cache/dependencies.tgz'
+          if (-not (Test-Path -LiteralPath $archive -PathType Leaf)) {
+            throw 'Actions reported a restored Conan snapshot but its archive is missing; no retry.'
+          }
+          & $env:VEYR_CONAN_EXECUTABLE cache restore $archive 2>&1 | Tee-Object .veyr-dev/ci/cache-import.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
       - name: Explicit Conan dependency setup (downloads/source builds allowed)
+        id: dependencies
         run: |
           $start = Get-Date
           & $env:VEYR_BASE_PYTHON -B scripts/dev.py setup --environment $env:VEYR_CI_ENVIRONMENT --profile $env:VEYR_CI_PROFILE --config $env:VEYR_CI_CONFIG --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/setup.log
@@ -442,6 +502,27 @@ jobs:
           "setup_exit=$code elapsed_seconds=$(((Get-Date) - $start).TotalSeconds) cold_build=${{ inputs.cold_build }}" | Set-Content .veyr-dev/ci/setup-timing.txt
           # Runner memory/disk peaks are not measured by this wall-clock record; remain evidence gaps.
           if ($code -ne 0) { exit $code }
+
+      - name: Check dependency integrity and export portable Conan archive
+        id: export_cache
+        if: ${{ success() && !inputs.cold_build && steps.dependencies.outcome == 'success' }}
+        env:
+          VEYR_CONAN_EXECUTABLE: ${{ steps.doctor.outputs.conan }}
+        run: |
+          & $env:VEYR_CONAN_EXECUTABLE cache check-integrity '*#*:*#*' 2>&1 | Tee-Object .veyr-dev/ci/cache-integrity.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          New-Item -ItemType Directory -Force .veyr-dev/conan-cache | Out-Null
+          & $env:VEYR_CONAN_EXECUTABLE cache save '*#*:*#*' --file .veyr-dev/conan-cache/dependencies.tgz 2>&1 | Tee-Object .veyr-dev/ci/cache-export.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Save completed Conan package snapshot before project validation
+        id: cache_save
+        if: ${{ success() && !inputs.cold_build && steps.dependencies.outcome == 'success' && steps.export_cache.outcome == 'success' }}
+        uses: actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: .veyr-dev/conan-cache/dependencies.tgz
+          key: ${{ steps.cache_keys.outputs.key }}
+          enableCrossOsArchive: false
 
       - name: Native cache-only configure
         run: |
