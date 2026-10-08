@@ -6,24 +6,24 @@
 
 ## v1 Requirements
 
-Here v1 means the first walking-skeleton milestone, not a stable language release. All requirements are pending hypotheses; no prior implementation/evidence is credited. Every requirement maps to exactly one active phase. P01 forces the compiler path; PLAT_01/02/03/06 force the related platform/build constraints.
+Here v1 means the first walking-skeleton milestone, not a stable language release. At fresh initialization all requirements were pending hypotheses and no prior implementation/evidence was credited. Phase 1 BUILD-01 through BUILD-14 are now accepted from this lifecycle's preserved execution and final four-job run 37826767824; the other 35 requirements remain pending. Every requirement maps to exactly one active phase. P01 forces the compiler path; PLAT_01/02/03/06 force the related platform/build constraints.
 
 ### Build and developer foundation
 
-- [ ] **BUILD-01**: Contributor can configure and build the C++23 compiler foundation with target-oriented CMake, Ninja, and the selected Clang toolchain.
-- [ ] **BUILD-02**: Contributor can resolve compiler implementation dependencies through reviewed Conan 2 configuration with exact dependency references, rather than Veyr-owned package mechanics.
-- [ ] **BUILD-03**: Contributor can consume LLVM 23.1.2 through a suitable Conan recipe, or a narrow project-owned Conan recipe when an exact suitable recipe is unavailable.
-- [ ] **BUILD-04**: Contributor can inspect the selected LLVM options and Conan dependency configuration for zlib, zstd, and LibXml2 when required, without enabling unrelated LLVM projects or backends.
-- [ ] **BUILD-05**: Contributor can select explicit reviewed Windows x86_64 clang-cl and Linux x86_64 Clang host/build profiles with distinct runtime and ABI settings.
-- [ ] **BUILD-06**: Contributor can invoke equivalent setup, doctor, configure, build, test, verify, and all developer operations on Windows and Linux through thin Python orchestration.
-- [ ] **BUILD-07**: Contributor receives actionable prerequisite diagnostics for Python, Conan 2, CMake, Ninja, Clang, Git, and genuinely required platform SDK/runtime components.
-- [ ] **BUILD-08**: Contributor can discover LLVM through find_package(LLVM CONFIG) using supported Conan CMakeToolchain/CMakeDeps integration, with explicit compatibility-checked managed/system/custom selection and no hidden acquisition in external modes.
-- [ ] **BUILD-09**: Contributor can obtain compile_commands.json from each supported development Ninja preset.
-- [ ] **BUILD-10**: Contributor can build and run compiler infrastructure tests with GoogleTest/GoogleMock supplied through Conan.
-- [ ] **BUILD-11**: Contributor can run an include-style guardrail through a build/check target and CTest entry that rejects quoted or relative Veyr-owned includes.
-- [ ] **BUILD-12**: Contributor can reuse compatible Conan packages on repeat workflows and configure/build from prepared dependencies with network acquisition disabled; generated package/build/cache state remains untracked.
-- [ ] **BUILD-13**: Contributor can choose documented supported Debug/Release compiler/dependency combinations that preserve platform runtime and ABI compatibility.
-- [ ] **BUILD-14**: Contributor can follow a Windows/Linux CI validation path using shared reviewed developer commands and dependency/profile policy, with independently observed developer and CI toolchain identities and platform-specific checks explicitly gated.
+- [x] **BUILD-01**: Contributor can configure and build the C++23 compiler foundation with target-oriented CMake, Ninja, and the selected Clang toolchain.
+- [x] **BUILD-02**: Contributor can resolve compiler implementation dependencies through reviewed Conan 2 configuration with exact dependency references, rather than Veyr-owned package mechanics.
+- [x] **BUILD-03**: Contributor can consume LLVM 23.1.2 through a suitable Conan recipe, or a narrow project-owned Conan recipe when an exact suitable recipe is unavailable.
+- [x] **BUILD-04**: Contributor can inspect the selected LLVM options and Conan dependency configuration for zlib, zstd, and LibXml2 when required, without enabling unrelated LLVM projects or backends.
+- [x] **BUILD-05**: Contributor can select explicit reviewed Windows x86_64 clang-cl and Linux x86_64 Clang host/build profiles with distinct runtime and ABI settings.
+- [x] **BUILD-06**: Contributor can invoke equivalent setup, doctor, configure, build, test, verify, and all developer operations on Windows and Linux through thin Python orchestration.
+- [x] **BUILD-07**: Contributor receives actionable prerequisite diagnostics for Python, Conan 2, CMake, Ninja, Clang, Git, and genuinely required platform SDK/runtime components.
+- [x] **BUILD-08**: Contributor can discover LLVM through find_package(LLVM CONFIG) using supported Conan CMakeToolchain/CMakeDeps integration, with explicit compatibility-checked managed/system/custom selection and no hidden acquisition in external modes.
+- [x] **BUILD-09**: Contributor can obtain compile_commands.json from each supported development Ninja preset.
+- [x] **BUILD-10**: Contributor can build and run compiler infrastructure tests with GoogleTest/GoogleMock supplied through Conan.
+- [x] **BUILD-11**: Contributor can run an include-style guardrail through a build/check target and CTest entry that rejects quoted or relative Veyr-owned includes.
+- [x] **BUILD-12**: Contributor can reuse compatible Conan packages on repeat workflows and configure/build from prepared dependencies with network acquisition disabled; generated package/build/cache state remains untracked.
+- [x] **BUILD-13**: Contributor can choose documented supported Debug/Release compiler/dependency combinations that preserve platform runtime and ABI compatibility.
+- [x] **BUILD-14**: Contributor can follow a Windows/Linux CI validation path using shared reviewed developer commands and dependency/profile policy, with independently observed developer and CI toolchain identities and platform-specific checks explicitly gated.
 
 ### Source management
 
@@ -150,20 +150,20 @@ These are deferred probe-driven directions, not the next release contract or aut
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BUILD-01 | Phase 1 | Pending |
-| BUILD-02 | Phase 1 | Pending |
-| BUILD-03 | Phase 1 | Pending |
-| BUILD-04 | Phase 1 | Pending |
-| BUILD-05 | Phase 1 | Pending |
-| BUILD-06 | Phase 1 | Pending |
-| BUILD-07 | Phase 1 | Pending |
-| BUILD-08 | Phase 1 | Pending |
-| BUILD-09 | Phase 1 | Pending |
-| BUILD-10 | Phase 1 | Pending |
-| BUILD-11 | Phase 1 | Pending |
-| BUILD-12 | Phase 1 | Pending |
-| BUILD-13 | Phase 1 | Pending |
-| BUILD-14 | Phase 1 | Pending |
+| BUILD-01 | Phase 1 | Complete — final acceptance run 37826767824 |
+| BUILD-02 | Phase 1 | Complete — final acceptance run 37826767824 |
+| BUILD-03 | Phase 1 | Complete — final acceptance run 37826767824 |
+| BUILD-04 | Phase 1 | Complete — final acceptance run 37826767824 |
+| BUILD-05 | Phase 1 | Complete — final acceptance run 37826767824 |
+| BUILD-06 | Phase 1 | Complete — final acceptance run 37826767824 |
+| BUILD-07 | Phase 1 | Complete — final acceptance run 37826767824 |
+| BUILD-08 | Phase 1 | Complete — final acceptance run 37826767824 |
+| BUILD-09 | Phase 1 | Complete — final acceptance run 37826767824 |
+| BUILD-10 | Phase 1 | Complete — final acceptance run 37826767824 |
+| BUILD-11 | Phase 1 | Complete — final acceptance run 37826767824 |
+| BUILD-12 | Phase 1 | Complete — final acceptance run 37826767824 |
+| BUILD-13 | Phase 1 | Complete — final acceptance run 37826767824 |
+| BUILD-14 | Phase 1 | Complete — final acceptance run 37826767824 |
 | SRC-01 | Phase 2 | Pending |
 | SRC-02 | Phase 2 | Pending |
 | SRC-03 | Phase 2 | Pending |
@@ -204,7 +204,10 @@ These are deferred probe-driven directions, not the next release contract or aut
 - v1 requirements: 49 total
 - Mapped to exactly one phase: 49
 - Unmapped: 0
-- Implemented/verified: 0
+- Accepted Phase 1 foundation requirements: 14
+- Pending later-phase requirements: 35
+
+Phase 1 evidence: [01-08-EXECUTION.md](phases/01-conan-and-compiler-build-foundation/01-08-EXECUTION.md) and [01-08-SUMMARY.md](phases/01-conan-and-compiler-build-foundation/01-08-SUMMARY.md). Four hosted CI configurations passed; preserved Omarchy evidence remains separate. Windows developer-host acceptance is independently pending; macOS deferred. Acceptance does not assert general ABI compatibility beyond the exercised foundation.
 
 ---
-*Last updated: 2026-10-03 after fresh requirements and roadmap definition.*
+*Last updated: 2026-10-08 after owner-authorized final Phase 1 acceptance inspection; definitions, phase mapping and later-phase statuses unchanged.*

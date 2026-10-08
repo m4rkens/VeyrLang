@@ -4,17 +4,17 @@ milestone: M1
 milestone_name: Compiler Walking Skeleton
 current_phase: 1
 current_phase_name: Conan and Compiler Build Foundation
-status: executing
-stopped_at: Plan 01-08 Task 3 execution authorization and consistency packet ready for owner review; flag true, publication gated, prerequisites/Windows locks/native/package/capacity pending. Progress 7/8.
-last_updated: "2026-10-07T16:44:27Z"
-last_activity: 2026-10-07
-last_activity_desc: Owner-approved CI execution flag and bounded test/docs/checkpoint consistency update; mocked/static checks only, no real CI/package/native operations, commit, push or phase advancement.
+status: complete
+stopped_at: Phase 1 accepted from run 37826767824; 8/8 plans complete. Planning-only closeout awaits owner review/commit; Phase 2 unstarted.
+last_updated: "2026-10-08T19:27:12Z"
+last_activity: 2026-10-08
+last_activity_desc: Reviewed all four successful CI jobs and artifacts; recorded Plan 01-08 and Phase 1 acceptance. No new execution, commit, push or Phase 2 work.
 progress:
   total_phases: 10
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 8
-  completed_plans: 7
-  percent: 88
+  completed_plans: 8
+  percent: 100
 ---
 
 # Project State
@@ -24,20 +24,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-03)
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
-**Current focus:** Plan 01-08 Task 3 owner review of execution authorization/consistency packet; reviewed CI execution authorized, publication and prerequisite/Windows-lock/native/package/capacity gates remain. Progress 7/8.
+**Current focus:** Owner review of Phase 1 acceptance/closeout; 8/8 complete, final four-job evidence from run 37826767824. No Phase 2 authorization.
 
 ## Current Position
 
 Phase: 1 of 10 (Conan and Compiler Build Foundation)
-Plan: 01-08 local Tasks 1–2 drafted/checked and published; Task 3 owner policy-review/execution/native-evidence gate
-Status: Executing; 7/8 complete, zero phases complete. Four native CI results and cold-runner capacity remain pending.
-Last activity: 2026-10-07T16:44:27Z — Workflow execution flag true under explicit owner authorization; mocked test/docs/checkpoints aligned. No CI execution or acceptance yet.
+Plan: 01-08 Tasks 1–3 complete; final native CI/evidence gate passed
+Status: Phase 1 complete; 8/8 plans and 1/10 phases complete. Closeout uncommitted; Phase 2 not started.
+Last activity: 2026-10-08T19:27:12Z — Inspected successful run 37826767824 at commit 2741d6514f5e695d36c20cb792bff4985ac5d754; all four jobs passed native and controlled offline acceptance.
 
-Progress: [█████████░] 7/8 Phase 1 execution plans; no phase completed
+Progress: [██████████] 8/8 Phase 1 execution plans
 
 ## Performance Metrics
 
-- Total plans completed: 7 (01-01 through 01-07, available Linux scope; independent platform acceptance retained)
+Earlier-plan metrics retain their original checkpoint scope; Plan 01-08 supplies
+the subsequent hosted CI acceptance for those historical platform deferrals.
+
+- Total plans completed: 8; historical Plans 01-01 through 01-07 Linux developer closeouts preserved; Plan 01-08 supplies independent Ubuntu/Windows CI Debug/Release acceptance.
 - Execution: Plan 01-01 Tasks 1–3, owner baseline selection, real CLI prerequisite and corrected Linux doctor acceptance complete
 - Plan 01-02 Tasks 1–2: Source/build/package and separate Linux Debug/Release configure/compile-link/native-run evidence accepted; owner-authorized summary/closeout recorded, independent Windows/CI gaps retained
 - Plan 01-03 Tasks 1–2: Real Linux Debug/Release locks, four external subset graphs, 60 mocked checks and separate native setup/probe/preparation checks passed; owner reviewed and explicitly authorized the dedicated checkpoint commit, two Windows lock outputs deferred
@@ -45,8 +48,9 @@ Progress: [█████████░] 7/8 Phase 1 execution plans; no phase
 - Plan 01-05 Tasks 1–2: Read-only canonical include checker and 20 temporary-tree fixtures, direct checker and independent Linux Debug/Release target/CTest routes passed; include-policy 1/1 each, normal closeout recorded
 - Plan 01-06 Tasks 1–2: Complete thin commands, invocation-local reuse, cache-only stale regeneration and liveness/scoped-clean fixtures; 30 new/60 regression tests passed, independent Debug/Release entry points/all passed with CTest 12/12 and four C++23 entries each. Explicit Debug clean preserved Release/tool/cache metadata; normal available-Linux closeout recorded
 - Plan 01-07 Tasks 1–2: Native acceptance harness/Support ownership extension, strict offline matcher and approved runner final-exit correction complete; foundation 16/16 and selected runner 6/6, provider CTest 13/13 each and runtime 5/5 in both configurations, warm/cache/clean accepted, separate Debug/Release offline recoveries passed. Four-row acceptance ledger and normal available-Linux closeout recorded without new commands
-- Phase plans: Eight plans/eight sequential waves; Waves 1–7 complete within available Linux scope, Wave 8 local draft checked and blocked at Task 3
-- Active requirements: 49 pending; each maps to exactly one of 10 phases. Plan completion does not mark phase-wide requirements implemented/verified.
+- Plan 01-08 Tasks 1–3: Reviewed CI toolchains, Windows locks, shared commands and portable snapshot transfer validated; final run 37826767824 passes all four rows with CTest 35/35, verify, prepared native and controlled empty-cache acceptance.
+- Phase plans: Eight plans/eight sequential waves complete; no plan ordering or scope changed.
+- Active requirements: 49 mapped once; BUILD-01 through BUILD-14 accepted from preserved Phase 1 execution plus final four-job evidence, 35 later-phase requirements pending. Acceptance is limited to the documented foundation, not arbitrary ABI/developer-host compatibility.
 
 ## Accumulated Context
 
@@ -54,41 +58,35 @@ Progress: [█████████░] 7/8 Phase 1 execution plans; no phase
 
 - Canonical docs only; no prior planning/implementation/evidence imported.
 - Conan 2 owns package mechanics; thin Python → Conan → CMake → Ninja → Clang.
-- LLVM backend target 23.1.2; narrow Plan 01-02 recipe and Linux Debug/Release native Support evidence complete. Windows/CI and broader ABI surfaces remain pending.
+- LLVM backend target 23.1.2; narrow Plan 01-02 recipe and Linux Debug/Release native Support evidence complete. Independent Ubuntu/Windows CI acceptance is now complete; broader ABI surfaces remain outside this evidence.
 - Windows/Linux x86_64 Tier 1; macOS implementation deferred.
 - Owner-approved Linux developer baseline is observed Omarchy/Arch x86_64. Ubuntu CI, Windows developer and Windows CI identities remain separate; Windows candidates unchanged.
 - Plan 01-01 Task 3 owns project-local Conan CLI bootstrap; Plan 01-03 owns Conan dependency/package setup. Normal clean in Plan 01-06 preserves both tool environment and dedicated package cache.
 - Doctor reads isolated venv distribution metadata without launching Conan or touching its home. Explicit setup validates the absolute Conan CLI and may initialize home metadata.
 - Initial observations from run 37356855017 remain preserved. Owner approved run 37643695998 candidate policy: Ubuntu Clang 18 with explicit GCC-13, Windows absolute standalone Clang 20.1.8 after DevShell. Omarchy Clang 22 and Windows developer evidence remain separate. Git version/path are utility observations, not ABI/package pins.
-- Owner explicitly approved Plan 01-03 Linux Debug/Release execution with both Windows lock outputs deferred. Existing managed native locks work for system/custom graph subsets. Explicit --init-lock initializes only missing locks; ordinary setup preserves locks unchanged.
+- Owner explicitly approved Plan 01-03 Linux Debug/Release execution with both Windows lock outputs deferred at that checkpoint; both were subsequently generated graph-only, reviewed and imported in b666a6159f8480e5bb31dd783c2d6f3fb6fba48d. Existing managed native locks work for system/custom graph subsets. Explicit --init-lock initializes only missing locks; ordinary setup preserves locks unchanged.
 - Phase 3 reviewed smoke profile precedes syntax-dependent implementation/tests.
 
 ### Pending Todos
 
-Review the execution-authorization and consistency packet. The owner-authorized
-workflow flag is true; acceptance remains pending. After separately approved
-publication, Linux may proceed through setup/package/build/test only if policy
-and prerequisite checks pass. Windows can bootstrap prerequisites but remains
-blocked before cache/package/native work until reviewed Debug/Release locks exist.
-Lock initialization/review requires separate owner authorization; no locks were
-created. Commit/publication remain concrete owner gates. Cold-build capacity is
-pending; Plan 01-08 incomplete, progress 7/8, macOS deferred.
+Owner review and separately authorized planning-only closeout commit. Do not
+start Phase 2, run another workflow, or invoke a new GSD lifecycle command.
+Windows developer-host inspection/acceptance remains independently pending;
+Windows hosted CI evidence is not substituted for it. macOS remains deferred.
 
-### Blockers/Concerns
+### Evidence and remaining scope limits
 
-- Linux developer prerequisite acceptance: Python 3.14.7, Conan 2.33.0, CMake 4.4.3, Clang 22.1.8, GCC/libstdc++ 16.2.1, Ninja 1.13.2, Git 2.55.0, glibc 2.44 and Binutils 2.47; observed Omarchy 4.0.4. Prior read-only doctor 22/22 retained. Exact LLVM static Support integration now has separate native Debug/Release evidence on this host; broader ABI surfaces and Windows/CI readiness remain unverified.
-- Conan executable: /home/m4rkens/Projects/VeyrLang/.veyr-dev/tools/conan-2.33.0/bin/conan. Dedicated home: /home/m4rkens/.cache/veyr/conan/22e2b2472775. Both unchanged by corrected native doctor (contents, entries, modes, symlink targets, modification/change timestamps).
-- Prior reviewed 38 mocked/unit tests and syntax checks cover read-only metadata inspection, bootstrap/reuse/failure paths, platform selections and explicit setup CLI validation. They were not rerun during acceptance.
-- Windows developer VS/VC/CRT/SDK/linker evidence remains independently pending. CI candidates from run 37643695998 are reviewed policy only; no CI bootstrap/native/package acceptance.
-- Ubuntu CI reviewed candidate: Python 3.12.3, CMake 3.31.6, Ninja 1.13.2, Clang 18.1.3, explicit GCC-13 13.3.0/header release 13/ABI definition 1, libstdc++.so.6.0.33, glibc 2.39, Binutils 2.42, native GNU target. Profile major and Ubuntu parser support aligned; strict real CI doctor remains unexecuted.
-- Windows CI reviewed candidate: Python 3.12.10, CMake 3.31.6, Ninja 1.13.2, standalone Clang 20.1.8, VS 17.14.37710.0, VC 14.44.35207, CRT 14.44.35220.0, SDK 10.0.26100.0, link.exe 14.44.35229.0. Bundled 19.1.5 remains observational. Debug/Release image/Git differ; compiler/runtime inputs match. Git drift is not a hard version gate.
-- Both CI platforms still require project-owned Conan 2.33.0 validation, native ABI/package acceptance and cold-build capacity evidence. CLI bootstrap was skipped and installed Conan version unobserved. Windows Debug/Release locks remain pending; LLVM backend stays 23.1.2.
-- Plan 01-02 supplied a narrow Conan recipe: official LLVM archive checksum, source build and package/native config installation passed. Package ID a214d896e569f9b075f68e0b581ce595d09d80df, recipe revision aa4cad25b3148c3bdd22ed96fba04654, package revision cd9a88c23979fe65c10c97b796943a64. Corrected policy-string guard preserves FORCE_OFF and header checks 0; Linux Debug/Release configure/compile/link/native Support probes passed, exit 0 each, reusing this original package without LLVM rebuild. Windows runtime/ABI and Debug CRT compatibility remain pending.
-- Historical Plan 01-02 Linux profile quote warnings occurred (16 per successful consumer configure); its profile was unchanged during that validation. Current compiler-major alignment has no new native run; paths containing spaces remain unproved.
-- Upstream GoogleTest source builds used Unix Makefiles internally, while consumer generators/LLVM probes use Ninja. Cold-host Make prerequisites and independent CI capacity/identity are not claimed reviewed from this Linux execution. Plan 01-04 now supplies Veyr CMake inputs and actual Linux Debug/Release GoogleTest/GoogleMock link/native tests; Windows and CI remain pending.
-- Cold LLVM CI capacity requires measurement on actual runners; all Windows/Linux Debug/Release CI combinations remain pending.
-- Phase 1 discussion artifacts remain unchanged (commit 1ecd63213b96891dd327527a7fa4ec0e8c96d67c).
-- Phase 3 provisional spelling and semantic range remain open.
+- Final acceptance: [run 37826767824](https://github.com/m4rkens/VeyrLang/actions/runs/37826767824), commit 2741d6514f5e695d36c20cb792bff4985ac5d754; all four jobs successful. Ubuntu doctor 22/22 each; Windows doctor 20/20 each. Each row passed configure/build, CTest 35/35, four-entry C++23 compilation-database verification, prepared native 35/35 and acquisition-disabled empty-cache rejection.
+- Cache: all four restored/imported portable archives, reused LLVM/GoogleTest, passed integrity/export and saved snapshots before project validation. Release imported the same-run Debug snapshot on each platform; Conan retains distinct package IDs/runtime variants. No LLVM/GoogleTest package rebuild in this final run.
+- Windows Release normal and prepared ABI probes use Release flags /O2 /Ob2 /DNDEBUG and -MD, with MultiThreadedDLL and exit 0; Windows Debug uses -MDd/MultiThreadedDebugDLL. Strict CRT/iterator guards remain unchanged.
+- Windows corrections are recorded in 01-08-EXECUTION.md/01-08-SUMMARY.md: reviewed DevShell reuse, linker serialization, exact CRT expression handling, fixture CMake policy, native compiler alias/C++23 verification, CRLF matching with raw preservation and function-local try-compile configuration.
+- Earlier source-build capacity: run 37670754053 built Linux LLVM/GoogleTest with successful setup (~51m42s Debug / ~40m29s Release); run 37786566284 built the required Windows LLVM/GoogleTest runtime variants successfully (LLVM build/package windows ~29m12s Debug-runtime / ~24m02s Release-runtime). These fit hosted six-hour limits; this final run is warm evidence, not a new cold run.
+- Peak RAM/disk/CPU utilization was not measured; manual cold_build=true dispatch has not been claimed executed. Successful actual missing-package source builds establish observed hosted capacity, not a resource bound or future runner-image guarantee.
+- Linux developer baseline remains the observed Omarchy/Arch host with prior read-only doctor 22/22 and native acceptance. Ubuntu CI is separate Clang 18/GCC-13; Windows CI is separate standalone Clang 20.1.8 plus reviewed VC/CRT/SDK/linker. Windows developer-host evidence remains pending.
+- Conan stays 2.33.0, LLVM stays 23.1.2; all four tracked locks are byte-identical to HEAD and to final-run input hashes. Recipes/profiles/baselines/workflow/implementation were not edited by closeout.
+- Non-blocking warnings retained: action-runtime Node deprecations and existing Linux generated-toolchain quotation warnings. No CMP0012 fixture regression, VCVars activation defect, CMAKE_LINKER escape error, compilation-database rejection or unexpected offline failure remains.
+- Raw acceptance JSON retains generic "windows_and_ci: independently pending" and "phase_verification: not performed" labels from the harness. This owner-authorized inspection records actual per-gate results and job URLs; no generated artifact is edited, and no separate automatic GSD verification command is claimed.
+- Discussion, all eight PLAN files and completed earlier summaries remain unchanged. Phase 3 provisional spelling/semantic range still requires its own owner-reviewed smoke profile.
 
 ## Deferred Items
 
@@ -96,17 +94,18 @@ Future probes are tracked in REQUIREMENTS.md v2 and canonical milestone strategy
 
 ## Session Continuity
 
-Last session: 2026-10-07T16:44:27Z
-Stopped at: Plan 01-08 Task 3 owner review of execution authorization/consistency; workflow flag true, publication gated.
+Last session: 2026-10-08T19:27:12Z
+Stopped at: Phase 1 acceptance/closeout owner review; 8/8 plans complete, Phase 2 unstarted.
 Resume file: .planning/phases/01-conan-and-compiler-build-foundation/01-08-EXECUTION.md
-Completed summaries: 01-01 through 01-07, available Linux developer scope only.
-Last completed step: Reviewed toolchain-policy alignment committed in 098430781abae7f07c401786ef89a23bd44be919. Owner approved the execution flag change and bounded consistency update; no new CI/native evidence.
-First incomplete execution step: Review and separately commit/publish authorization/consistency packet, then observe real policy/CLI/prerequisite checks. Windows reviewed locks remain separately gated before package/native work; four native outcomes and capacity pending.
-Continuation authorization: Current owner request permits bounded consistency edits and mocked/static checks only; no installation, real package/native work, commit, push, CI run, phase verification or advancement in this step. Reviewed CI execution path authorized for later separately approved publication.
-Preserved artifacts: Toolchain baselines, profiles, doctor semantics, dependencies, locks, recipes, completed native Linux evidence, discussion, all eight PLAN files and requirements unchanged.
-Current outputs: existing one-line workflow authorization change, test_foundation_contract.py, DEVELOPER_BOOTSTRAP.md, CI_MATRIX_POLICY.md, FOUNDATION_ACCEPTANCE.md, README.md, STATE.md, ROADMAP.md and 01-08-EXECUTION.md. No SUMMARY or phase/requirement completion.
+Completed summaries: 01-01 through 01-08; final CI scope is explicitly separate from Windows developer-host evidence.
+Last completed step: Inspected all four successful jobs/logs/artifacts of run 37826767824, including Release -MD ABI probe and Windows CRLF offline rejection; conditional owner authorization permits this planning-only closeout.
+Next owner gate: Review this closeout and authorize its dedicated commit separately. No commit, push, new verification command, CI retry/dispatch or Phase 2 action is authorized by completion.
+Current outputs: REQUIREMENTS.md, ROADMAP.md, STATE.md, 01-08-EXECUTION.md and new 01-08-SUMMARY.md only.
+Preserved artifacts: All implementation/workflows/recipes/profiles/baselines/dependency versions/lock bytes, discussion, all eight plans and earlier summaries unchanged.
 Sub-agents: None; execution inline under explicit-request policy.
-Planning commit: f4d8335d0c09eef7eb9ec3bb756e92ff9f7fd5a8; baseline correction: 8336e13e7a85b2bf4661828a7bdf4aa6b1211937.
-Execution checkpoints: 01-01 941c70da327b2977cf35b59938795599aaa4b4e4; 01-02 3f0636bda87da69a8526b0c57bf9844b8448c831; 01-03 9531def3e372d0bbb27aaf2d96e88fdca26b3f3c; 01-04 71c254d10cc495231453e2847a608128d06d2762; 01-05 d34a793575e140680804b45058b68c6436cb0c0e; 01-06 f476fa8d5f5e5e20d61adb8abdc196d7bfe5a267; 01-07 ddec666b43546d8820d7eacd28e6ce4ef2b068ed plus missed Task 1 lifetime test eef4780faa9063a50ae5ede89fc40f55408279bb; 01-08 open draft 01acd22be35226c9c2aa0310da28f89d0a63efcc plus startup fix c4f27d086370c8d63d0b81990eba04044bdbe98f.
+Execution checkpoints: 01-01 941c70da327b2977cf35b59938795599aaa4b4e4; 01-02 3f0636bda87da69a8526b0c57bf9844b8448c831; 01-03 9531def3e372d0bbb27aaf2d96e88fdca26b3f3c; 01-04 71c254d10cc495231453e2847a608128d06d2762; 01-05 d34a793575e140680804b45058b68c6436cb0c0e; 01-06 f476fa8d5f5e5e20d61adb8abdc196d7bfe5a267; 01-07 ddec666b43546d8820d7eacd28e6ce4ef2b068ed plus eef4780faa9063a50ae5ede89fc40f55408279bb; 01-08 published implementation through 2741d6514f5e695d36c20cb792bff4985ac5d754, closeout uncommitted.
 
-The earlier STATE wording that the lifetime test remained uncommitted is superseded by the owner-approved one-file checkpoint. Prior failed/recovery evidence remains in completed Plan 01-07 artifacts and was not rewritten or rerun. Windows developer evidence remains independently pending; Windows/Ubuntu CI candidates are reviewed policy with execution/native acceptance gaps; macOS deferred.
+Platform impact:
+- Windows: Hosted Debug/Release foundation accepted; developer host independently pending.
+- Linux: Ubuntu Debug/Release CI accepted; preserved Omarchy developer evidence remains separate.
+- macOS future: Deferred; no Darwin execution or acceptance claimed.

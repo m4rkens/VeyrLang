@@ -1,17 +1,17 @@
 # Plan 01-08 execution checkpoint
 
-**Date:** 2026-10-07
-**Status:** Local Tasks 1–2 drafted and required mocked/static task checks passed.
-The owner subsequently authorized checkpoint commits, publication and expanded
-observations. Run 37643695998 supplied four successful observations followed by
-expected pending-policy failures. The bounded toolchain-policy alignment is now
-committed in `098430781abae7f07c401786ef89a23bd44be919`. The owner subsequently
-authorized the existing reviewed CI execution path: the flag is true, acceptance
-pending. After separately approved publication, Linux may proceed through setup/
-package/build/test if policy/prerequisite checks pass. Windows remains blocked
-before cache/package/native work until reviewed Debug/Release locks exist.
-Task 3 remains a publication/locks/native-evidence checkpoint, not a completed plan.
-Progress remains 7/8 execution plans, zero completed phases. No SUMMARY created.
+**Date:** 2026-10-08
+**Status:** Complete. Tasks 1–3 and the final independent four-job CI/native
+evidence gate passed in run 37826767824 at commit
+`2741d6514f5e695d36c20cb792bff4985ac5d754`. Phase 1 is 8/8 complete;
+this owner-authorized planning-only closeout awaits review and a separately
+approved commit. Phase 2 has not started. Windows developer-host evidence remains
+independently pending; macOS deferred.
+
+The final acceptance section below is the current checkpoint. Earlier sections
+retain their historical pending/failure/authorization boundaries and are
+superseded where the final run supplies evidence; they are not current blockers.
+All earlier artifacts, observations and failures remain preserved.
 
 ## Authorization and preserved work
 
@@ -258,7 +258,7 @@ These 99 checks do not establish real CI prerequisite, ABI or package acceptance
 No real Conan, compiler, linker, CMake, Ninja or CTest operation ran in this alignment
 step. No installation, CI rerun, commit, push or phase advancement occurred.
 
-## Task 3 blocking owner decision
+## Historical Task 3 execution-authorization checkpoint
 
 The owner approved the one-line execution authorization change and this bounded
 consistency update. `VEYR_CI_EXECUTION_AUTHORIZED` is now true; no other workflow
@@ -319,3 +319,192 @@ Platform impact:
   No developer-policy fallback; CI execution and native/package readiness remain gated.
 - macOS future: No Darwin job/profile/evidence; standard structured Conan/CMake/
   Python boundaries retained without extending current execution scope.
+
+
+## Final Task 3 acceptance and normal closeout — 2026-10-08
+
+The owner explicitly requested inspection of completed run 37826767824 as final
+Phase 1 acceptance and authorized planning/checkpoint closeout only if all four
+jobs and artifacts support it. No new CI run, retry, dispatch, local package/native
+command, implementation edit, staging, commit or push occurred during this review.
+No GSD stage or Phase 2 was started automatically.
+
+Run: [37826767824](https://github.com/m4rkens/VeyrLang/actions/runs/37826767824),
+conclusion **success**, event push, attempt 1, tested commit
+`2741d6514f5e695d36c20cb792bff4985ac5d754`.
+
+| Actual job | Doctor | Native CTest | Verify | Prepared/native acceptance | Acquisition-disabled rejection | Final |
+|---|---|---|---|---|---|---|
+| [ubuntu-ci-Debug / 113481511231](https://github.com/m4rkens/VeyrLang/actions/runs/37826767824/job/113481511231) | 22/22 | 35/35 | 4 selected C++23 entries; CTest 35/35 | isolated managed configure/build/verify; 35/35 | expected child exit 1; harness success | Success |
+| [ubuntu-ci-Release / 113481511547](https://github.com/m4rkens/VeyrLang/actions/runs/37826767824/job/113481511547) | 22/22 | 35/35 | 4 selected C++23 entries; CTest 35/35 | isolated managed configure/build/verify; 35/35 | expected child exit 1; harness success | Success |
+| [windows-ci-Debug / 113481511602](https://github.com/m4rkens/VeyrLang/actions/runs/37826767824/job/113481511602) | 20/20 | 35/35 | 4 selected C++23 entries; CTest 35/35 | isolated managed configure/build/verify; 35/35 | raw CRLF preserved; expected child exit 1; harness success | Success |
+| [windows-ci-Release / 113481511855](https://github.com/m4rkens/VeyrLang/actions/runs/37826767824/job/113481511855) | 20/20 | 35/35 | 4 selected C++23 entries; CTest 35/35 | isolated managed configure/build/verify; 35/35 | raw CRLF preserved; expected child exit 1; harness success | Success |
+
+In every row, actual step metadata and logs agree that observation, reviewed
+policy, exact base-Python selection, auxiliary CMake/Ninja, project-owned Conan
+2.33.0 bootstrap, strict read-only doctor and required tracked lock checks passed.
+Archive restore/import, explicit dependency setup, integrity/export and early
+snapshot save passed before normal configure/build/test/verify. Both native
+acceptance steps and always-upload completed successfully; no required gate was
+skipped or inferred from another platform/configuration.
+
+### Final package and snapshot evidence
+
+All four dependency setups reused installed LLVM 23.1.2 and GoogleTest packages;
+no LLVM/GoogleTest dependency rebuild or download occurred. The recipe test_package
+was configured/built/run against the cached selected LLVM package; its native
+Support allocation/destruction probe passed. Recipe references remain exactly:
+
+- `llvm/23.1.2@veyr/m1#aa4cad25b3148c3bdd22ed96fba04654`
+- `gtest/1.18.0#e2507fc4efe2ec9e2db9e5c91eefab9f`
+- build-context `cmake/4.4.3#8b46ce9dbf1937af1c05f19579c1f105`
+
+All four lock JSON files retain Conan version 0.5, those dependency categories/
+identities and no new dependencies. Both Linux files SHA-256:
+`b76a5f857ba40da4a59d2bdcd8690fba6d12d15d53bd3b0dc6aceb252585f30b`.
+Both Windows files SHA-256:
+`53d9fc6a882485c51c01a93ce6f9cdd11f277a94377c8d952d2af939b780e9be`.
+These match HEAD and final-run prepared/offline `results.json` input identities.
+No lock was generated, edited or refreshed by acceptance inspection.
+
+The portable archive alone (`.veyr-dev/conan-cache/dependencies.tgz`) crossed
+Actions cache boundaries; each live CONAN_HOME was isolated by run/attempt/job.
+Conan import precedes authoritative explicit setup. Integrity and fresh export
+both passed, followed by pinned cache/save before project validation.
+
+| Job | Restore/import | Restored snapshot writer | New early-save writer | Successful setup elapsed |
+|---|---|---|---|---|
+| Ubuntu Debug | Hit / passed | 37820558859-1-Release | 37826767824-1-Debug | 12.5952447s |
+| Ubuntu Release | Hit / passed | 37826767824-1-Debug | 37826767824-1-Release | 9.2827918s |
+| Windows Debug | Hit / passed | 37820558859-1-Release | 37826767824-1-Debug | 27.840804s |
+| Windows Release | Hit / passed | 37826767824-1-Debug | 37826767824-1-Release | 33.4474755s |
+
+Every writer suffix above is appended to its complete platform compatibility
+prefix (no broader fallback). Exact prefixes from the completed run:
+
+```text
+conan-v2-Linux-X64-ubuntu-ci-linux-x86_64-clang-20261004.327.1-d0f26a40065fdfad5f46b075a752a45dfbfe58d7a97af4f49f85886f2ef27a76-456ff82915ec38682f20a108eb0f999fd91fe7497a6bff7fad9764b9272f53ac-
+conan-v2-Windows-X64-windows-ci-windows-x86_64-clangcl-20261004.326.1-3ee01c658391531e0b2d89e6b7a897c1cba8bdf2b299759a3e94e2546282bb28-fee6e3dcbb82f0e6e55aa8026b6bec13d4ede861859c5d026c9ca98f52c29780-
+```
+
+Debug/Release share compatible snapshots while distinct GoogleTest configurations
+and Windows LLVM CRT package IDs coexist. Snapshot reuse is actual evidence here,
+not a replacement for the independently successful project/native checks.
+
+### Windows Release probe proof
+
+Both normal and isolated prepared `CMakeConfigureLog.yaml` events show
+`VEYR_CONSUMER_RUNTIME_COMPATIBLE` returning 0. The tested function sets
+Windows-only, function-local `CMAKE_TRY_COMPILE_CONFIGURATION` to the selected
+Release `CMAKE_BUILD_TYPE` before the check. This normal variable need not appear
+as a CMakeCache entry. The actual scratch commands independently prove the chosen
+configuration:
+
+```text
+clang-cl.exe ... /O2 /Ob2 /DNDEBUG -clang:-std=c++23 -MD ... -c ...src.cxx
+cmake.exe -E vs_link_exe ... link.exe ... /INCREMENTAL:NO ...
+```
+
+The probe records `CMAKE_CXX_FLAGS_RELEASE=/O2 /Ob2 /DNDEBUG` and
+`CMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL`. Neither Release ABI event contains
+`-MDd`. Both compile and link complete. Windows Debug events retain
+`MultiThreadedDebugDLL` and `-MDd`, returning 0 in normal and prepared trees.
+All existing _DLL/_MT/_DEBUG/iterator-level checks remain strict. The actual
+Release build, 35/35 tests, compilation-database verify and both acceptance gates
+subsequently passed; there is no remaining Release evidence gap.
+
+### Final reviewed corrections and regression outcome
+
+| Correction | Reviewed implementation checkpoint | Final evidence |
+|---|---|---|
+| Canonical LF recipe bytes and reviewed Linux seed identities for Windows locks | a662e625f41b5e8e4aad9e5433d42374bba04f1b; locks imported in b666a6159f8480e5bb31dd783c2d6f3fb6fba48d | Original LLVM/GoogleTest/CMake recipe revisions respected |
+| Reuse validated DevShell; no Conan VCVars reactivation | 9e41c960dada40f814307a25e1a0c988c9faa875 | No vcvars_ver=14.3 defect; both Windows setups passed |
+| Forward-slash CMAKE_LINKER serialization, same native linker identity | df71007ea6464b5e40dad388edfcf0d3e29b7a1d | No raw-backslash parsing failure; configure/link passed |
+| Exact supported dynamic CRT generator expressions | 0030bd3078dde74d56527fa93ae5d986f0906ff1 | Normal Debug/Release consumer guard passed |
+| CMake 3.31 policy baseline in CRT fixture runner | 15434d4cf158cd35a1ed6f336b6937552981b8a8 | All 22 CRT fixtures passed in all four jobs; no CMP0012 regression |
+| Native Windows short/long compiler identity and exact clang-cl C++23 forwarding | cd211234ad292955353590445afa01d758bbeeb4 | Four-entry compile database verification passed in both Windows jobs |
+| Matching-only CRLF normalization and configure evidence capture | a971d79e1ad47d623462e17629266d1299647eac | Windows raw offline logs retain 59 CRLF pairs each; controlled rejection passed |
+| Function-local Windows try-compile configuration | 2741d6514f5e695d36c20cb792bff4985ac5d754 | Release -MD and Debug -MDd probes both compile/link successfully |
+
+Shared earlier fixes also remain effective: setup-python's reviewed base
+interpreter remains authoritative despite the auxiliary venv; read-only Ninja/
+Windows target/linker probes pass; exact quoted/bracket-quoted include-policy
+registration verification passes; early portable snapshot preservation succeeds.
+No baseline/version/policy weakening or custom dependency/package system was added.
+
+### Controlled offline semantics and warnings
+
+For every job, missing-gtest / No remote defined messages appear only in the
+intentionally empty, separate Conan home used by the acquisition-disabled
+negative check. That single child exits 1, while the harness/workflow accepts the
+exact expected rejection. No retry, download, package build or acquisition fallback
+occurs in that negative gate. Normal setup/configure/build/test/verify/prepared
+logs do not report those cache failures. Linux LF and Windows CRLF evidence remain
+raw and untouched. This covers missing recipe/package cache, not a binary-only
+cache-miss proof or an all-provider Windows acceptance claim.
+
+Action-runtime Node deprecations and existing Linux generated-toolchain quotation
+warnings remain visible and non-blocking. No new blocker or reappearance of any
+reviewed defect is evidenced; all 35 tests include both positive and rejecting
+CRT fixtures and the include-policy registration.
+
+### Source-build capacity and honest evidence limits
+
+Final run 37826767824 is warm-cache acceptance. Earlier actual source builds
+establish feasibility of missing-package construction on the hosted runners:
+
+- Run [37670754053](https://github.com/m4rkens/VeyrLang/actions/runs/37670754053):
+  Ubuntu Debug dependency step 18:57:57–19:49:39 UTC (~51m42s), Release
+  19:51:05–20:31:34 UTC (~40m29s), both successful. Logs show LLVM and GoogleTest
+  built from source in both jobs; later project verify failures did not negate
+  successful dependency construction. Those original packages were not saved by
+  the old cache policy; subsequent snapshot-enabled runs populated reusable caches.
+- Run [37786566284](https://github.com/m4rkens/VeyrLang/actions/runs/37786566284):
+  Windows Debug-runtime LLVM build/package 13:59:51–14:29:03 UTC (~29m12s),
+  Release-runtime variant 14:39:06–15:03:08 (~24m02s); GoogleTest variants built
+  immediately afterward. Debug started from an Actions miss; Release imported
+  Debug state but built the genuinely missing distinct runtime variant.
+  Dependency setup/snapshot preservation succeeded before later consumer guards.
+
+These successful builds fit the hosted six-hour limit and establish observed
+capacity. Peak RAM/disk/CPU utilization was not measured. This review does not
+claim a manual cold_build=true dispatch, a resource ceiling, arbitrary future
+image capacity, broader ABI guarantees or independently inspected Windows
+developer-host acceptance. None is silently inferred from this warm final run.
+
+### Evidence set and lifecycle boundary
+
+Uploaded artifacts are `foundation-ubuntu-ci-Debug-1`,
+`foundation-ubuntu-ci-Release-1`, `foundation-windows-ci-Debug-1`, and
+`foundation-windows-ci-Release-1`. Per artifact the decisive files are:
+
+- `.veyr-dev/ci/doctor.json`, setup/tools-only/configure/build/test/verify logs,
+  `foundation.log`, `offline.log`, cache-import/integrity/export logs and setup timing;
+- normal/prepared compilation databases and LastTest.log;
+- normal/prepared CMakeConfigureLog.yaml, CMakeCache.txt and Conan toolchain;
+- isolated prepared/offline `results.json` and raw `offline-rejection.log`.
+
+The harness's generic `windows_and_ci: independently pending` and
+`phase_verification: not performed` labels are conservative fixed metadata;
+actual environment/configuration-specific task results and successful job/step
+outcomes establish this owner-authorized acceptance. Artifacts were inspected,
+not rewritten. No automatic separate GSD verification command was executed.
+
+Plan 01-08 is complete, Phase 1 is 8/8 complete, and BUILD-01 through BUILD-14
+are accepted for the documented foundation using preserved earlier execution plus
+this final native matrix. All eight plans, earlier summaries and discussion are
+unchanged. Normal closeout edits only REQUIREMENTS.md, ROADMAP.md, STATE.md,
+this execution record and new 01-08-SUMMARY.md. Canonical implementation docs
+retain their earlier historical checkpoints; this final planning record supplies
+the current evidence without modifying them in this bounded closeout.
+
+Platform impact:
+- Windows: Hosted CI Debug/Release native/package/verify/offline foundation accepted;
+  independent developer-host VS/VC/CRT/SDK/linker inspection remains pending.
+- Linux: Ubuntu CI Debug/Release accepted independently of preserved Omarchy
+  developer evidence; Linux behavior/identities/profiles remain unchanged.
+- macOS future: Deferred; no execution, profile promotion or acceptance claimed.
+
+Closeout commit/push require separate explicit owner authorization. Phase 2 and
+any further lifecycle command remain unstarted. Proposed dedicated message:
+`docs: close Phase 1 build-foundation acceptance`.
