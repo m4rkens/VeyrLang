@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: M1
 milestone_name: Compiler Walking Skeleton
-current_phase: 1
-current_phase_name: Conan and Compiler Build Foundation
-status: complete
-stopped_at: Phase 1 accepted from run 37826767824; 8/8 plans complete. Planning-only closeout awaits owner review/commit; Phase 2 unstarted.
-last_updated: "2026-10-08T19:27:12Z"
+current_phase: 2
+current_phase_name: Source Identity, Spans, and Diagnostics
+status: discussing
+stopped_at: Phase 2 discussion captured; owner review/commit pending. Phase 1 remains closed at 8/8; Phase 2 research/planning/execution unstarted.
+last_updated: "2026-10-08T20:19:45.975Z"
 last_activity: 2026-10-08
-last_activity_desc: Reviewed all four successful CI jobs and artifacts; recorded Plan 01-08 and Phase 1 acceptance. No new execution, commit, push or Phase 2 work.
+last_activity_desc: Owner completed Phase 2 discussion; context/log recorded. No research, plans, implementation, builds/tests, CI, commit or push.
 progress:
   total_phases: 10
   completed_phases: 1
@@ -24,16 +24,20 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-03)
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
-**Current focus:** Owner review of Phase 1 acceptance/closeout; 8/8 complete, final four-job evidence from run 37826767824. No Phase 2 authorization.
+**Current focus:** Phase 2 discussion captured; owner review and discussion-only commit pending. Phase 1 remains closed at 8/8 with final run 37826767824 and closeout commit 1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f.
 
 ## Current Position
 
-Phase: 1 of 10 (Conan and Compiler Build Foundation)
-Plan: 01-08 Tasks 1–3 complete; final native CI/evidence gate passed
-Status: Phase 1 complete; 8/8 plans and 1/10 phases complete. Closeout uncommitted; Phase 2 not started.
-Last activity: 2026-10-08T19:27:12Z — Inspected successful run 37826767824 at commit 2741d6514f5e695d36c20cb792bff4985ac5d754; all four jobs passed native and controlled offline acceptance.
+Phase: 2 of 10 (Source Identity, Spans, and Diagnostics)
+Plan: Not planned; four discussion areas complete, sixteen choices captured in 02-CONTEXT.md
+Status: Discussing Phase 2 — context captured; awaiting owner review and discussion commit
+Last activity: 2026-10-08 — Owner completed Phase 2 discussion; context/log recorded. No research, plans, implementation, builds/tests, CI, commit or push.
 
 Progress: [██████████] 8/8 Phase 1 execution plans
+
+Phase 1 remains 8/8 complete and 1/10 phases is accepted. The frontmatter plan
+counts/percent retain those eight completed foundation plans; no Phase 2 plan
+exists and discussion completion is not implementation/phase acceptance.
 
 ## Performance Metrics
 
@@ -66,13 +70,18 @@ the subsequent hosted CI acceptance for those historical platform deferrals.
 - Initial observations from run 37356855017 remain preserved. Owner approved run 37643695998 candidate policy: Ubuntu Clang 18 with explicit GCC-13, Windows absolute standalone Clang 20.1.8 after DevShell. Omarchy Clang 22 and Windows developer evidence remain separate. Git version/path are utility observations, not ABI/package pins.
 - Owner explicitly approved Plan 01-03 Linux Debug/Release execution with both Windows lock outputs deferred at that checkpoint; both were subsequently generated graph-only, reviewed and imported in b666a6159f8480e5bb31dd783c2d6f3fb6fba48d. Existing managed native locks work for system/custom graph subsets. Explicit --init-lock initializes only missing locks; ordinary setup preserves locks unchanged.
 - Phase 3 reviewed smoke profile precedes syntax-dependent implementation/tests.
+- Phase 2 discussion decisions are captured in `.planning/phases/02-source-identity-spans-and-diagnostics/02-CONTEXT.md`: owned immutable snapshots, manager-local fresh IDs, checked half-open byte spans, exact display names/byte locations, and ordered structured plain-text diagnostics. These are discussion contracts only.
 
 ### Pending Todos
 
-Owner review and separately authorized planning-only closeout commit. Do not
-start Phase 2, run another workflow, or invoke a new GSD lifecycle command.
-Windows developer-host inspection/acceptance remains independently pending;
-Windows hosted CI evidence is not substituted for it. macOS remains deferred.
+Review Phase 2 discussion artifacts and separately authorize their discussion-only
+commit. Research/planning remains unstarted and requires the later exact
+`$gsd-plan-phase 2` command; execution, CI actions, and another transition are not
+authorized. Phase 1 closeout is already committed and pushed in
+`1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f`; it remains closed at 8/8.
+Windows developer-host evidence remains independently pending and must not block
+Phase 2 planning. Linux is primary development; Windows is Tier 1 compatibility/CI
+with local developer confirmation deferred. macOS remains deferred.
 
 ### Evidence and remaining scope limits
 
@@ -94,18 +103,19 @@ Future probes are tracked in REQUIREMENTS.md v2 and canonical milestone strategy
 
 ## Session Continuity
 
-Last session: 2026-10-08T19:27:12Z
-Stopped at: Phase 1 acceptance/closeout owner review; 8/8 plans complete, Phase 2 unstarted.
-Resume file: .planning/phases/01-conan-and-compiler-build-foundation/01-08-EXECUTION.md
+Last session: 2026-10-08T20:19:45.967Z
+Stopped at: Phase 2 discussion captured; owner review/commit pending. Phase 1 remains closed at 8/8; Phase 2 research/planning/execution unstarted.
+Resume file: .planning/phases/02-source-identity-spans-and-diagnostics/02-CONTEXT.md
 Completed summaries: 01-01 through 01-08; final CI scope is explicitly separate from Windows developer-host evidence.
-Last completed step: Inspected all four successful jobs/logs/artifacts of run 37826767824, including Release -MD ABI probe and Windows CRLF offline rejection; conditional owner authorization permits this planning-only closeout.
-Next owner gate: Review this closeout and authorize its dedicated commit separately. No commit, push, new verification command, CI retry/dispatch or Phase 2 action is authorized by completion.
-Current outputs: REQUIREMENTS.md, ROADMAP.md, STATE.md, 01-08-EXECUTION.md and new 01-08-SUMMARY.md only.
-Preserved artifacts: All implementation/workflows/recipes/profiles/baselines/dependency versions/lock bytes, discussion, all eight plans and earlier summaries unchanged.
-Sub-agents: None; execution inline under explicit-request policy.
-Execution checkpoints: 01-01 941c70da327b2977cf35b59938795599aaa4b4e4; 01-02 3f0636bda87da69a8526b0c57bf9844b8448c831; 01-03 9531def3e372d0bbb27aaf2d96e88fdca26b3f3c; 01-04 71c254d10cc495231453e2847a608128d06d2762; 01-05 d34a793575e140680804b45058b68c6436cb0c0e; 01-06 f476fa8d5f5e5e20d61adb8abdc196d7bfe5a267; 01-07 ddec666b43546d8820d7eacd28e6ce4ef2b068ed plus eef4780faa9063a50ae5ede89fc40f55408279bb; 01-08 published implementation through 2741d6514f5e695d36c20cb792bff4985ac5d754, closeout uncommitted.
+Last completed step: Phase 2 discussion: all four areas and sixteen choices captured; owner selected write CONTEXT and DISCUSSION-LOG. Phase 1 closeout already committed/pushed in 1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f.
+Next owner gate: Review Phase 2 discussion artifacts and authorize a dedicated discussion-only commit separately. Research/planning requires the later exact $gsd-plan-phase 2 command; execution is not authorized.
+Current outputs: .planning/STATE.md, 02-CONTEXT.md and 02-DISCUSSION-LOG.md only; temporary discussion checkpoint superseded and removed after complete artifacts are validated.
+Preserved artifacts: Phase 1 closed at 8/8; ROADMAP/REQUIREMENTS, all Phase 1 artifacts, implementation/workflows/recipes/profiles/baselines/dependency versions and all four lock bytes unchanged.
+Sub-agents: None; discussion inline under explicit-request policy.
+Execution checkpoints: 01-01 941c70da327b2977cf35b59938795599aaa4b4e4; 01-02 3f0636bda87da69a8526b0c57bf9844b8448c831; 01-03 9531def3e372d0bbb27aaf2d96e88fdca26b3f3c; 01-04 71c254d10cc495231453e2847a608128d06d2762; 01-05 d34a793575e140680804b45058b68c6436cb0c0e; 01-06 f476fa8d5f5e5e20d61adb8abdc196d7bfe5a267; 01-07 ddec666b43546d8820d7eacd28e6ce4ef2b068ed plus eef4780faa9063a50ae5ede89fc40f55408279bb; 01-08 published implementation through 2741d6514f5e695d36c20cb792bff4985ac5d754, planning closeout committed/pushed in 1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f.
 
 Platform impact:
-- Windows: Hosted Debug/Release foundation accepted; developer host independently pending.
-- Linux: Ubuntu Debug/Release CI accepted; preserved Omarchy developer evidence remains separate.
+
+- Windows: Hosted Debug/Release foundation accepted; Tier 1 compatibility/CI target. Developer host independently pending; local confirmation deferred and non-blocking for Phase 2 planning.
+- Linux: Primary development host; Ubuntu Debug/Release CI accepted and separate from preserved Omarchy developer evidence.
 - macOS future: Deferred; no Darwin execution or acceptance claimed.
