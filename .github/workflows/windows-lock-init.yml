@@ -1,0 +1,247 @@
+name: Windows CI lock initialization
+
+# Temporary candidate-generation path. Publication and dispatch need separate owner approval.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  locks:
+    name: Reviewed Windows CI Debug then Release locks
+    runs-on: windows-2022
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      VEYR_CI_ENVIRONMENT: windows-ci
+      VEYR_CI_PROFILE: windows-x86_64-clangcl
+      VEYR_CI_CONFIG: Debug
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONNOUSERSITE: '1'
+
+    steps:
+      - name: Checkout reviewed inputs
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Require reviewed Windows policy and absent destination locks
+        id: policy
+        env:
+          CONAN_HOME: ${{ runner.temp }}/veyr-windows-lock-init-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}
+        run: |
+          if (-not $IsWindows -or $env:RUNNER_ARCH -ne 'X64') { throw 'Native Windows x64 required.' }
+          foreach ($config in @('Debug', 'Release')) {
+            $lock = "conan/locks/windows-x86_64-clangcl-$config.lock"
+            if (Test-Path -LiteralPath $lock) { throw "Destination already exists: $lock. No overwrite." }
+          }
+          if (Test-Path -LiteralPath $env:CONAN_HOME) { throw 'Initialization requires a fresh job-owned Conan home.' }
+          "CONAN_HOME=$env:CONAN_HOME" >> $env:GITHUB_ENV
+          New-Item -ItemType Directory -Force .veyr-dev/ci | Out-Null
+          $baseline = Get-Content scripts/devtools/baseline.json -Raw | ConvertFrom-Json
+          $entry = $baseline.ci_environments.'windows-ci'
+          if ($entry.status -notin @('selected', 'reviewed') -or
+              $entry.runner -ne 'windows-2022' -or
+              $entry.profile -ne $env:VEYR_CI_PROFILE -or
+              $entry.environment -ne $env:VEYR_CI_ENVIRONMENT) {
+            throw 'Reviewed Windows CI policy required; no developer-policy fallback.'
+          }
+          if ($baseline.tools.conan -ne '2.33.0' -or $baseline.backend.llvm -ne '23.1.2') {
+            throw 'Conan 2.33.0 and LLVM 23.1.2 must remain fixed.'
+          }
+          if ($entry.tools.python -notmatch '^\d+\.\d+\.\d+$') { throw 'Missing exact reviewed Python identity.' }
+          "python=$($entry.tools.python)" >> $env:GITHUB_OUTPUT
+          $entry | ConvertTo-Json -Depth 10 | Set-Content .veyr-dev/ci/expected-policy.json
+          @{
+            commit = $env:GITHUB_SHA
+            run_url = "$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"
+            attempt = $env:GITHUB_RUN_ATTEMPT
+            runner_os = $env:RUNNER_OS
+            runner_arch = $env:RUNNER_ARCH
+            image_os = $env:ImageOS
+            image_version = $env:ImageVersion
+            conan_home = $env:CONAN_HOME
+            reference_evidence_run = '37755348212'
+            scope = 'Candidate locks and graph evidence only; native/package acceptance unproven.'
+          } | ConvertTo-Json | Set-Content .veyr-dev/ci/runner.json
+
+      - name: Select exact reviewed base Python
+        id: base_python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ steps.policy.outputs.python }}
+          architecture: x64
+          check-latest: false
+
+      - name: Set up reviewed auxiliary tools and standalone Clang DevShell environment
+        env:
+          VEYR_BASE_PYTHON: ${{ steps.base_python.outputs.python-path }}
+        run: |
+          if (-not $env:VEYR_BASE_PYTHON -or
+              -not [System.IO.Path]::IsPathFullyQualified($env:VEYR_BASE_PYTHON) -or
+              $env:VEYR_BASE_PYTHON.Contains("`n") -or $env:VEYR_BASE_PYTHON.Contains("`r") -or
+              -not (Test-Path -LiteralPath $env:VEYR_BASE_PYTHON -PathType Leaf)) {
+            throw 'setup-python must supply an existing absolute base Python executable.'
+          }
+          Write-Output "Reviewed base Python executable: $env:VEYR_BASE_PYTHON"
+          "VEYR_BASE_PYTHON=$env:VEYR_BASE_PYTHON" >> $env:GITHUB_ENV
+          $baseline = Get-Content scripts/devtools/baseline.json -Raw | ConvertFrom-Json
+          $entry = $baseline.ci_environments.'windows-ci'
+          $ninja = $baseline.tools.ninja
+          if ($entry.tools.ninja) { $ninja = $entry.tools.ninja }
+          $env:PIP_CONFIG_FILE = 'NUL'
+          & $env:VEYR_BASE_PYTHON -I -m venv .veyr-dev/tools/ci-prerequisites
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $bin = '.veyr-dev/tools/ci-prerequisites/Scripts'
+          $toolPython = Join-Path $bin 'python.exe'
+          & $toolPython -I -m pip --isolated --require-virtualenv --disable-pip-version-check install --index-url https://pypi.org/simple --no-cache-dir --only-binary=:all: "cmake==$($entry.tools.cmake)" "ninja==$ninja"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & $toolPython -I -m pip --isolated --require-virtualenv --disable-pip-version-check check
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          (Resolve-Path $bin).Path >> $env:GITHUB_PATH
+          $module = Join-Path $entry.paths.vs_root 'Common7/Tools/Microsoft.VisualStudio.DevShell.dll'
+          Import-Module $module
+          Enter-VsDevShell -VsInstallPath $entry.paths.vs_root -SkipAutomaticLocation -DevCmdArguments "-arch=x64 -host_arch=x64 -vcvars_ver=$($entry.native.vctools) -winsdk=$($entry.native.sdk)"
+          # DevShell supplies VC/CRT/SDK/linker only. Standalone LLVM supplies the compiler.
+          $standaloneBin = 'C:\Program Files\LLVM\bin'
+          $expectedClangCl = Join-Path $standaloneBin 'clang-cl.exe'
+          if ($entry.paths.c_compiler -ne $expectedClangCl -or $entry.paths.cpp_compiler -ne $expectedClangCl) {
+            throw 'Reviewed compiler inputs must select absolute standalone clang-cl.exe paths.'
+          }
+          foreach ($tool in @('clang.exe', 'clang++.exe', 'clang-cl.exe')) {
+            $executable = Join-Path $standaloneBin $tool
+            $banner = & $executable '--version' 2>&1
+            if ($LASTEXITCODE -ne 0) { $banner | Write-Output; exit $LASTEXITCODE }
+            $banner | Tee-Object -Append .veyr-dev/ci/standalone-clang.txt
+            "path=$executable" | Add-Content .veyr-dev/ci/standalone-clang.txt
+            $text = $banner -join "`n"
+            if ($text -notmatch '(?m)^clang version 20\.1\.8(?:\s|$)' -or
+                $text -notmatch '(?m)^Target:\s*x86_64-pc-windows-msvc\s*$') {
+              throw "Standalone compiler drift at $executable; no bundled LLVM fallback."
+            }
+          }
+          $env:PATH = "$standaloneBin;$env:PATH"
+          foreach ($name in @('PATH', 'INCLUDE', 'LIB', 'LIBPATH', 'VSINSTALLDIR', 'VCToolsInstallDir', 'VCToolsVersion', 'WindowsSdkDir', 'WindowsSDKVersion')) {
+            $value = [Environment]::GetEnvironmentVariable($name)
+            if (-not $value -or $value.Contains("`n") -or $value.Contains("`r")) { throw "Invalid developer environment $name" }
+            "$name=$value" >> $env:GITHUB_ENV
+            "$name=$value" | Add-Content .veyr-dev/ci/devshell.txt
+          }
+
+      - name: Bootstrap project-owned Conan CLI only
+        run: |
+          & $env:VEYR_BASE_PYTHON -B scripts/dev.py setup --tools-only --environment windows-ci --profile windows-x86_64-clangcl --config Debug --conan-home $env:CONAN_HOME 2>&1 | Tee-Object .veyr-dev/ci/tools-only.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Require strict read-only doctor for both configurations
+        run: |
+          foreach ($config in @('Debug', 'Release')) {
+            & $env:VEYR_BASE_PYTHON -B scripts/dev.py doctor --json --environment windows-ci --profile windows-x86_64-clangcl --config $config --conan-home $env:CONAN_HOME 2>&1 | Tee-Object ".veyr-dev/ci/doctor-$config.json"
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+          # Missing locks are the purpose of this manual-only path. No package/native work follows.
+
+      - name: Export recipe and create and validate Debug then Release candidate locks
+        run: |
+          $lockScript = @'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          from scripts.devtools.conan_ops import conan_home_guard
+          from scripts.devtools.doctor import make_selection, read_baseline, select_inputs
+          from scripts.devtools.runner import run_command
+
+          root = Path.cwd().resolve()
+          baseline = read_baseline()
+          evidence = root / ".veyr-dev/ci"
+          selections = []
+          for config in ("Debug", "Release"):
+              selected = select_inputs(baseline, "windows-x86_64-clangcl", config, environment="windows-ci")
+              selection = make_selection(baseline, selected, conan_home=Path(os.environ["CONAN_HOME"]))
+              doctor = json.loads((evidence / f"doctor-{config}.json").read_text(encoding="utf-8-sig"))
+              if not doctor["prerequisites_ready"] or any(check["status"] != "ok" for check in doctor["checks"]):
+                  raise RuntimeError(f"Doctor did not accept {config}; no Conan graph work.")
+              if Path(doctor["selection"]["conan_executable"]) != selection.conan_executable:
+                  raise RuntimeError("Conan executable differs from reviewed doctor selection.")
+              if selection.lockfile.exists():
+                  raise RuntimeError(f"Destination already exists: {selection.lockfile}; no overwrite.")
+              selections.append((selected, selection))
+
+          def invoke(selection, selected, arguments):
+              env = {**os.environ, **selected["environment"], "CONAN_HOME": str(selection.conan_home)}
+              env.pop("PYTHONPATH", None)
+              env.pop("PYTHONHOME", None)
+              argv = [str(selection.conan_executable), *arguments]
+              print(f"command: {argv!r}", flush=True)
+              run_command(argv, cwd=root, env=env)
+
+          # Existing exclusive home guard and supervisor; stop on first failure, never retry.
+          with conan_home_guard(selections[0][1]):
+              invoke(selections[0][1], selections[0][0],
+                     ["export", str(root / "conan/recipes/llvm"), "--user=veyr", "--channel=m1"])
+              for selected, selection in selections:
+                  config = selection.config
+                  profiles = []
+                  for context, paths in (("h", selected["host_profiles"]), ("b", selected["build_profiles"])):
+                      for path in paths:
+                          profiles.extend([f"-pr:{context}", str(path)])
+                  inputs = [*profiles, "-o:h", "&:llvm_provider=managed"]
+                  invoke(selection, selected, ["profile", "show", *inputs, "--format=json",
+                         f"--out-file={evidence / f'profiles-{config}.json'}"])
+                  expanded = json.loads((evidence / f"profiles-{config}.json").read_text(encoding="utf-8"))
+                  for context, expected_config in (("host", config), ("build", "Release")):
+                      expected = {"os": "Windows", "arch": "x86_64", "compiler": "clang",
+                                  "compiler.version": "20", "compiler.cppstd": "23",
+                                  "compiler.runtime": "dynamic", "compiler.runtime_version": "v143",
+                                  "build_type": expected_config, "compiler.runtime_type": expected_config}
+                      actual = expanded[context]["settings"]
+                      if any(str(actual.get(key)) != value for key, value in expected.items()):
+                          raise RuntimeError(f"Unexpected {config} {context} profile settings: {actual}")
+                  # --build=missing evaluates build requirements only for these graph commands.
+                  # Neither lock create nor graph info installs/builds package binaries.
+                  invoke(selection, selected, ["lock", "create", str(root / "conanfile.py"), *inputs,
+                         "--build=missing", "--remote=conancenter", "--lockfile=",
+                         f"--lockfile-out={selection.lockfile}"])
+                  lock_bytes = selection.lockfile.read_bytes()
+                  # Preserve only candidates created here, including a candidate needing failure review.
+                  candidates = evidence / "candidate-locks"
+                  candidates.mkdir(exist_ok=True)
+                  (candidates / selection.lockfile.name).write_bytes(lock_bytes)
+                  lock = json.loads(lock_bytes)
+                  if lock.get("version") != "0.5" or not all(
+                      any(ref.startswith(prefix) for ref in lock.get("requires", []))
+                      for prefix in ("llvm/23.1.2@veyr/m1#", "gtest/1.18.0#")
+                  ):
+                      raise RuntimeError(f"Unexpected {config} lock format or direct dependencies; owner review required.")
+                  graph_path = evidence / f"graph-{config}.json"
+                  invoke(selection, selected, ["graph", "info", str(root / "conanfile.py"), *inputs,
+                         "--build=missing", "--no-remote", f"--lockfile={selection.lockfile}",
+                         "--format=json", f"--out-file={graph_path}"])
+                  graph = json.loads(graph_path.read_text(encoding="utf-8"))["graph"]
+                  for node in graph["nodes"].values():
+                      if node.get("info_invalid") or node.get("binary") == "Invalid":
+                          raise RuntimeError(f"Invalid {config} graph node: {node.get('ref')}; stop for owner review.")
+                  if selection.lockfile.read_bytes() != lock_bytes:
+                      raise RuntimeError(f"Graph validation changed {config} lock; stop for owner review.")
+                  record = {"configuration": config, "lock": str(selection.lockfile),
+                            "sha256": hashlib.sha256(lock_bytes).hexdigest(),
+                            "graph_validation": "passed", "native_package_acceptance": "unproven"}
+                  (evidence / f"lock-review-{config}.json").write_text(json.dumps(record, indent=2) + "\n")
+                  print(f"Candidate {config} lock and graph ready for owner review; no package/native acceptance.", flush=True)
+          '@
+          & $env:VEYR_BASE_PYTHON -B -c $lockScript 2>&1 | Tee-Object .veyr-dev/ci/lock-initialization.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Upload candidate locks and review evidence even on failure
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: windows-ci-lock-candidates-${{ github.run_id }}-${{ github.run_attempt }}
+          include-hidden-files: true
+          if-no-files-found: error
+          path: .veyr-dev/ci/
