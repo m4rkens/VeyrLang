@@ -11,6 +11,8 @@ compiler.runtime_version=v143
 llvm/*:build_type=Release
 
 [conf]
+# Reuse the externally activated, doctor-validated DevShell; empty disables VCVars.
+tools.microsoft.msbuild:installation_path=
 tools.build:compiler_executables={{ {"c": os.environ["VEYR_C_COMPILER"], "cpp": os.environ["VEYR_CPP_COMPILER"]} | tojson }}
 tools.cmake.cmaketoolchain:extra_variables={{ {"CMAKE_LINKER": os.environ["VEYR_LINKER"]} | tojson }}
 

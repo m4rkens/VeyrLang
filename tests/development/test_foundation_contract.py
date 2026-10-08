@@ -1,6 +1,7 @@
 """Acceptance boundaries in temporary trees; all native/package commands mocked."""
 
 import contextlib
+import configparser
 import copy
 from dataclasses import replace
 import io
@@ -323,6 +324,71 @@ class CIWorkflowPolicyTests(unittest.TestCase):
         self.assertIn("$banner = & $executable '--version'", setup)
         self.assertIn('$env:PATH = "$standaloneBin;$env:PATH"', setup)
         self.assertIn("no bundled LLVM fallback", setup)
+
+
+class WindowsDevShellProfileTests(unittest.TestCase):
+    """Protect externally validated DevShell reuse without launching Conan."""
+
+    def setUp(self):
+        self.root = Path(__file__).resolve().parents[2]
+        self.text = (self.root / "conan/profiles/windows-x86_64-clangcl").read_text(encoding="utf-8")
+        self.profile = configparser.ConfigParser(interpolation=None, delimiters=("=",))
+        self.profile.optionxform = str
+        self.profile.read_string(self.text)
+
+    def test_vcvars_activation_is_disabled_with_an_unquoted_empty_value(self):
+        key = "tools.microsoft.msbuild:installation_path"
+        self.assertIn(key, self.profile["conf"])
+        self.assertEqual(self.profile["conf"][key], "")
+        self.assertEqual(re.findall(r"^" + re.escape(key) + r"=(.*)$",
+                                    self.text, re.MULTILINE), [""])
+
+    def test_reviewed_windows_compiler_and_runtime_settings_remain_intact(self):
+        self.assertEqual(dict(self.profile["settings"]), {
+            "os": "Windows", "arch": "x86_64", "compiler": "clang",
+            "compiler.version": "20", "compiler.cppstd": "23",
+            "compiler.runtime": "dynamic", "compiler.runtime_version": "v143",
+            "llvm/*:build_type": "Release",
+        })
+        self.assertEqual(self.profile["conf"]["tools.build:compiler_executables"],
+                         '{{ {"c": os.environ["VEYR_C_COMPILER"], "cpp": os.environ["VEYR_CPP_COMPILER"]} | tojson }}')
+        self.assertEqual(self.profile["conf"]["tools.cmake.cmaketoolchain:extra_variables"],
+                         '{{ {"CMAKE_LINKER": os.environ["VEYR_LINKER"]} | tojson }}')
+
+    def test_devshell_vc_sdk_environment_remains_explicit(self):
+        expected = {
+            "VSINSTALLDIR": "VEYR_VS_ROOT", "VCToolsInstallDir": "VEYR_VCTOOLS_ROOT",
+            "VCToolsVersion": "VEYR_VCTOOLS_VERSION", "WindowsSdkDir": "VEYR_WINDOWS_SDK_DIR",
+            "WindowsSDKVersion": "VEYR_WINDOWS_SDK_VERSION", "UCRTVersion": "VEYR_WINDOWS_SDK_VERSION",
+        }
+        self.assertEqual(set(self.profile["buildenv"]), set(expected))
+        for key, variable in expected.items():
+            with self.subTest(key=key):
+                value = '{{ os.environ["' + variable + '"] }}'
+                if key == "WindowsSDKVersion":
+                    value += "\\"
+                self.assertEqual(self.profile["buildenv"][key], value)
+
+    def test_runtime_overlays_preserve_debug_host_and_release_build_context(self):
+        debug = (self.root / "conan/profiles/debug").read_text(encoding="utf-8")
+        release = (self.root / "conan/profiles/release").read_text(encoding="utf-8")
+        self.assertIn('build_type={{ "Release" if context == "build" else "Debug" }}', debug)
+        self.assertIn('compiler.runtime_type={{ "Release" if context == "build" else "Debug" }}', debug)
+        self.assertIn('build_type=Release', release)
+        self.assertIn('compiler.runtime_type=Release', release)
+        for overlay in (debug, release):
+            self.assertIn('{% if os.environ["VEYR_PROFILE_OS"] == "Windows" %}', overlay)
+            self.assertNotIn("tools.microsoft.msbuild:installation_path", overlay)
+
+    def test_linux_profile_keeps_its_separate_compiler_and_gcc_policy(self):
+        linux = (self.root / "conan/profiles/linux-x86_64-clang").read_text(encoding="utf-8")
+        self.assertIn("os=Linux", linux)
+        self.assertIn('compiler.version={{ os.environ["VEYR_CLANG_MAJOR"] }}', linux)
+        self.assertIn("compiler.libcxx=libstdc++11", linux)
+        self.assertIn('os.environ["VEYR_GCC_INSTALL_DIR"]', linux)
+        self.assertNotIn("tools.microsoft.msbuild:installation_path", linux)
+        self.assertNotIn("compiler.runtime", linux)
+        self.assertNotIn("[buildenv]", linux)
 
 
 class ConanCacheWorkflowTests(unittest.TestCase):

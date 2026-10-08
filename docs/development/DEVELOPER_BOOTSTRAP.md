@@ -49,6 +49,27 @@ The Linux profile receives the reviewed Clang major from the wrapper (Omarchy 22
 Ubuntu CI 18), with explicit per-environment GCC/compiler/linker paths. Windows CI
 selects `C:\Program Files\LLVM\bin\clang-cl.exe` for both C and C++ after
 DevShell provides VC/SDK/linker inputs. Bundled LLVM 19.1.5 is not selected by PATH.
+
+Windows CI and developer execution require an externally established, reviewed
+Visual Studio developer environment that passes doctor before dependency setup.
+The Windows profile reuses that environment with the following Conan setting:
+
+```ini
+[conf]
+tools.microsoft.msbuild:installation_path=
+```
+
+The value is empty and unquoted. It disables Conan-generated VCVars activation;
+Conan must not re-enter `vcvars` or select a different VC/SDK installation for
+this profile. The absolute standalone clang-cl compiler paths and the validated
+VC/CRT/SDK/linker environment remain authoritative. `compiler.runtime=dynamic`
+and the Debug/Release runtime overlays are unchanged. `compiler.runtime_version=v143`
+identifies the runtime/toolset family, not a requirement to activate VC tools
+14.3. The reviewed Windows CI environment uses concrete VC tools 14.44.35207,
+Windows SDK 10.0.26100.0 and native linker 14.44.35229.0. Windows developer
+evidence remains independent and pending; this setting does not establish
+package or native acceptance on either Windows environment.
+
 The workflow execution flag is now true under separate owner authorization.
 After separately approved publication, Linux may proceed through setup/package/
 build/test only if policy/prerequisite checks pass. Windows stops before package/
