@@ -119,6 +119,11 @@ endif()
 ]=] fixture_contents @ONLY)
   file(WRITE "${fixture}/input.cmake" "${fixture_contents}")
   string(CONFIGURE [=[
+cmake_minimum_required(VERSION 3.31)
+cmake_policy(GET CMP0012 boolean_policy)
+if(NOT boolean_policy STREQUAL "NEW")
+  message(FATAL_ERROR "Consumer CRT fixture requires deterministic TRUE/FALSE handling")
+endif()
 execute_process(COMMAND "@CMAKE_COMMAND@" -P "@fixture@/input.cmake"
   RESULT_VARIABLE result OUTPUT_VARIABLE output ERROR_VARIABLE errors)
 if(@accepted@)
