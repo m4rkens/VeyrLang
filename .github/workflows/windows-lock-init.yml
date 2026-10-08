@@ -150,6 +150,7 @@ jobs:
           import hashlib
           import json
           import os
+          import re
           from pathlib import Path
 
           from scripts.devtools.conan_ops import conan_home_guard
@@ -159,6 +160,47 @@ jobs:
           root = Path.cwd().resolve()
           baseline = read_baseline()
           evidence = root / ".veyr-dev/ci"
+          reviewed_dependencies = {
+              "requires": sorted([
+                  "llvm/23.1.2@veyr/m1#aa4cad25b3148c3bdd22ed96fba04654",
+                  "gtest/1.18.0#e2507fc4efe2ec9e2db9e5c91eefab9f",
+              ]),
+              "build_requires": ["cmake/4.4.3#8b46ce9dbf1937af1c05f19579c1f105"],
+              "python_requires": [],
+              "config_requires": [],
+          }
+
+          def dependency_identities(lock_bytes):
+              lock = json.loads(lock_bytes)
+              if set(lock) != {"version", *reviewed_dependencies} or lock["version"] != "0.5":
+                  raise RuntimeError("Unexpected lock version or dependency categories.")
+              identities = {}
+              for category in reviewed_dependencies:
+                  refs = lock[category]
+                  if not isinstance(refs, list) or any(
+                      not isinstance(ref, str) or not re.fullmatch(
+                          r"[^#%\s]+#[0-9a-f]{32}(?:%[0-9]+(?:\.[0-9]+)?)?", ref
+                      ) for ref in refs
+                  ):
+                      raise RuntimeError(f"Malformed locked references in {category}.")
+                  # Only Conan revision timestamps are non-semantic; retain every reference/RREV.
+                  identities[category] = sorted(ref.split("%", 1)[0] for ref in refs)
+              return identities
+
+          seeds = {}
+          for config in ("Debug", "Release"):
+              seed_path = root / f"conan/locks/linux-x86_64-clang-{config}.lock"
+              seed_bytes = seed_path.read_bytes()
+              seed_identities = dependency_identities(seed_bytes)
+              if seed_identities != reviewed_dependencies:
+                  raise RuntimeError(f"Unreviewed {config} seed dependencies: {seed_identities}")
+              seeds[config] = (seed_path, seed_bytes, seed_identities)
+
+          def require_unchanged_seeds():
+              for seed_path, seed_bytes, _ in seeds.values():
+                  if seed_path.read_bytes() != seed_bytes:
+                      raise RuntimeError(f"Reviewed seed lock changed: {seed_path}; stop for owner review.")
+
           selections = []
           for config in ("Debug", "Release"):
               selected = select_inputs(baseline, "windows-x86_64-clangcl", config, environment="windows-ci")
@@ -186,6 +228,7 @@ jobs:
                      ["export", str(root / "conan/recipes/llvm"), "--user=veyr", "--channel=m1"])
               for selected, selection in selections:
                   config = selection.config
+                  seed_path, seed_bytes, seed_identities = seeds[config]
                   profiles = []
                   for context, paths in (("h", selected["host_profiles"]), ("b", selected["build_profiles"])):
                       for path in paths:
@@ -204,20 +247,20 @@ jobs:
                           raise RuntimeError(f"Unexpected {config} {context} profile settings: {actual}")
                   # --build=missing evaluates build requirements only for these graph commands.
                   # Neither lock create nor graph info installs/builds package binaries.
+                  require_unchanged_seeds()
                   invoke(selection, selected, ["lock", "create", str(root / "conanfile.py"), *inputs,
-                         "--build=missing", "--remote=conancenter", "--lockfile=",
+                         "--build=missing", "--remote=conancenter", f"--lockfile={seed_path}",
                          f"--lockfile-out={selection.lockfile}"])
+                  require_unchanged_seeds()
                   lock_bytes = selection.lockfile.read_bytes()
                   # Preserve only candidates created here, including a candidate needing failure review.
                   candidates = evidence / "candidate-locks"
                   candidates.mkdir(exist_ok=True)
                   (candidates / selection.lockfile.name).write_bytes(lock_bytes)
-                  lock = json.loads(lock_bytes)
-                  if lock.get("version") != "0.5" or not all(
-                      any(ref.startswith(prefix) for ref in lock.get("requires", []))
-                      for prefix in ("llvm/23.1.2@veyr/m1#", "gtest/1.18.0#")
-                  ):
-                      raise RuntimeError(f"Unexpected {config} lock format or direct dependencies; owner review required.")
+                  candidate_identities = dependency_identities(lock_bytes)
+                  if candidate_identities != seed_identities:
+                      raise RuntimeError(f"Unexpected {config} dependency drift: expected {seed_identities}, "
+                                         f"actual {candidate_identities}; owner review required.")
                   graph_path = evidence / f"graph-{config}.json"
                   invoke(selection, selected, ["graph", "info", str(root / "conanfile.py"), *inputs,
                          "--build=missing", "--no-remote", f"--lockfile={selection.lockfile}",
@@ -228,8 +271,13 @@ jobs:
                           raise RuntimeError(f"Invalid {config} graph node: {node.get('ref')}; stop for owner review.")
                   if selection.lockfile.read_bytes() != lock_bytes:
                       raise RuntimeError(f"Graph validation changed {config} lock; stop for owner review.")
+                  require_unchanged_seeds()
                   record = {"configuration": config, "lock": str(selection.lockfile),
                             "sha256": hashlib.sha256(lock_bytes).hexdigest(),
+                            "seed_lock": str(seed_path),
+                            "seed_sha256": hashlib.sha256(seed_bytes).hexdigest(),
+                            "dependency_identity_validation": "passed; revision timestamps ignored",
+                            "seed_unchanged": True,
                             "graph_validation": "passed", "native_package_acceptance": "unproven"}
                   (evidence / f"lock-review-{config}.json").write_text(json.dumps(record, indent=2) + "\n")
                   print(f"Candidate {config} lock and graph ready for owner review; no package/native acceptance.", flush=True)

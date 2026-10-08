@@ -1,0 +1,6 @@
+# Canonical LF checkout keeps Conan recipe revisions reproducible across platforms.
+/conanfile.py text eol=lf
+/conan/recipes/** text eol=lf
+/conan/profiles/** text eol=lf
+/conan/locks/*.lock text eol=lf
+# Future binary assets under recipe trees must have explicit -text -eol exceptions.
