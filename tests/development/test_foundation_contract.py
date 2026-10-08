@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path, PureWindowsPath
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -389,6 +390,99 @@ class CIWorkflowPolicyTests(unittest.TestCase):
         self.assertIn("$banner = & $executable '--version'", setup)
         self.assertIn('$env:PATH = "$standaloneBin;$env:PATH"', setup)
         self.assertIn("no bundled LLVM fallback", setup)
+
+
+class ConsumerABIProbeConfigurationTests(unittest.TestCase):
+    """Evaluate the real CMake function; discovery and native compilation are mocked."""
+
+    def run_probe(self, *, windows, configuration, initial="Debug"):
+        cmake = shutil.which("cmake")
+        if cmake is None:
+            self.skipTest("CMake is required for script-only ABI probe checks")
+        root = Path(__file__).resolve().parents[2]
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            record = directory / "probe.txt"
+            script = directory / "check.cmake"
+            runtime = "MultiThreadedDebugDLL" if configuration == "Debug" else "MultiThreadedDLL"
+            setup = (
+                f'set(WIN32 {"TRUE" if windows else "FALSE"})\n'
+                + ("unset(CMAKE_BUILD_TYPE)\n" if configuration is None
+                   else f'set(CMAKE_BUILD_TYPE "{configuration}")\n')
+                + f'set(CMAKE_TRY_COMPILE_CONFIGURATION "{initial}")\n'
+                + f'set(CMAKE_MSVC_RUNTIME_LIBRARY "{runtime}")\n')
+            script.write_text(textwrap.dedent(r'''
+                cmake_minimum_required(VERSION 3.31)
+                include("@MODULE@")
+                # No dependency discovery, compiler, linker or native build runs.
+                function(find_package)
+                endfunction()
+                function(veyr_validate_llvm_exports)
+                endfunction()
+                macro(include)
+                endmacro()
+                macro(check_cxx_source_compiles source result)
+                  file(WRITE "@RECORD@"
+                    "configuration=${CMAKE_TRY_COMPILE_CONFIGURATION}\nruntime=${CMAKE_MSVC_RUNTIME_LIBRARY}\nsource=${source}")
+                  set(${result} TRUE)
+                endmacro()
+                function(add_library)
+                endfunction()
+                function(target_include_directories)
+                endfunction()
+                function(target_compile_options)
+                endfunction()
+                function(target_link_libraries)
+                endfunction()
+                set(VEYR_LLVM_PROVIDER managed)
+                @SETUP@
+                veyr_configure_llvm()
+                if(NOT CMAKE_TRY_COMPILE_CONFIGURATION STREQUAL "@INITIAL@")
+                  message(FATAL_ERROR "Probe configuration leaked to caller")
+                endif()
+                @CHECK_PARENT@
+            ''').replace("@MODULE@", (root / "cmake/VeyrLLVM.cmake").as_posix())
+                .replace("@RECORD@", record.as_posix()).replace("@SETUP@", setup)
+                .replace("@INITIAL@", initial).replace("@CHECK_PARENT@",
+                    'if(DEFINED CMAKE_BUILD_TYPE)\n  message(FATAL_ERROR "Parent configuration changed")\nendif()'
+                    if configuration is None else
+                    f'if(NOT CMAKE_BUILD_TYPE STREQUAL "{configuration}")\n'
+                    '  message(FATAL_ERROR "Parent configuration changed")\nendif()'),
+                encoding="utf-8")
+            completed = subprocess.run([cmake, "-P", str(script)], cwd=directory,
+                                       capture_output=True, text=True, check=False)
+            return completed, record.read_text() if record.exists() else None
+
+    def test_windows_debug_selects_debug_and_preserves_debug_abi_checks(self):
+        completed, record = self.run_probe(windows=True, configuration="Debug", initial="Release")
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertIn("configuration=Debug\nruntime=MultiThreadedDebugDLL\n", record)
+        self.assertIn("!defined(_DLL) || !defined(_MT) || !defined(_DEBUG) || _ITERATOR_DEBUG_LEVEL != 2", record)
+
+    def test_windows_release_overrides_debug_scratch_selection_and_preserves_release_checks(self):
+        completed, record = self.run_probe(windows=True, configuration="Release", initial="Debug")
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertIn("configuration=Release\nruntime=MultiThreadedDLL\n", record)
+        self.assertNotIn("configuration=Debug", record)
+        self.assertIn("!defined(_DLL) || !defined(_MT) || defined(_DEBUG) || _ITERATOR_DEBUG_LEVEL != 0", record)
+
+    def test_windows_missing_or_unsupported_configuration_fails_before_probe(self):
+        for configuration in (None, "", "RelWithDebInfo", "MinSizeRel", "debug", "Debug;Release"):
+            with self.subTest(configuration=configuration):
+                completed, record = self.run_probe(windows=True, configuration=configuration)
+                self.assertNotEqual(completed.returncode, 0)
+                self.assertRegex(completed.stderr,
+                                 r"Windows consumer ABI probe requires selected Debug or\s+Release")
+                self.assertIsNone(record)
+
+    def test_linux_keeps_existing_configuration_and_libstdcxx_probe_without_windows_requirement(self):
+        for configuration in (None, "", "Debug", "Release", "RelWithDebInfo"):
+            with self.subTest(configuration=configuration):
+                completed, record = self.run_probe(windows=False, configuration=configuration, initial="Release")
+                self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+                self.assertIn("configuration=Release\n", record)
+                self.assertIn("!defined(__GLIBCXX__) || _GLIBCXX_USE_CXX11_ABI != 1", record)
+                self.assertNotIn("_ITERATOR_DEBUG_LEVEL", record)
 
 
 class WindowsDevShellProfileTests(unittest.TestCase):

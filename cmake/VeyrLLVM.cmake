@@ -88,6 +88,12 @@ function(veyr_configure_llvm)
   endforeach()
   include(CheckCXXSourceCompiles)
   if(WIN32)
+    if(NOT CMAKE_BUILD_TYPE MATCHES "^(Debug|Release)$")
+      message(FATAL_ERROR "Veyr LLVM policy: Windows consumer ABI probe requires selected Debug or Release configuration; actual='${CMAKE_BUILD_TYPE}'")
+    endif()
+    # Keep the scratch Ninja project in the consumer configuration. This is
+    # function-local: Conan's runtime expression must select the same CRT here.
+    set(CMAKE_TRY_COMPILE_CONFIGURATION "${CMAKE_BUILD_TYPE}")
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
       set(_debug_condition "!defined(_DEBUG) || _ITERATOR_DEBUG_LEVEL != 2")
     else()
