@@ -122,6 +122,63 @@ class DeveloperCommandsTests(ConanOperationsFixture, unittest.TestCase):
                 self.context.verify()
         self.assertEqual(self.calls, [])
 
+    def test_verify_accepts_exact_include_policy_serialization_forms(self):
+        self.context.build()
+        registration = self.selection.build_dir / "tests/CTestTestfile.cmake"
+        for command in (
+                'add_test("include-policy" "python")',
+                'add_test([=[include-policy]=] "python")',
+                'add_test([[include-policy]] "python")',
+                'add_test([==[include-policy]==] "python")',
+                'add_test([=[\ninclude-policy]=] "python")',
+                'add_test(include-policy "python")',
+                '  ADD_TEST (\n "include-policy"\n "python")'):
+            with self.subTest(command=command):
+                registration.write_text(command)
+                self.calls.clear()
+                context = dev.Operations(self.selection, self.selected, root=self.root)
+                context.done.add("configure")  # Prepared fixture; only verify may run.
+                context.verify()
+                self.assertEqual([argv[0] for argv, _ in self.calls], ["ctest"])
+                self.assert_cache_only()
+
+    def test_verify_rejects_incorrect_include_policy_names_and_mentions(self):
+        self.context.build()
+        registration = self.selection.build_dir / "tests/CTestTestfile.cmake"
+        for command in (
+                'add_test("include-policy-extra" "python")',
+                'add_test([=[include-policy-extra]=] "python")',
+                'add_test(include-policy-extra "python")',
+                'add_test("other-include-policy" "python")',
+                'add_test("Include-policy" "python")',
+                'add_test("other" "include-policy")',
+                'set_tests_properties("include-policy" PROPERTIES LABELS "policy")',
+                '# add_test("include-policy" "python")',
+                '#[==[\nadd_test([=[include-policy]=] "python")\n]==]',
+                'set(example "\nadd_test(\\"include-policy\\" \\"python\\")\n")',
+                'set(example [==[\nadd_test([=[include-policy]=] "python")\n]==])',
+                'add_test([=[include-policy]==] "python")',
+                'add_test("other" "python")',
+                ''):
+            with self.subTest(command=command):
+                registration.write_text(command)
+                self.calls.clear()
+                context = dev.Operations(self.selection, self.selected, root=self.root)
+                context.done.add("configure")
+                with self.assertRaisesRegex(BaselineError, "Missing include-policy CTest registration"):
+                    context.verify()
+                self.assertEqual(self.calls, [])
+                self.assert_cache_only()
+
+    def test_verify_rejects_missing_include_policy_registration_file(self):
+        self.context.build()
+        (self.selection.build_dir / "tests/CTestTestfile.cmake").unlink()
+        self.calls.clear()
+        with self.assertRaisesRegex(BaselineError, "Missing include-policy CTest registration"):
+            self.context.verify()
+        self.assertEqual(self.calls, [])
+        self.assert_cache_only()
+
     def test_stale_profile_lock_tool_or_generated_identity_regenerates_cache_only(self):
         for path in (self.selected["host_profiles"][0], self.selection.lockfile,
                      self.root / "scripts/devtools/baseline.json",

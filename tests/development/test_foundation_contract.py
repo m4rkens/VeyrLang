@@ -58,7 +58,7 @@ class FoundationContractTests(ConanOperationsFixture, unittest.TestCase):
             for name in ("build.ninja", "CTestTestfile.cmake"):
                 (directory / name).touch()
             (directory / "tests").mkdir()
-            (directory / "tests/CTestTestfile.cmake").write_text('add_test("include-policy" "python")\n')
+            (directory / "tests/CTestTestfile.cmake").write_text('add_test([=[include-policy]=] "python")\n')
             (directory / "compile_commands.json").write_text(json.dumps([{
                 "directory": str(directory), "file": str(self.root / "example.cpp"),
                 "command": self.selected["environment"]["VEYR_CPP_COMPILER"] + " -std=c++23 -c example.cpp"}]))

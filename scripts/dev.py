@@ -21,6 +21,22 @@ from devtools.conan_ops import conan_home_guard, configure_project, setup_depend
 from devtools.runner import run_command
 
 
+def has_include_policy_registration(text):
+    """Recognize the exact first argument in generated CTest add_test commands."""
+    tokens = re.compile(
+        # Skip comments and string arguments so their contents cannot register a test.
+        r'#(?:\[(?P<comment_equals>=*)\[.*?\](?P=comment_equals)\]|[^\n]*)'
+        r'|"(?:\\.|[^"\\])*"'
+        r'|\[(?P<argument_equals>=*)\[.*?\](?P=argument_equals)\]'
+        r'|(?P<registration>^[ \t]*(?i:add_test)\s*\(\s*'
+        r'(?:"include-policy"|include-policy|'
+        r'\[(?P<name_equals>=*)\[(?:\r?\n)?include-policy\](?P=name_equals)\])'
+        r'(?=\s|\)))',
+        re.MULTILINE | re.DOTALL,
+    )
+    return any(match.group("registration") is not None for match in tokens.finditer(text))
+
+
 def bootstrap_conan(selection, entry, runner=None):
     """Install the pinned CLI only when absent; reuse or fail, never repair/retry."""
     expected_python = entry["tools"]["python"]
@@ -196,7 +212,7 @@ class Operations:
             if not path.is_file():
                 raise BaselineError(f"Missing prepared native output {path}; run explicit build for this selection")
         registration = self.selection.build_dir / "tests/CTestTestfile.cmake"
-        if not registration.is_file() or 'add_test("include-policy"' not in registration.read_text():
+        if not registration.is_file() or not has_include_policy_registration(registration.read_text()):
             raise BaselineError("Missing include-policy CTest registration; run explicit configure")
         database = self.selection.build_dir / "compile_commands.json"
         try:
