@@ -4,17 +4,17 @@ milestone: M1
 milestone_name: Compiler Walking Skeleton
 current_phase: 2
 current_phase_name: Source Identity, Spans, and Diagnostics
-status: discussing
-stopped_at: Phase 2 discussion captured; owner review/commit pending. Phase 1 remains closed at 8/8; Phase 2 research/planning/execution unstarted.
-last_updated: "2026-10-08T20:19:45.975Z"
-last_activity: 2026-10-08
-last_activity_desc: Owner completed Phase 2 discussion; context/log recorded. No research, plans, implementation, builds/tests, CI, commit or push.
+status: ready_to_execute
+stopped_at: Phase 2 planning complete; four plans await owner review and separate planning commit. Execution unstarted; Phase 1 remains closed at 8/8.
+last_updated: "2026-10-09T07:28:07Z"
+last_activity: 2026-10-09
+last_activity_desc: Phase 2 planned inline using committed discussion/research; four plans, seven requirements and sixteen decisions covered. No implementation or execution.
 progress:
   total_phases: 10
   completed_phases: 1
-  total_plans: 8
+  total_plans: 12
   completed_plans: 8
-  percent: 100
+  percent: 67
 ---
 
 # Project State
@@ -24,20 +24,20 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-03)
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
-**Current focus:** Phase 2 discussion captured; owner review and discussion-only commit pending. Phase 1 remains closed at 8/8 with final run 37826767824 and closeout commit 1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f.
+**Current focus:** Phase 2 planning packet awaits owner review and a separately authorized planning-only commit. Discussion/research are committed. Phase 1 remains closed at 8/8 with final run 37826767824 and closeout commit 1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f.
 
 ## Current Position
 
 Phase: 2 of 10 (Source Identity, Spans, and Diagnostics)
-Plan: Not planned; four discussion areas complete, sixteen choices captured in 02-CONTEXT.md
-Status: Discussing Phase 2 — context captured; awaiting owner review and discussion commit
-Last activity: 2026-10-08 — Owner completed Phase 2 discussion; context/log recorded. No research, plans, implementation, builds/tests, CI, commit or push.
+Plan: 0 of 4 executed; 02-01 through 02-04 planned in four sequential waves
+Status: Ready to execute after owner planning review/commit and explicit $gsd-execute-phase 2; execution has not started
+Last activity: 2026-10-09 — Created implementation plans and supporting pattern/validation/self-review documents only; reused committed research and all sixteen discussion decisions.
 
-Progress: [██████████] 8/8 Phase 1 execution plans
+Phase 2 progress: [░░░░░░░░░░] 0/4 execution plans
 
-Phase 1 remains 8/8 complete and 1/10 phases is accepted. The frontmatter plan
-counts/percent retain those eight completed foundation plans; no Phase 2 plan
-exists and discussion completion is not implementation/phase acceptance.
+Phase 1 remains 8/8 complete; 1/10 phases is accepted. Twelve written plans now
+exist across Phases 1–2, eight completed (67%). This percentage counts written
+plans only, not the whole milestone; planning does not accept Phase 2 requirements.
 
 ## Performance Metrics
 
@@ -53,7 +53,7 @@ the subsequent hosted CI acceptance for those historical platform deferrals.
 - Plan 01-06 Tasks 1–2: Complete thin commands, invocation-local reuse, cache-only stale regeneration and liveness/scoped-clean fixtures; 30 new/60 regression tests passed, independent Debug/Release entry points/all passed with CTest 12/12 and four C++23 entries each. Explicit Debug clean preserved Release/tool/cache metadata; normal available-Linux closeout recorded
 - Plan 01-07 Tasks 1–2: Native acceptance harness/Support ownership extension, strict offline matcher and approved runner final-exit correction complete; foundation 16/16 and selected runner 6/6, provider CTest 13/13 each and runtime 5/5 in both configurations, warm/cache/clean accepted, separate Debug/Release offline recoveries passed. Four-row acceptance ledger and normal available-Linux closeout recorded without new commands
 - Plan 01-08 Tasks 1–3: Reviewed CI toolchains, Windows locks, shared commands and portable snapshot transfer validated; final run 37826767824 passes all four rows with CTest 35/35, verify, prepared native and controlled empty-cache acceptance.
-- Phase plans: Eight plans/eight sequential waves complete; no plan ordering or scope changed.
+- Phase plans: Phase 1 eight plans/eight sequential waves complete, unchanged. Phase 2 adds four planned sequential waves (0/4 executed); no Phase 2 native acceptance or requirement completion is claimed.
 - Active requirements: 49 mapped once; BUILD-01 through BUILD-14 accepted from preserved Phase 1 execution plus final four-job evidence, 35 later-phase requirements pending. Acceptance is limited to the documented foundation, not arbitrary ABI/developer-host compatibility.
 
 ## Accumulated Context
@@ -70,18 +70,23 @@ the subsequent hosted CI acceptance for those historical platform deferrals.
 - Initial observations from run 37356855017 remain preserved. Owner approved run 37643695998 candidate policy: Ubuntu Clang 18 with explicit GCC-13, Windows absolute standalone Clang 20.1.8 after DevShell. Omarchy Clang 22 and Windows developer evidence remain separate. Git version/path are utility observations, not ABI/package pins.
 - Owner explicitly approved Plan 01-03 Linux Debug/Release execution with both Windows lock outputs deferred at that checkpoint; both were subsequently generated graph-only, reviewed and imported in b666a6159f8480e5bb31dd783c2d6f3fb6fba48d. Existing managed native locks work for system/custom graph subsets. Explicit --init-lock initializes only missing locks; ordinary setup preserves locks unchanged.
 - Phase 3 reviewed smoke profile precedes syntax-dependent implementation/tests.
-- Phase 2 discussion decisions are captured in `.planning/phases/02-source-identity-spans-and-diagnostics/02-CONTEXT.md`: owned immutable snapshots, manager-local fresh IDs, checked half-open byte spans, exact display names/byte locations, and ordered structured plain-text diagnostics. These are discussion contracts only.
+- Phase 2 discussion decisions are captured in `.planning/phases/02-source-identity-spans-and-diagnostics/02-CONTEXT.md`: owned immutable snapshots, manager-local fresh IDs, checked half-open byte spans, exact display names/byte locations, and ordered structured plain-text diagnostics. These remain settled contracts. Discussion was committed in 910be08de5cacfa4f585e5e548698644760dc6fd, research in 1fe774595b6efda2295d4b1108c746bcac3c5e99; planning preserves both unchanged. Concrete C++ API and bounded renderer details are explicit planning proposals for owner review.
 
 ### Pending Todos
 
-Review Phase 2 discussion artifacts and separately authorize their discussion-only
-commit. Research/planning remains unstarted and requires the later exact
-`$gsd-plan-phase 2` command; execution, CI actions, and another transition are not
-authorized. Phase 1 closeout is already committed and pushed in
-`1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f`; it remains closed at 8/8.
-Windows developer-host evidence remains independently pending and must not block
-Phase 2 planning. Linux is primary development; Windows is Tier 1 compatibility/CI
-with local developer confirmation deferred. macOS remains deferred.
+Review the Phase 2 planning packet (02-01 through 02-04, PATTERNS, VALIDATION,
+PLAN-REVIEW and STATE/ROADMAP updates), then separately authorize its planning-only
+commit. No commit was made by planning. After that boundary, execution requires
+an explicit `$gsd-execute-phase 2`; it is not authorized by this planning command.
+No Phase 3 work. Windows developer-host evidence remains independently pending
+and non-blocking; Linux is primary, Windows Tier 1 compatibility/CI, macOS deferred.
+
+The four plans propose local variant results, heap-stable immutable records,
+LF-derived byte locations, owned diagnostics and a checked renderer bounded to
+three lines / eighty original bytes per line. These are reviewed-plan candidates,
+not new language semantics or completed implementation. All seven Phase 2
+requirements remain pending. No concrete contradiction or blocker reopened a
+settled D-01–D-16 choice or Phase 1.
 
 ### Evidence and remaining scope limits
 
@@ -103,15 +108,15 @@ Future probes are tracked in REQUIREMENTS.md v2 and canonical milestone strategy
 
 ## Session Continuity
 
-Last session: 2026-10-08T20:19:45.967Z
-Stopped at: Phase 2 discussion captured; owner review/commit pending. Phase 1 remains closed at 8/8; Phase 2 research/planning/execution unstarted.
-Resume file: .planning/phases/02-source-identity-spans-and-diagnostics/02-CONTEXT.md
-Completed summaries: 01-01 through 01-08; final CI scope is explicitly separate from Windows developer-host evidence.
-Last completed step: Phase 2 discussion: all four areas and sixteen choices captured; owner selected write CONTEXT and DISCUSSION-LOG. Phase 1 closeout already committed/pushed in 1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f.
-Next owner gate: Review Phase 2 discussion artifacts and authorize a dedicated discussion-only commit separately. Research/planning requires the later exact $gsd-plan-phase 2 command; execution is not authorized.
-Current outputs: .planning/STATE.md, 02-CONTEXT.md and 02-DISCUSSION-LOG.md only; temporary discussion checkpoint superseded and removed after complete artifacts are validated.
-Preserved artifacts: Phase 1 closed at 8/8; ROADMAP/REQUIREMENTS, all Phase 1 artifacts, implementation/workflows/recipes/profiles/baselines/dependency versions and all four lock bytes unchanged.
-Sub-agents: None; discussion inline under explicit-request policy.
+Last session: 2026-10-09T07:28:07Z
+Stopped at: Phase 2 planning complete; owner planning review/commit pending, execution unstarted.
+Resume file: .planning/phases/02-source-identity-spans-and-diagnostics/02-01-PLAN.md
+Completed summaries: 01-01 through 01-08; Phase 1 remains closed, Windows developer-host evidence separately pending/non-blocking.
+Last completed step: Phase 2 plan creation, inline self-review and planning-document coverage/structure checks. Discussion and research were reused from their committed checkpoints.
+Next owner gate: Review and separately authorize a planning-only commit; then explicit $gsd-execute-phase 2 is required. No automatic stage or phase transition.
+Current outputs: Four PLAN.md files, 02-PATTERNS.md, 02-VALIDATION.md, 02-PLAN-REVIEW.md, .planning/STATE.md and .planning/ROADMAP.md only.
+Preserved artifacts: Committed Phase 2 CONTEXT/DISCUSSION-LOG/RESEARCH, REQUIREMENTS and all Phase 1 artifacts; implementation/workflows/recipes/profiles/baselines/dependency versions and four lock bytes unchanged.
+Sub-agents: None; planning/checker work inline under explicit-request policy. Self-review is not an independent agent review or runtime verification.
 Execution checkpoints: 01-01 941c70da327b2977cf35b59938795599aaa4b4e4; 01-02 3f0636bda87da69a8526b0c57bf9844b8448c831; 01-03 9531def3e372d0bbb27aaf2d96e88fdca26b3f3c; 01-04 71c254d10cc495231453e2847a608128d06d2762; 01-05 d34a793575e140680804b45058b68c6436cb0c0e; 01-06 f476fa8d5f5e5e20d61adb8abdc196d7bfe5a267; 01-07 ddec666b43546d8820d7eacd28e6ce4ef2b068ed plus eef4780faa9063a50ae5ede89fc40f55408279bb; 01-08 published implementation through 2741d6514f5e695d36c20cb792bff4985ac5d754, planning closeout committed/pushed in 1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f.
 
 Platform impact:

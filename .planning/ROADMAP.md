@@ -6,7 +6,7 @@
 
 Deliver the P01 smoke path: one source/root module, fixed provisional entry, one integer-literal return, native executable and observable exit code. The initial roadmap follows the canonical ten-phase breakdown in `docs/design/milestones/MILESTONE_1.md`. Future language, tooling and application probes remain deferred in REQUIREMENTS.md and the canonical milestone strategy.
 
-This roadmap began as fresh initialization, with no previous lifecycle imported. Phase 1 has eight completed execution plans and final four-job acceptance from run 37826767824. BUILD-01 through BUILD-14 are accepted for the reviewed foundation scope; Windows developer-host evidence remains independently pending and Phase 2 has not started. Initialization `--auto` did not authorize later lifecycle transitions, builds or commits.
+This roadmap began as fresh initialization, with no previous lifecycle imported. Phase 1 has eight completed execution plans and final four-job acceptance from run 37826767824. BUILD-01 through BUILD-14 are accepted for the reviewed foundation scope; Windows developer-host evidence remains independently pending and non-blocking. Phase 2 discussion/research are committed; implementation planning is complete for owner review, with execution unstarted. Initialization `--auto` did not authorize later lifecycle transitions, builds or commits.
 
 ## Lifecycle and Design Gates
 
@@ -50,7 +50,7 @@ Integer phases are the active M1 scope. Any inserted decimal phase requires sepa
 4. Compiler infrastructure tests and the owned-header include guardrail run through the intended test/build interfaces on both Tier 1 platforms.
 5. A deliberate first dependency source build is supported; repeat workflows reuse compatible Conan packages and prepared dependency state supports acquisition-disabled configure/build without custom package storage or hidden downloads.
 
-**Plans:** 8/8 complete; all eight approved sequential waves preserved. Plans 01-01 through 01-07 retain their historical available-Linux developer closeouts. Plan 01-08 now completes the independent Ubuntu/Windows hosted CI gate: [run 37826767824](https://github.com/m4rkens/VeyrLang/actions/runs/37826767824), commit `2741d6514f5e695d36c20cb792bff4985ac5d754`, passes all four Debug/Release jobs. Each passes policy/bootstrap/doctor/lock checks, archive restore/import, dependency setup, integrity/export/early save, configure/build, CTest 35/35, verify, prepared native 35/35 and controlled empty-cache rejection. LLVM/GoogleTest are reused; same-run Debug snapshots feed Release without collapsing Conan package IDs. Windows Release normal/prepared ABI probes use -MD with Release flags and pass; Windows Debug compiler-alias/C++23 verification and CRLF rejection matching pass. All reviewed recipe revisions and lock bytes are preserved. Source-build capacity was observed in earlier runs 37670754053 (Linux) and 37786566284 (Windows); peak resource measurements and a manual cold_build=true dispatch remain unclaimed. Final fixes, exact job URLs, cache keys and evidence limits are recorded in [01-08-EXECUTION.md](phases/01-conan-and-compiler-build-foundation/01-08-EXECUTION.md) and [01-08-SUMMARY.md](phases/01-conan-and-compiler-build-foundation/01-08-SUMMARY.md). Windows developer-host evidence remains independently pending; macOS deferred. This planning-only closeout awaits owner review and a separately authorized commit; Phase 2 is unstarted.
+**Plans:** 8/8 complete; all eight approved sequential waves preserved. Plans 01-01 through 01-07 retain their historical available-Linux developer closeouts. Plan 01-08 now completes the independent Ubuntu/Windows hosted CI gate: [run 37826767824](https://github.com/m4rkens/VeyrLang/actions/runs/37826767824), commit `2741d6514f5e695d36c20cb792bff4985ac5d754`, passes all four Debug/Release jobs. Each passes policy/bootstrap/doctor/lock checks, archive restore/import, dependency setup, integrity/export/early save, configure/build, CTest 35/35, verify, prepared native 35/35 and controlled empty-cache rejection. LLVM/GoogleTest are reused; same-run Debug snapshots feed Release without collapsing Conan package IDs. Windows Release normal/prepared ABI probes use -MD with Release flags and pass; Windows Debug compiler-alias/C++23 verification and CRLF rejection matching pass. All reviewed recipe revisions and lock bytes are preserved. Source-build capacity was observed in earlier runs 37670754053 (Linux) and 37786566284 (Windows); peak resource measurements and a manual cold_build=true dispatch remain unclaimed. Final fixes, exact job URLs, cache keys and evidence limits are recorded in [01-08-EXECUTION.md](phases/01-conan-and-compiler-build-foundation/01-08-EXECUTION.md) and [01-08-SUMMARY.md](phases/01-conan-and-compiler-build-foundation/01-08-SUMMARY.md). Windows developer-host evidence remains independently pending; macOS deferred. The Phase 1 closeout was committed in `1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f`; it remains closed at 8/8. Phase 2 planning does not reopen it.
 
 Plans:
 - [x] 01-01-PLAN.md — Exact native profiles and strict prerequisite doctor (historical Linux developer scope; CI acceptance supplied by Plan 01-08)
@@ -85,9 +85,27 @@ Platform impact:
 3. Users receive source-linked messages and relevant related locations in deterministic plain text on Windows/Linux without mandatory terminal color or LLVM dependencies.
 4. Path, newline and location cases follow documented platform-aware behavior while final source-encoding semantics remain open.
 
-**Plans:** TBD — created only by an explicit `$gsd-plan-phase 2` command after the preceding review/commit boundary is resolved.
+**Plans:** 0/4 executed; four sequential implementation plans drafted by the explicit `$gsd-plan-phase 2` command. Planning self-review/structural coverage passed; owner review and a separate planning-only commit remain pending. Discussion commit `910be08de5cacfa4f585e5e548698644760dc6fd` and research commit `1fe774595b6efda2295d4b1108c746bcac3c5e99` are preserved unchanged.
 
-**Research/design gate:** Review source identity, text lifetime, newline/location presentation and path edge cases before implementation; avoid a general virtual filesystem or final encoding decision.
+**Wave 1 — owned snapshot/span substrate**
+
+- [ ] 02-01-PLAN.md — Owned immutable sources, fresh manager-local IDs and checked original-byte span retrieval (SRC-01/SRC-02/SRC-03).
+
+**Wave 2 *(blocked on Wave 1 completion)* — byte locations**
+
+- [ ] 02-02-PLAN.md — Indexed LF/CRLF/EOF byte locations and exact display metadata (SRC-04).
+
+**Wave 3 *(blocked on Wave 2 completion)* — structured diagnostics**
+
+- [ ] 02-03-PLAN.md — Owned optional-primary/ordered-related diagnostics, emission order and severity/error accumulation (DIAG-01/DIAG-03).
+
+**Wave 4 *(blocked on Wave 3 completion)* — plain output and integration**
+
+- [ ] 02-04-PLAN.md — Checked bounded renderer, byte-safe presentation and independent Tier 1 integration evidence behind separate publication/closeout gates (DIAG-02).
+
+**Cross-cutting constraints:** Preserve D-01–D-16, exact immutable bytes, checked infrastructure errors and manager-local identities. Source → diagnostics → renderer dependencies only; no LLVM/driver coupling. Reuse the accepted C++23/GoogleTest foundation and unchanged Conan/package/toolchain/CI policy. No new final syntax/encoding, filesystem/VFS, generic result/reporting framework or package subsystem. Each plan's concrete C++ API/renderer layout is a proposal for owner review. Native Debug/Release checks on both Tier 1 platforms are future evidence; Windows developer-host inspection stays independently pending/non-blocking, and macOS remains deferred. Execution, publication, commits and phase movement require separate explicit owner commands.
+
+**Research/design gate:** All sixteen discussion contracts and committed research are authoritative; no settled decision was reopened. Review the explicit checked API/capacity, immutable storage and bounded renderer layout proposals in the four plans. After planning review/commit, execution requires `$gsd-execute-phase 2`; no general virtual filesystem, final encoding or Phase 3 syntax work.
 
 Platform impact:
 - Windows: Preserve useful Windows path spelling and handle CRLF/location display without console encoding assumptions.
@@ -290,8 +308,8 @@ After M1 acceptance and its reviewed verification commit, the owner may start a 
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Conan and Compiler Build Foundation | 8/8 | Complete; final four-job native/offline CI acceptance run 37826767824; closeout owner review/commit pending; Windows developer host independently pending; macOS deferred | 2026-10-08 |
-| 2. Source Identity, Spans, and Diagnostics | 0/TBD | Not started | — |
+| 1. Conan and Compiler Build Foundation | 8/8 | Complete; final four-job native/offline CI acceptance run 37826767824; closeout committed; Windows developer host independently pending; macOS deferred | 2026-10-08 |
+| 2. Source Identity, Spans, and Diagnostics | 0/4 | Planned; owner review/planning commit pending; execution unstarted | — |
 | 3. M1 Experimental Smoke Profile, Tokens, and Lexer | 0/TBD | Not started | — |
 | 4. Smoke Profile Parser | 0/TBD | Not started | — |
 | 5. Minimal AST and Semantic Smoke | 0/TBD | Not started | — |
@@ -303,4 +321,4 @@ After M1 acceptance and its reviewed verification commit, the owner may start a 
 **Coverage:** 49 active requirements mapped to exactly one phase; 0 unmapped; BUILD-01 through BUILD-14 accepted from preserved execution and final four-job foundation evidence; 35 later-phase requirements pending. Windows developer-host evidence remains an independent deferred inspection, not credited from CI.
 
 ---
-*Last updated: 2026-10-08; owner-authorized inspection/conditional closeout of successful run 37826767824; 8/8 plans and Phase 1 complete, Phase 2 unstarted. Planning records only; no new builds/tests/package operations, CI dispatch/retry, implementation changes, commit or push.*
+*Last updated: 2026-10-09; Phase 2 implementation planning complete for owner review (0/4 executed); Phase 1 remains closed at 8/8. Seven requirements and sixteen decisions covered. Planning records only; no builds/tests/package operations, CI dispatch/retry, implementation changes, commit, push or phase advancement.*
