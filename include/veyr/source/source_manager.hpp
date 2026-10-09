@@ -1,5 +1,6 @@
 #pragma once
 
+#include <veyr/source/source_location.hpp>
 #include <veyr/source/source_span.hpp>
 
 #include <cstddef>
@@ -35,6 +36,8 @@ struct RegistrationError {
 using RegistrationResult = std::variant<SourceId, RegistrationError>;
 using TextResult = std::variant<std::string_view, SourceError>;
 using ValidationResult = std::variant<std::monostate, SourceError>;
+using LocationResult = std::variant<SourceLocation, SourceError>;
+using SpanResult = std::variant<SourceSpan, SourceError>;
 
 // Owns immutable snapshots. Returned text/name views remain valid until destruction,
 // including across registration of further snapshots. No filesystem operations.
@@ -53,6 +56,10 @@ class SourceManager {
   [[nodiscard]] TextResult display_name(SourceId id) const;
   [[nodiscard]] TextResult text(SourceSpan span) const;
   [[nodiscard]] ValidationResult validate(SourceSpan span) const;
+  // EOF is valid. LF and both CRLF bytes belong to the preceding line.
+  [[nodiscard]] LocationResult location(SourceId id, std::size_t offset) const;
+  // Includes the line terminator; trailing-break EOF has an empty final line.
+  [[nodiscard]] SpanResult line_span_at(SourceId id, std::size_t offset) const;
 
  private:
   struct SourceRecord;

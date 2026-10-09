@@ -1,5 +1,6 @@
 #include <veyr/source/source_manager.hpp>
 
+#include <algorithm>
 #include <cstdint>
 #include <limits>
 #include <utility>
@@ -9,6 +10,7 @@ namespace veyr {
 struct SourceManager::SourceRecord {
   std::string display_name;
   std::string bytes;
+  std::vector<std::size_t> line_starts;
 };
 
 SourceManager::SourceManager() = default;
@@ -34,8 +36,14 @@ RegistrationResult SourceManager::register_source(std::string display_name,
     return *error;
   }
   const SourceId id{static_cast<std::uint64_t>(sources_.size()) + 1};
+  std::vector<std::size_t> line_starts{0};
+  for (std::size_t index = 0; index < bytes.size(); ++index) {
+    if (bytes[index] == '\n') {
+      line_starts.push_back(index + 1);
+    }
+  }
   auto record = std::make_unique<const SourceRecord>(
-      SourceRecord{std::move(display_name), std::move(bytes)});
+      SourceRecord{std::move(display_name), std::move(bytes), std::move(line_starts)});
   sources_.push_back(std::move(record));
   return id;
 }
@@ -87,6 +95,30 @@ TextResult SourceManager::text(SourceSpan span) const {
   }
   return std::string_view{lookup(span.source_id)->bytes}.substr(
       span.begin, span.end - span.begin);
+}
+
+LocationResult SourceManager::location(SourceId id, std::size_t offset) const {
+  const auto validation = validate({id, offset, offset});
+  if (const auto* error = std::get_if<SourceError>(&validation)) {
+    return *error;
+  }
+  const auto& starts = lookup(id)->line_starts;
+  const auto next = std::upper_bound(starts.begin(), starts.end(), offset);
+  const auto line = static_cast<std::size_t>(next - starts.begin());
+  return SourceLocation{id, offset, line, offset - starts[line - 1] + 1};
+}
+
+SpanResult SourceManager::line_span_at(SourceId id, std::size_t offset) const {
+  const auto result = location(id, offset);
+  if (const auto* error = std::get_if<SourceError>(&result)) {
+    return *error;
+  }
+  const auto line = std::get<SourceLocation>(result).line;
+  const auto* source = lookup(id);
+  const auto end = line < source->line_starts.size()
+                       ? source->line_starts[line]
+                       : source->bytes.size();
+  return SourceSpan{id, source->line_starts[line - 1], end};
 }
 
 }  // namespace veyr

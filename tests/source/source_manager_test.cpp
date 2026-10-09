@@ -253,4 +253,208 @@ TEST(SourceManager, RegistrationCapacityKeepsIdsAndEofColumnsRepresentable) {
   // Pure numeric boundary checks above allocate no huge string or source array.
 }
 
+TEST(SourceLocation, ApprovedNewlineAndEofBoundaryTable) {
+  struct Case {
+    std::string bytes;
+    std::vector<std::pair<std::size_t, std::size_t>> positions;
+  };
+  const std::vector<Case> cases = {
+      {"", {{1, 1}}},
+      {"ab", {{1, 1}, {1, 2}, {1, 3}}},
+      {"a\n", {{1, 1}, {1, 2}, {2, 1}}},
+      {"a\r\n", {{1, 1}, {1, 2}, {1, 3}, {2, 1}}},
+      {"a\r\nb", {{1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}}},
+      {"\n\r\n", {{1, 1}, {2, 1}, {2, 2}, {3, 1}}},
+      {"a\rb\r", {{1, 1}, {1, 2}, {1, 3}, {1, 4}, {1, 5}}}};
+  veyr::SourceManager manager;
+  for (const auto& item : cases) {
+    SCOPED_TRACE(testing::Message() << "bytes=" << testing::PrintToString(item.bytes));
+    const auto id = register_source(manager, "<boundary>", item.bytes);
+    ASSERT_EQ(item.positions.size(), item.bytes.size() + 1);
+    for (std::size_t offset = 0; offset <= item.bytes.size(); ++offset) {
+      SCOPED_TRACE(testing::Message() << "offset=" << offset);
+      const auto result = manager.location(id, offset);
+      ASSERT_TRUE(std::holds_alternative<veyr::SourceLocation>(result));
+      const veyr::SourceLocation expected{
+          id, offset, item.positions[offset].first, item.positions[offset].second};
+      EXPECT_EQ(std::get<veyr::SourceLocation>(result), expected);
+    }
+    EXPECT_EQ(source_text(manager, id), item.bytes);
+  }
+}
+
+TEST(SourceLocation, ContainingLineSpansIncludeOriginalTerminators) {
+  veyr::SourceManager manager;
+  const auto id = register_source(manager, "<lines>", "a\r\nb\nc\r");
+  const std::vector<veyr::SourceSpan> expected = {
+      {id, 0, 3}, {id, 0, 3}, {id, 0, 3}, {id, 3, 5},
+      {id, 3, 5}, {id, 5, 7}, {id, 5, 7}, {id, 5, 7}};
+  for (std::size_t offset = 0; offset < expected.size(); ++offset) {
+    const auto result = manager.line_span_at(id, offset);
+    ASSERT_TRUE(std::holds_alternative<veyr::SourceSpan>(result));
+    EXPECT_EQ(std::get<veyr::SourceSpan>(result), expected[offset]);
+    EXPECT_TRUE(std::holds_alternative<std::monostate>(manager.validate(expected[offset])));
+  }
+  for (const auto& bytes : {std::string{}, std::string{"a\n"}, std::string{"a\r\n"}}) {
+    const auto trailing = register_source(manager, "<trailing>", bytes);
+    const auto result = manager.line_span_at(trailing, bytes.size());
+    ASSERT_TRUE(std::holds_alternative<veyr::SourceSpan>(result));
+    const veyr::SourceSpan empty{trailing, bytes.size(), bytes.size()};
+    EXPECT_EQ(std::get<veyr::SourceSpan>(result), empty);
+    EXPECT_TRUE(std::get<std::string_view>(manager.text(empty)).empty());
+  }
+}
+
+TEST(SourceLocation, UnknownSourceRetainsPointInputAndTakesPrecedence) {
+  veyr::SourceManager manager;
+  static_cast<void>(register_source(manager, "known", "abc"));
+  const veyr::SourceId ids[] = {{0}, {2}, {std::numeric_limits<std::uint64_t>::max()}};
+  const std::size_t offsets[] = {0, 4, std::numeric_limits<std::size_t>::max()};
+  for (const auto id : ids) {
+    for (const auto offset : offsets) {
+      const veyr::SourceError expected{
+          veyr::SourceErrorKind::UnknownSource, id, offset, offset, std::nullopt};
+      const auto location = manager.location(id, offset);
+      const auto line = manager.line_span_at(id, offset);
+      ASSERT_TRUE(std::holds_alternative<veyr::SourceError>(location));
+      ASSERT_TRUE(std::holds_alternative<veyr::SourceError>(line));
+      EXPECT_EQ(std::get<veyr::SourceError>(location), expected);
+      EXPECT_EQ(std::get<veyr::SourceError>(line), expected);
+    }
+  }
+}
+
+TEST(SourceLocation, BeyondSourceRetainsExactOffsetWithoutClamping) {
+  veyr::SourceManager manager;
+  for (const auto& bytes : {std::string{}, std::string{"a\r\nb"}}) {
+    const auto id = register_source(manager, "<bounds>", bytes);
+    for (const auto offset : {bytes.size() + 1, std::numeric_limits<std::size_t>::max()}) {
+      const veyr::SourceError expected{
+          veyr::SourceErrorKind::BeyondSource, id, offset, offset, bytes.size()};
+      const auto location = manager.location(id, offset);
+      const auto line = manager.line_span_at(id, offset);
+      ASSERT_TRUE(std::holds_alternative<veyr::SourceError>(location));
+      ASSERT_TRUE(std::holds_alternative<veyr::SourceError>(line));
+      EXPECT_EQ(std::get<veyr::SourceError>(location), expected);
+      EXPECT_EQ(std::get<veyr::SourceError>(line), expected);
+    }
+  }
+}
+
+// Independent byte scan: no access to, or reconstruction of, the stored index.
+void expect_byte_mapping(veyr::SourceManager& manager, const std::string& bytes) {
+  SCOPED_TRACE(testing::Message() << "bytes=" << testing::PrintToString(bytes));
+  const auto id = register_source(manager, "<oracle>", bytes);
+  for (std::size_t offset = 0; offset <= bytes.size(); ++offset) {
+    SCOPED_TRACE(testing::Message() << "offset=" << offset);
+    std::size_t line = 1;
+    std::size_t column = 1;
+    std::size_t begin = 0;
+    for (std::size_t index = 0; index < offset; ++index) {
+      if (bytes[index] == '\n') {
+        ++line;
+        column = 1;
+        begin = index + 1;
+      } else {
+        ++column;
+      }
+    }
+    std::size_t end = offset;
+    while (end < bytes.size()) {
+      if (bytes[end++] == '\n') {
+        break;
+      }
+    }
+    const auto location = manager.location(id, offset);
+    const auto span = manager.line_span_at(id, offset);
+    ASSERT_TRUE(std::holds_alternative<veyr::SourceLocation>(location));
+    ASSERT_TRUE(std::holds_alternative<veyr::SourceSpan>(span));
+    const veyr::SourceLocation expected_location{id, offset, line, column};
+    const veyr::SourceSpan expected_span{id, begin, end};
+    EXPECT_EQ(std::get<veyr::SourceLocation>(location), expected_location);
+    EXPECT_EQ(std::get<veyr::SourceSpan>(span), expected_span);
+    EXPECT_TRUE(std::holds_alternative<std::monostate>(manager.validate(expected_span)));
+    EXPECT_EQ(std::get<std::string_view>(manager.text(expected_span)),
+              std::string_view{bytes}.substr(begin, end - begin));
+  }
+  EXPECT_EQ(source_text(manager, id), bytes);
+}
+
+TEST(SourceLocation, MixedNewlinesTabsUtf8AndNulUseOriginalByteColumns) {
+  veyr::SourceManager manager;
+  const std::vector<std::string> fixtures = {
+      "a\r\nb\nc\rd\n\r\n", "\r\n\n\n\r\r\n", "\t\tX\r", "\r\r",
+      std::string{"\xC3\xA9\t\xF0\x9F\x98\x80\r\nZ", 10},
+      std::string{"A\0B\r\n\0\t\n", 8}};
+  for (const auto& bytes : fixtures) {
+    expect_byte_mapping(manager, bytes);
+  }
+}
+
+TEST(SourceLocation, EveryOffsetOfBoundedByteCombinationsMatchesScanOracle) {
+  veyr::SourceManager manager;
+  const std::string alphabet{"x\r\n\t\0\xC3\xA9", 7};
+  std::size_t combinations = 1;
+  std::size_t checked = 0;
+  for (std::size_t length = 0; length <= 4; ++length) {
+    for (std::size_t code = 0; code < combinations; ++code) {
+      std::string bytes(length, 'x');
+      auto remaining = code;
+      for (auto& byte : bytes) {
+        byte = alphabet[remaining % alphabet.size()];
+        remaining /= alphabet.size();
+      }
+      expect_byte_mapping(manager, bytes);
+      ++checked;
+    }
+    combinations *= alphabet.size();
+  }
+  EXPECT_EQ(checked, 2801u);
+}
+
+TEST(SourceLocation, IndexedSourcesPreserveExactDisplayNameBytes) {
+  veyr::SourceManager manager;
+  const std::vector<std::string> names = {
+      R"(C:\Some Dir\..\MixedCase.vyr)", R"(c:/Some Dir/../MixedCase.vyr)",
+      R"(\\server\Share\file.vyr)", "./relative/../Name With Spaces.vyr",
+      "<memory>", "<stdin>", "<repl>", "<generated>", "",
+      std::string{"a\0b\r\n\t\x1B", 7}};
+  veyr::SourceId previous;
+  for (const auto& name : names) {
+    const auto id = register_source(manager, name, "a\r\nb\n");
+    EXPECT_NE(id, previous);
+    for (std::size_t offset = 0; offset <= 5; ++offset) {
+      ASSERT_TRUE(std::holds_alternative<veyr::SourceLocation>(manager.location(id, offset)));
+      ASSERT_TRUE(std::holds_alternative<veyr::SourceSpan>(manager.line_span_at(id, offset)));
+      EXPECT_EQ(display_name(manager, id), name);
+    }
+    previous = id;
+  }
+}
+
+TEST(SourceLocation, IndexedTextNameAndLineViewsSurviveFurtherRegistration) {
+  veyr::SourceManager manager;
+  const std::string bytes = "a\r\n" + std::string(1024, 'x') + "\n";
+  const auto id = register_source(manager, R"(C:\Keep Name\..\file.vyr)", bytes);
+  const auto text = source_text(manager, id);
+  const auto name = display_name(manager, id);
+  const auto line_span = std::get<veyr::SourceSpan>(manager.line_span_at(id, 3));
+  const auto line_text = std::get<std::string_view>(manager.text(line_span));
+  const auto location = std::get<veyr::SourceLocation>(manager.location(id, 3));
+  for (std::size_t index = 0; index < 3000; ++index) {
+    static_cast<void>(register_source(manager, std::to_string(index),
+                                     index % 2 == 0 ? "\n\r\n" : std::string{"\t\0\r", 3}));
+  }
+  EXPECT_EQ(text, bytes);
+  EXPECT_EQ(name, R"(C:\Keep Name\..\file.vyr)");
+  EXPECT_EQ(text.data(), source_text(manager, id).data());
+  EXPECT_EQ(name.data(), display_name(manager, id).data());
+  EXPECT_EQ(line_text, std::string(1024, 'x') + "\n");
+  EXPECT_EQ(line_text.data(), std::get<std::string_view>(manager.text(line_span)).data());
+  EXPECT_EQ(std::get<veyr::SourceLocation>(manager.location(id, 3)), location);
+  EXPECT_EQ(std::get<veyr::SourceSpan>(manager.line_span_at(id, 3)), line_span);
+  const veyr::SourceLocation eof{id, bytes.size(), 3, 1};
+  EXPECT_EQ(std::get<veyr::SourceLocation>(manager.location(id, bytes.size())), eof);
+}
+
 }  // namespace
