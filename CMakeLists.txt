@@ -40,7 +40,9 @@ include(cmake/VeyrTargets.cmake)
 include(cmake/VeyrLLVM.cmake)
 veyr_configure_llvm()
 
-add_library(veyrcore STATIC src/core/build_info.cpp)
+add_library(veyrcore STATIC
+  src/core/build_info.cpp
+  src/source/source_manager.cpp)
 veyr_target_policy(veyrcore)
 target_include_directories(veyrcore PUBLIC "${PROJECT_SOURCE_DIR}/include")
 target_compile_definitions(veyrcore PRIVATE VEYR_BUILD_VERSION="${PROJECT_VERSION}")

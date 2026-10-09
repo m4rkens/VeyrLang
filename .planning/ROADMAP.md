@@ -6,7 +6,7 @@
 
 Deliver the P01 smoke path: one source/root module, fixed provisional entry, one integer-literal return, native executable and observable exit code. The initial roadmap follows the canonical ten-phase breakdown in `docs/design/milestones/MILESTONE_1.md`. Future language, tooling and application probes remain deferred in REQUIREMENTS.md and the canonical milestone strategy.
 
-This roadmap began as fresh initialization, with no previous lifecycle imported. Phase 1 has eight completed execution plans and final four-job acceptance from run 37826767824. BUILD-01 through BUILD-14 are accepted for the reviewed foundation scope; Windows developer-host evidence remains independently pending and non-blocking. Phase 2 discussion/research are committed; implementation planning is complete for owner review, with execution unstarted. Initialization `--auto` did not authorize later lifecycle transitions, builds or commits.
+This roadmap began as fresh initialization, with no previous lifecycle imported. Phase 1 has eight completed execution plans and final four-job acceptance from run 37826767824. BUILD-01 through BUILD-14 are accepted for the reviewed foundation scope; Windows developer-host evidence remains independently pending and non-blocking. Phase 2 discussion/research/planning are committed; the owner invoked `$gsd-execute-phase 2`. Plan 02-01 is owner-closed for the validated Linux developer scope (1/4 complete); Plan 02-02 remains unstarted. Initialization `--auto` did not authorize later lifecycle transitions, builds or commits.
 
 ## Lifecycle and Design Gates
 
@@ -85,13 +85,13 @@ Platform impact:
 3. Users receive source-linked messages and relevant related locations in deterministic plain text on Windows/Linux without mandatory terminal color or LLVM dependencies.
 4. Path, newline and location cases follow documented platform-aware behavior while final source-encoding semantics remain open.
 
-**Plans:** 0/4 executed; four sequential implementation plans drafted by the explicit `$gsd-plan-phase 2` command. Planning self-review/structural coverage passed; owner review and a separate planning-only commit remain pending. Discussion commit `910be08de5cacfa4f585e5e548698644760dc6fd` and research commit `1fe774595b6efda2295d4b1108c746bcac3c5e99` are preserved unchanged.
+**Plans:** 1/4 complete for available Linux developer scope; four sequential implementation plans committed in `e9f9adbad0cec21859b8e45b8ffa4f0caf9b8f79`. After the explicit `$gsd-execute-phase 2` command, Plan 02-01 Tasks 1–2 passed independent Linux Debug/Release configure/build, SourceManager 12/12, full CTest 47/47 including include-policy, and six-entry C++23 verification. Owner approved Plan 02-01 Linux-scope closeout and its dedicated execution commit/push. Plan 02-02 has not started. Windows Phase 2/native and hosted CI evidence remain pending/non-blocking; Windows developer-host inspection stays independently pending. Discussion commit `910be08de5cacfa4f585e5e548698644760dc6fd` and research commit `1fe774595b6efda2295d4b1108c746bcac3c5e99` are preserved unchanged. See [02-01-EXECUTION.md](phases/02-source-identity-spans-and-diagnostics/02-01-EXECUTION.md).
 
 **Wave 1 — owned snapshot/span substrate**
 
-- [ ] 02-01-PLAN.md — Owned immutable sources, fresh manager-local IDs and checked original-byte span retrieval (SRC-01/SRC-02/SRC-03).
+- [x] 02-01-PLAN.md — Owned immutable sources, fresh manager-local IDs and checked original-byte span retrieval (SRC-01/SRC-02/SRC-03); complete for validated Linux developer scope, Windows Phase 2/native evidence pending.
 
-**Wave 2 *(blocked on Wave 1 completion)* — byte locations**
+**Wave 2 *(Wave 1 Linux-scope prerequisite complete; owner start command required)* — byte locations**
 
 - [ ] 02-02-PLAN.md — Indexed LF/CRLF/EOF byte locations and exact display metadata (SRC-04).
 
@@ -103,9 +103,9 @@ Platform impact:
 
 - [ ] 02-04-PLAN.md — Checked bounded renderer, byte-safe presentation and independent Tier 1 integration evidence behind separate publication/closeout gates (DIAG-02).
 
-**Cross-cutting constraints:** Preserve D-01–D-16, exact immutable bytes, checked infrastructure errors and manager-local identities. Source → diagnostics → renderer dependencies only; no LLVM/driver coupling. Reuse the accepted C++23/GoogleTest foundation and unchanged Conan/package/toolchain/CI policy. No new final syntax/encoding, filesystem/VFS, generic result/reporting framework or package subsystem. Each plan's concrete C++ API/renderer layout is a proposal for owner review. Native Debug/Release checks on both Tier 1 platforms are future evidence; Windows developer-host inspection stays independently pending/non-blocking, and macOS remains deferred. Execution, publication, commits and phase movement require separate explicit owner commands.
+**Cross-cutting constraints:** Preserve D-01–D-16, exact immutable bytes, checked infrastructure errors and manager-local identities. Source → diagnostics → renderer dependencies only; no LLVM/driver coupling. Reuse the accepted C++23/GoogleTest foundation and unchanged Conan/package/toolchain/CI policy. No new final syntax/encoding, filesystem/VFS, generic result/reporting framework or package subsystem. Plan 02-01 implements its reviewed C++ API; later API/renderer work remains unstarted. Linux developer Debug/Release snapshot/span checks passed; hosted Tier 1 Phase 2 evidence remains pending. Windows developer-host inspection stays independently pending/non-blocking, and macOS remains deferred. Execution, publication, commits and phase movement require separate explicit owner commands.
 
-**Research/design gate:** All sixteen discussion contracts and committed research are authoritative; no settled decision was reopened. Review the explicit checked API/capacity, immutable storage and bounded renderer layout proposals in the four plans. After planning review/commit, execution requires `$gsd-execute-phase 2`; no general virtual filesystem, final encoding or Phase 3 syntax work.
+**Research/design gate:** All sixteen discussion contracts and committed research are authoritative; no settled decision was reopened. The planning packet was reviewed/committed before the owner's explicit execution command. Owner approved Plan 02-01 Linux-scope closeout and a dedicated checkpoint commit/push; stop before Plan 02-02 until explicitly commanded. No general virtual filesystem, final encoding or Phase 3 syntax work.
 
 Platform impact:
 - Windows: Preserve useful Windows path spelling and handle CRLF/location display without console encoding assumptions.
@@ -309,7 +309,7 @@ After M1 acceptance and its reviewed verification commit, the owner may start a 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Conan and Compiler Build Foundation | 8/8 | Complete; final four-job native/offline CI acceptance run 37826767824; closeout committed; Windows developer host independently pending; macOS deferred | 2026-10-08 |
-| 2. Source Identity, Spans, and Diagnostics | 0/4 | Planned; owner review/planning commit pending; execution unstarted | — |
+| 2. Source Identity, Spans, and Diagnostics | 1/4 | 02-01 complete for validated Linux developer scope; Windows Phase 2/native evidence pending/non-blocking; 02-02 unstarted | — |
 | 3. M1 Experimental Smoke Profile, Tokens, and Lexer | 0/TBD | Not started | — |
 | 4. Smoke Profile Parser | 0/TBD | Not started | — |
 | 5. Minimal AST and Semantic Smoke | 0/TBD | Not started | — |
@@ -321,4 +321,4 @@ After M1 acceptance and its reviewed verification commit, the owner may start a 
 **Coverage:** 49 active requirements mapped to exactly one phase; 0 unmapped; BUILD-01 through BUILD-14 accepted from preserved execution and final four-job foundation evidence; 35 later-phase requirements pending. Windows developer-host evidence remains an independent deferred inspection, not credited from CI.
 
 ---
-*Last updated: 2026-10-09; Phase 2 implementation planning complete for owner review (0/4 executed); Phase 1 remains closed at 8/8. Seven requirements and sixteen decisions covered. Planning records only; no builds/tests/package operations, CI dispatch/retry, implementation changes, commit, push or phase advancement.*
+*Last updated: 2026-10-09; owner-approved Plan 02-01 Linux-scope closeout (Phase 2 1/4); Phase 1 remains closed at 8/8. Seven Phase 2 requirements await phase-wide acceptance; local SRC-01/SRC-02/SRC-03 evidence is recorded in 02-01-SUMMARY.md. Closeout adds no implementation/native/package work. Dedicated checkpoint commit/push explicitly authorized; no manual CI action or next-plan/phase transition.*
