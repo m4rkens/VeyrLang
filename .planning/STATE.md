@@ -5,10 +5,10 @@ milestone_name: Compiler Walking Skeleton
 current_phase: 2
 current_phase_name: Source Identity, Spans, and Diagnostics
 status: executing
-stopped_at: Owner accepted Plan 02-03 for validated Linux developer scope; closeout prepared. Phase 2 is 3/4; Plan 02-04 unstarted; Phase 1 closed at 8/8. Commit/publication approval pending.
-last_updated: "2026-10-15T08:15:05Z"
+stopped_at: Plan 02-04 Tasks 1–2 locally validated and reviewed; execution checkpoint prepared. Plan 02-03 four-job CI passed. Phase 2 remains 3/4; 02-04 publication requires owner approval; no phase closeout.
+last_updated: "2026-10-15T10:37:10Z"
 last_activity: 2026-10-15
-last_activity_desc: Owner accepted 02-03 implementation/evidence and authorized documentation-only closeout; summary created. Phase 2 is 3/4; no code changes, validation reruns or publication.
+last_activity_desc: Verified 02-03 CI run 38705163273 successful on all four jobs; prepared authorized 02-04 execution documentation with accepted code/evidence unchanged. No validation reruns or publication; Phase 2 remains 3/4.
 progress:
   total_phases: 10
   completed_phases: 1
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-03)
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
-**Current focus:** Owner accepted Plan 02-03 for validated Linux developer scope and authorized its documentation-only closeout. Phase 2 is 3/4; 02-04 remains unstarted. Commit/publication requires separate approval. Phase 1 remains closed at 8/8.
+**Current focus:** Plan 02-04 Tasks 1–2 are implemented, Linux Debug/Release validated and reviewed without blocking defects. The 02-03 publication CI prerequisite passed in run 38705163273. Execution checkpoint documentation is prepared; owner commit/publication authorization is the next gate. Phase 2 remains 3/4; Phase 1 remains closed at 8/8.
 
 ## Current Position
 
 Phase: 2 of 10 (Source Identity, Spans, and Diagnostics)
 Plan: 3 of 4 complete for available Linux developer scope; four sequential waves preserved
-Status: Plan 02-03 complete for validated Linux developer scope (3/4); Plan 02-04 unstarted; commit/publication pending owner approval
-Last activity: 2026-10-15 — Owner-approved 02-03 summary/closeout preserves Debug/Release diagnostics 14/14, full CTest 69/69 and eight C++23 entries each. Documentation only; accepted implementation/tests unchanged.
+Status: Plan 02-03 complete and published with successful four-job CI; Plan 02-04 Tasks 1–2 locally validated/reviewed, publication pending owner approval; Phase 2 remains 3/4
+Last activity: 2026-10-15 — Verified completed 02-03 four-job CI (69/69 CTest and eight C++23 entries per job); prepared 02-04 execution checkpoint preserving Linux renderer 27/27, existing tests 34/34, full CTest 96/96 and ten C++23 entries per configuration. Documentation only; no validation reruns.
 
 Phase 2 progress: [███████░░░] 3/4 execution plans (available Linux developer scope)
 
@@ -53,7 +53,7 @@ the subsequent hosted CI acceptance for those historical platform deferrals.
 - Plan 01-06 Tasks 1–2: Complete thin commands, invocation-local reuse, cache-only stale regeneration and liveness/scoped-clean fixtures; 30 new/60 regression tests passed, independent Debug/Release entry points/all passed with CTest 12/12 and four C++23 entries each. Explicit Debug clean preserved Release/tool/cache metadata; normal available-Linux closeout recorded
 - Plan 01-07 Tasks 1–2: Native acceptance harness/Support ownership extension, strict offline matcher and approved runner final-exit correction complete; foundation 16/16 and selected runner 6/6, provider CTest 13/13 each and runtime 5/5 in both configurations, warm/cache/clean accepted, separate Debug/Release offline recoveries passed. Four-row acceptance ledger and normal available-Linux closeout recorded without new commands
 - Plan 01-08 Tasks 1–3: Reviewed CI toolchains, Windows locks, shared commands and portable snapshot transfer validated; final run 37826767824 passes all four rows with CTest 35/35, verify, prepared native and controlled empty-cache acceptance.
-- Phase plans: Phase 1 eight plans/eight sequential waves complete, unchanged. Phase 2 retains four sequential waves (3/4 owner-closed). Plan 02-03 accepted for Linux developer scope; 02-04 unstarted. Earlier source plans have four-job hosted evidence from 37908907406; new 02-03 hosted evidence remains pending/non-blocking. No phase-wide Phase 2 requirement acceptance is recorded.
+- Phase plans: Phase 1 eight plans/eight sequential waves complete, unchanged. Phase 2 retains four sequential waves (3/4 owner-closed). Plan 02-03 is published in a9d356efaf651eae1dd6c8fb97942f274b632f6f with successful four-job hosted evidence from 38705163273. Plan 02-04 Tasks 1–2 have reviewed Linux evidence; new renderer CI/publication and final closeout remain separately gated. No phase-wide Phase 2 requirement acceptance is recorded.
 - Active requirements: 49 mapped once; BUILD-01 through BUILD-14 accepted from preserved Phase 1 execution plus final four-job evidence, 35 later-phase requirements pending. Acceptance is limited to the documented foundation, not arbitrary ABI/developer-host compatibility.
 
 ## Accumulated Context
@@ -89,22 +89,42 @@ include-policy, and eight-entry C++23 verification. Doctor passed 22/22;
 cache-only configuration reused LLVM/GoogleTest without downloads/rebuilds.
 See 02-03-EXECUTION.md and ignored .veyr-dev/execution/02-03/ command logs.
 
-The owner accepted 02-03 for its validated Linux developer scope and authorized
-normal documentation-only closeout. 02-03-SUMMARY.md records the accepted API,
-ownership/view contracts, evidence and limitations. Phase 2 is now 3/4; 02-04
-unstarted; Phase 1 closed at 8/8. All seven Phase 2 requirements remain pending
-for phase-wide acceptance; DIAG-01/DIAG-03 have accepted local coverage. New
-02-03 Windows CI/native evidence remains pending/non-blocking, independently
-of pending Windows developer-host inspection. macOS remains deferred.
+Plan 02-03 was owner-accepted, committed and published in
+a9d356efaf651eae1dd6c8fb97942f274b632f6f. Read-only inspection confirms
+Build foundation run 38705163273 completed successfully on Ubuntu/Windows
+Debug/Release. All four passed native configure/build/test/verify, prepared
+acceptance and controlled empty-cache rejection; logs show Diagnostic 14/14,
+full CTest 69/69 and eight selected C++23 entries per row. The prerequisite
+for separately publishing 02-04 is now satisfied. This run contains no renderer.
 
-Non-blocking API improvement: current callers must explicitly initialize
-Diagnostic::severity before its value is read. No default severity or constructor
-change is introduced. Compile-time enforced initialization may be considered
-separately. Raw doctor stdout was not retained; allocation-failure behavior was
-not fault-injected. Neither limits the accepted focused/full Linux evidence.
-Diagnostic rendering remains outside 02-03 and belongs to separately authorized
-02-04. No commit, push, CI action, validation rerun or Wave 4 execution is
-authorized by this closeout. Accepted code/tests remain unchanged.
+The owner authorized `$gsd-execute-phase 2 --wave 4` for 02-04 Tasks 1–2 only,
+then read-only code/security/evidence review. Exact wave filtering selected only
+02-04; the Task 3 owner checkpoint and automatic completion remained blocked.
+Tasks 1–2 implement stateless checked bounded plain rendering and 27 native
+renderer cases. Linux Debug/Release independently passed doctor 22/22,
+renderer 27/27, existing source/diagnostic tests 34/34, full CTest 96/96,
+ten-entry C++23 verification and direct include checks. Explicit cache-only
+configure reused existing dependencies without downloads/rebuilds.
+
+The latest owner command authorizes completing execution checkpoint documentation
+and checking publication readiness only. 02-04-EXECUTION.md records the observed
+commands/results, reviewed contracts, evidence manifest and remaining gates.
+All five reviewed implementation/integration/test files and 36 retained evidence
+manifest entries are unchanged. No build/test/dependency operations were rerun.
+
+Phase 2 remains 3/4; 02-04 has no final summary and is not complete. All seven
+Phase 2 requirements await phase-wide acceptance; DIAG-02 has reviewed Linux
+coverage. Renderer hosted Windows/Linux CI evidence is still absent. Windows
+developer-host inspection remains independently pending/non-blocking; macOS
+is deferred. Phase 1 stays closed at 8/8.
+
+Non-blocking improvements remain separate: explicit Diagnostic::severity
+initialization is required; no arbitrary default or constructor change. Review
+suggested combined left-clipping/mixed-escape coverage and documenting/testing
+unsupported initialized enum handling. Allocation failures were not fault-injected.
+Accepted code and tests remain unchanged; none of these observations blocks the
+reviewed local scope. Commit/push, new renderer CI evidence and final Phase 2
+closeout need separate owner authorization. No Phase 3 work is authorized.
 
 ### Evidence and remaining scope limits
 
@@ -126,19 +146,19 @@ Future probes are tracked in REQUIREMENTS.md v2 and canonical milestone strategy
 
 ## Session Continuity
 
-Last session: 2026-10-15T08:15:05Z
-Stopped at: Owner-approved 02-03 Linux-scope documentation closeout prepared; Phase 2 3/4; commit/publication approval pending; Plan 02-04 unstarted.
-Resume file: .planning/phases/02-source-identity-spans-and-diagnostics/02-03-EXECUTION.md
-Completed summaries: 01-01 through 01-08 and 02-01/02-02/02-03 (available Linux developer scope); Phase 1 remains closed, Windows developer-host evidence independently pending/non-blocking.
-Last completed step: Owner-approved Plan 02-03 Linux-scope summary/closeout from accepted Debug/Release diagnostics 14/14, full CTest 69/69 and eight C++23 entries each; no validation reruns.
-Next owner gate: Review the ten-file implementation/closeout packet and explicitly authorize its dedicated commit/publication. No automatic commit, push, CI action or Wave 4 execution.
-Current outputs: The accepted nine-file Plan 02-03 execution packet plus normal 02-03-SUMMARY.md (ten files total); six implementation/integration/test files unchanged by closeout. Retained command logs remain ignored.
-Preserved artifacts: Completed Phase 2 discussion/research/plans and 02-01/02-02 records; REQUIREMENTS and Phase 1 artifacts; workflows/recipes/profiles/baselines/dependency versions and four lock bytes unchanged. Source/location implementation and local ignored IDE preset unchanged.
+Last session: 2026-10-15T10:37:10Z
+Stopped at: 02-04 execution checkpoint prepared after local Tasks 1–2 validation/review and successful 02-03 CI verification; publication awaits owner approval; Phase 2 remains 3/4.
+Resume file: .planning/phases/02-source-identity-spans-and-diagnostics/02-04-EXECUTION.md
+Completed summaries: 01-01 through 01-08 and 02-01/02-02/02-03; no 02-04 summary. Phase 1 closed at 8/8; Windows developer-host evidence independently pending/non-blocking.
+Last completed step: Verified run 38705163273 successful on all four jobs and prepared the authorized 02-04 execution documentation. Reviewed local Debug/Release renderer 27/27, full CTest 96/96 and ten C++23 entries remain unchanged.
+Next owner gate: Explicitly authorize the exact eight-file 02-04 implementation/checkpoint commit and publication. No commit/push or CI dispatch/retry is authorized yet; new renderer CI evidence and phase closeout remain pending.
+Current outputs: Five reviewed implementation/integration/test files plus STATE, ROADMAP and 02-04-EXECUTION.md (eight intended commit files). Retained logs, generated records and hash manifests remain ignored and unchanged.
+Preserved artifacts: Completed Phase 2 discussion/research/plans and 02-01/02-02/02-03 records; REQUIREMENTS and Phase 1 artifacts; workflows/recipes/profiles/baselines/dependency versions and four locks unchanged. Source/diagnostic APIs and the ignored IDE preset unchanged.
 Sub-agents: None; planning/checker work inline under explicit-request policy. Self-review is not an independent agent review or runtime verification.
 Execution checkpoints: 01-01 941c70da327b2977cf35b59938795599aaa4b4e4; 01-02 3f0636bda87da69a8526b0c57bf9844b8448c831; 01-03 9531def3e372d0bbb27aaf2d96e88fdca26b3f3c; 01-04 71c254d10cc495231453e2847a608128d06d2762; 01-05 d34a793575e140680804b45058b68c6436cb0c0e; 01-06 f476fa8d5f5e5e20d61adb8abdc196d7bfe5a267; 01-07 ddec666b43546d8820d7eacd28e6ce4ef2b068ed plus eef4780faa9063a50ae5ede89fc40f55408279bb; 01-08 published implementation through 2741d6514f5e695d36c20cb792bff4985ac5d754, planning closeout committed/pushed in 1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f.
 
 Platform impact:
 
-- Windows: Phase 1 foundation accepted; earlier Phase 2 source/span/location checks passed in run 37908907406. New 02-03 native/CI evidence pending/non-blocking. Developer-host inspection independently pending.
-- Linux: Primary Omarchy developer host; 02-03 Debug/Release checks accepted by owner. Ubuntu CI stays separate; no 02-03 hosted run claimed.
+- Windows: Phase 1 foundation accepted; source/structured diagnostics passed hosted Debug/Release in 38705163273. New renderer CI evidence remains pending; developer-host inspection independently pending/non-blocking.
+- Linux: Omarchy 02-04 Debug/Release checks validated and reviewed. Separate Ubuntu CI passed 02-03 in 38705163273; new renderer CI evidence remains pending.
 - macOS future: Deferred; no Darwin execution or acceptance claimed.

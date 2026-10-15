@@ -43,6 +43,7 @@ veyr_configure_llvm()
 add_library(veyrcore STATIC
   src/core/build_info.cpp
   src/diagnostics/diagnostic_engine.cpp
+  src/diagnostics/plain_text_renderer.cpp
   src/source/source_manager.cpp)
 veyr_target_policy(veyrcore)
 target_include_directories(veyrcore PUBLIC "${PROJECT_SOURCE_DIR}/include")
