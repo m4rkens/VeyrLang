@@ -6,7 +6,7 @@
 
 ## v1 Requirements
 
-Here v1 means the first walking-skeleton milestone, not a stable language release. At fresh initialization all requirements were pending hypotheses and no prior implementation/evidence was credited. Phase 1 BUILD-01 through BUILD-14 are now accepted from this lifecycle's preserved execution and final four-job run 37826767824; the other 35 requirements remain pending. Every requirement maps to exactly one active phase. P01 forces the compiler path; PLAT_01/02/03/06 force the related platform/build constraints.
+Here v1 means the first walking-skeleton milestone, not a stable language release. At fresh initialization all requirements were pending hypotheses and no prior implementation/evidence was credited. Phase 1 BUILD-01 through BUILD-14 remain accepted from this lifecycle's preserved execution and final four-job run 37826767824. Phase 2 SRC-01 through SRC-04 and DIAG-01 through DIAG-03 are now owner-accepted from final four-job run 38722486719; 21 requirements are accepted and the other 28 remain pending. Every requirement maps to exactly one active phase. P01 forces the compiler path; PLAT_01/02/03/06 force the related platform/build constraints.
 
 ### Build and developer foundation
 
@@ -27,16 +27,16 @@ Here v1 means the first walking-skeleton milestone, not a stable language releas
 
 ### Source management
 
-- [ ] **SRC-01**: Compiler client can register source text under a stable SourceId and retain it for all span and lexeme consumers.
-- [ ] **SRC-02**: Compiler client can represent and validate byte-offset SourceSpans, including zero-width end-of-source locations.
-- [ ] **SRC-03**: Compiler client can recover original text for a source span through SourceManager without duplicating lexemes into tokens.
-- [ ] **SRC-04**: Contributor can display useful source paths and line/column locations under documented Windows/Linux path and newline behavior without freezing final source-encoding policy.
+- [x] **SRC-01**: Compiler client can register source text under a stable SourceId and retain it for all span and lexeme consumers.
+- [x] **SRC-02**: Compiler client can represent and validate byte-offset SourceSpans, including zero-width end-of-source locations.
+- [x] **SRC-03**: Compiler client can recover original text for a source span through SourceManager without duplicating lexemes into tokens.
+- [x] **SRC-04**: Contributor can display useful source paths and line/column locations under documented Windows/Linux path and newline behavior without freezing final source-encoding policy.
 
 ### Diagnostics
 
-- [ ] **DIAG-01**: Compiler client can report structured messages with source identity and relevant primary/related spans independently of LLVM.
-- [ ] **DIAG-02**: User can receive useful deterministic plain-text diagnostics on Windows and Linux without requiring color or a specific console.
-- [ ] **DIAG-03**: Compiler client can accumulate diagnostics independently of rendering and distinguish errors that prevent successful compilation.
+- [x] **DIAG-01**: Compiler client can report structured messages with source identity and relevant primary/related spans independently of LLVM.
+- [x] **DIAG-02**: User can receive useful deterministic plain-text diagnostics on Windows and Linux without requiring color or a specific console.
+- [x] **DIAG-03**: Compiler client can accumulate diagnostics independently of rendering and distinguish errors that prevent successful compilation.
 
 ### M1 profile and recovered lexing
 
@@ -164,13 +164,13 @@ These are deferred probe-driven directions, not the next release contract or aut
 | BUILD-12 | Phase 1 | Complete — final acceptance run 37826767824 |
 | BUILD-13 | Phase 1 | Complete — final acceptance run 37826767824 |
 | BUILD-14 | Phase 1 | Complete — final acceptance run 37826767824 |
-| SRC-01 | Phase 2 | Pending |
-| SRC-02 | Phase 2 | Pending |
-| SRC-03 | Phase 2 | Pending |
-| SRC-04 | Phase 2 | Pending |
-| DIAG-01 | Phase 2 | Pending |
-| DIAG-02 | Phase 2 | Pending |
-| DIAG-03 | Phase 2 | Pending |
+| SRC-01 | Phase 2 | Complete — owner accepted final run 38722486719 |
+| SRC-02 | Phase 2 | Complete — owner accepted final run 38722486719 |
+| SRC-03 | Phase 2 | Complete — owner accepted final run 38722486719 |
+| SRC-04 | Phase 2 | Complete — owner accepted final run 38722486719 |
+| DIAG-01 | Phase 2 | Complete — owner accepted final run 38722486719 |
+| DIAG-02 | Phase 2 | Complete — owner accepted final run 38722486719 |
+| DIAG-03 | Phase 2 | Complete — owner accepted final run 38722486719 |
 | LEX-01 | Phase 3 | Pending |
 | LEX-02 | Phase 3 | Pending |
 | LEX-03 | Phase 3 | Pending |
@@ -205,9 +205,13 @@ These are deferred probe-driven directions, not the next release contract or aut
 - Mapped to exactly one phase: 49
 - Unmapped: 0
 - Accepted Phase 1 foundation requirements: 14
-- Pending later-phase requirements: 35
+- Accepted Phase 2 source/diagnostic requirements: 7
+- Total accepted requirements: 21
+- Pending later-phase requirements: 28
 
 Phase 1 evidence: [01-08-EXECUTION.md](phases/01-conan-and-compiler-build-foundation/01-08-EXECUTION.md) and [01-08-SUMMARY.md](phases/01-conan-and-compiler-build-foundation/01-08-SUMMARY.md). Four hosted CI configurations passed; preserved Omarchy evidence remains separate. Windows developer-host acceptance is independently pending; macOS deferred. Acceptance does not assert general ABI compatibility beyond the exercised foundation.
 
+Phase 2 evidence: [02-04-EXECUTION.md](phases/02-source-identity-spans-and-diagnostics/02-04-EXECUTION.md), [02-04-SUMMARY.md](phases/02-source-identity-spans-and-diagnostics/02-04-SUMMARY.md) and [02-VERIFICATION.md](phases/02-source-identity-spans-and-diagnostics/02-VERIFICATION.md). The owner accepted SRC-01 through SRC-04 and DIAG-01 through DIAG-03 after all four Ubuntu/Windows Debug/Release jobs in run 38722486719 passed at ab596c7c721fd673b1716db6a1f6f5681a7ff126. Each passed renderer 27/27, full CTest 96/96, ten selected C++23 entries, include-policy, prepared/native and controlled empty-cache acceptance. Preserved Linux developer evidence remains separate; Windows developer-host inspection remains pending/non-blocking and macOS deferred. No later-phase requirement is accepted or redefined.
+
 ---
-*Last updated: 2026-10-08 after owner-authorized final Phase 1 acceptance inspection; definitions, phase mapping and later-phase statuses unchanged.*
+*Last updated: 2026-10-15 after owner-authorized final Phase 2 acceptance/closeout; definitions, phase mapping, Phase 1 acceptance and all later-phase statuses unchanged.*

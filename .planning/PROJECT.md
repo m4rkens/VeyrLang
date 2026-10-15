@@ -12,13 +12,14 @@ Give programmers system-level control while moving as much error detection as pr
 
 ### Validated
 
-None. Canonical design decisions constrain the project but are not implemented or verified capabilities. No previous run's planning, implementation, test results, or evidence is imported.
+- [x] Establish the compiler build with C++23, Conan 2, CMake, Ninja, Clang, GoogleTest/GoogleMock, and LLVM 23.1.2. Validated in Phase 1: Conan and Compiler Build Foundation; BUILD-01 through BUILD-14 accepted.
+- [x] Provide equivalent Windows/Linux developer operations through thin Python orchestration and explicit reviewed profiles. Validated in Phase 1 through preserved Omarchy developer evidence and independent Ubuntu/Windows hosted Debug/Release execution. Windows developer-host inspection remains independently pending/non-blocking; hosted CI does not establish local-host acceptance.
+- [x] Establish source identity, byte-offset spans, and portable plain-text diagnostics independent of LLVM. Validated in Phase 2: Source Identity, Spans, and Diagnostics; SRC-01 through SRC-04 and DIAG-01 through DIAG-03 accepted.
+
+These capabilities were implemented and verified in this fresh lifecycle; no previous run's artifacts or evidence are credited. Long-term language-design decisions remain constraints rather than implemented language capabilities.
 
 ### Active
 
-- [ ] Establish the compiler build with C++23, Conan 2, CMake, Ninja, Clang, GoogleTest/GoogleMock, and LLVM 23.1.2.
-- [ ] Provide equivalent Windows/Linux developer operations through thin Python orchestration and explicit reviewed profiles.
-- [ ] Establish source identity, byte-offset spans, and portable plain-text diagnostics independent of LLVM.
 - [ ] Define and review the M1 Experimental Smoke Profile in Phase 3 before syntax-dependent implementation.
 - [ ] Implement token recovery, parsing, a minimal AST, semantic validation, and lowering for that profile only.
 - [ ] Carry one root-module identity through the pipeline without imports or package resolution.
@@ -37,6 +38,14 @@ Detailed, phase-mapped requirements are in [REQUIREMENTS.md](REQUIREMENTS.md).
 - WASM, embedded, no-std, and freestanding implementation: future research tracks.
 - Automatic lifecycle transitions and commits: repository policy requires explicit owner commands and review.
 
+## Current State
+
+Phase 1 is closed at 8/8 and Phase 2 is complete and owner-accepted at 4/4. The canonical Phase 2 goal-verification procedure has now been performed inline using actual code/wiring inspection and accepted native evidence; see [02-VERIFICATION.md](phases/02-source-identity-spans-and-diagnostics/02-VERIFICATION.md). There are 21 accepted requirements and 28 pending later requirements across the ten-phase M1 roadmap. Phase 3 discussion, research, planning and implementation have not started; M1 is not complete.
+
+Phase 1 acceptance is recorded in [01-08-SUMMARY.md](phases/01-conan-and-compiler-build-foundation/01-08-SUMMARY.md), final four-job [run 37826767824](https://github.com/m4rkens/VeyrLang/actions/runs/37826767824). Phase 2 acceptance is recorded in [02-04-SUMMARY.md](phases/02-source-identity-spans-and-diagnostics/02-04-SUMMARY.md), final four-job [run 38722486719](https://github.com/m4rkens/VeyrLang/actions/runs/38722486719) at ab596c7c721fd673b1716db6a1f6f5681a7ff126. Ubuntu and Windows hosted Debug/Release jobs validated the complete Phase 2 slice: source 12, location 8, diagnostic 14 and renderer 27 tests, full CTest 96/96, ten selected C++23 compilation entries, include-policy, prepared/native and controlled acquisition-disabled rejection.
+
+Linux remains the primary development host; Omarchy developer and Ubuntu CI baselines remain separate. Windows hosted CI is validated; Windows developer-host inspection is independently pending/non-blocking. macOS remains deferred. Canonical lifecycle reconciliation changes planning documentation only; the final closeout packet still needs owner review and separate commit/publication authorization.
+
 ## Context
 
 ### Canonical inputs and precedence
@@ -50,7 +59,7 @@ Primary inputs:
 - Required development policies, `docs/tooling/TOOLCHAIN.md`, and `docs/tooling/CONAN_BUILD_ARCHITECTURE.md`.
 - `docs/project-system/**` and root `Veyr.toml` as future product design inputs, not a compiler build manifest.
 
-The starting branch is `main`, with commit `8292237` (`Initial commit`). The working tree contains owner-provided starter material: modified `.gitignore` and `README.md`, and untracked `.codex/`, `AGENTS.md`, `Veyr.toml`, `docs/`, `examples/`, `gsd/`, and `templates/`. No `.planning/`, compiler implementation, build directories, or generated evidence existed at initialization. Existing starter files remain owner work.
+At initialization the branch was `main`, with commit `8292237` (`Initial commit`). The working tree contained owner-provided starter material: modified `.gitignore` and `README.md`, and untracked `.codex/`, `AGENTS.md`, `Veyr.toml`, `docs/`, `examples/`, `gsd/`, and `templates/`. No `.planning/`, compiler implementation, build directories, or generated evidence existed then. This historical starting point is not the current worktree state; subsequent reviewed commits and phase records establish the validated capabilities above.
 
 ### Fixed names
 
@@ -76,29 +85,37 @@ The initial roadmap follows the ten-phase M1 breakdown in `docs/design/milestone
 - **Platforms:** Windows x86_64 and Linux x86_64 are mandatory Tier 1. Separate runtime/SDK/linker/profile details; native development initially. macOS is deferred Tier 2.
 - **Architecture:** Source and diagnostics do not depend on LLVM or driver state; lexer does not depend on parser/AST/semantics. LLVM remains a backend boundary.
 - **Includes/editor:** Veyr-owned headers use `<veyr/...>`; development presets export `compile_commands.json`; include guardrail has a build/check target and CTest entry.
-- **Workflow:** Initialization creates `.planning/` documents only. Discussion/planning cannot create implementation or run CMake/Ninja/CTest/Conan/compiler/dependency commands. Execution requires `$gsd-execute-phase N`; verification and every stage commit require separate explicit authorization.
+- **Workflow:** Initialization created `.planning/` documents only. Discussion/planning cannot create implementation or run CMake/Ninja/CTest/Conan/compiler/dependency commands. Execution requires `$gsd-execute-phase N`; verification and every stage commit require separate explicit authorization.
 - **Supervision:** Approximately 60 seconds of quiet output triggers a liveness check, not automatic termination. No duplicate retries or destructive cleanup.
-- **Git:** Planning documents remain eligible for reviewed tracking; `commit_docs: true` is not commit permission. No commit, staging, push, or modification of existing starter inputs occurs in this command.
+- **Git:** Planning documents remain eligible for reviewed tracking; `commit_docs: true` is not commit permission. Current lifecycle reconciliation authorizes no staging, commit or push.
 
 ## Key Decisions
 
-These summarize canonical inputs. Initialization does not accept new final language semantics.
+These summarize canonical inputs and accepted phase results. Phase completion does not accept new final language semantics.
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Fresh M1 lifecycle with no imported evidence | Owner request and fresh-start note | Constraint; implementation pending |
-| Conan 2 owns third-party mechanics | D-064 supersedes custom SDK provisioning | Accepted direction; implementation pending |
-| LLVM 23.1.2 through Conan | D-065; exact target confirmed by official release | Accepted direction; recipe integration pending |
-| Thin Python wrapper → Conan → CMake → Ninja → Clang | Build architecture; avoid a second package manager | Accepted direction; implementation pending |
-| Windows/Linux x86_64 Tier 1, macOS deferred | Owner request and platform policy | Accepted direction; verification pending |
+| Fresh M1 lifecycle with no imported evidence | Owner request and fresh-start note | Preserved; Phase 1 and Phase 2 use this lifecycle's evidence only |
+| Conan 2 owns third-party mechanics | D-064 supersedes custom SDK provisioning | Phase 1 validated with project-owned Conan 2.33.0 CLI and Conan-owned package state |
+| LLVM 23.1.2 through Conan | D-065; exact target confirmed by official release | Narrow recipe/package integration validated in Phase 1; unchanged in Phase 2 |
+| Thin Python wrapper → Conan → CMake → Ninja → Clang | Build architecture; avoid a second package manager | Shared operations validated in Phase 1; used unchanged for Phase 2 |
+| Windows/Linux x86_64 Tier 1, macOS deferred | Owner request and platform policy | Hosted Debug/Release validated in both phases; Windows developer host independently pending; macOS deferred |
 | Phase 3 profile precedes concrete syntax work | M1 syntax must stay milestone-local | Profile not yet authored |
-| Ten M1 phases with explicit stage gates | Canonical M1 decomposition and workflow | Initial roadmap; owner review pending |
-| `--auto` applies within initialization only | Exact-command and commit policy override workflow auto-chain defaults | No auto advance; no commits |
+| Ten M1 phases with explicit stage gates | Canonical M1 decomposition and workflow | Phase 1 8/8 and Phase 2 4/4 accepted; Phase 3 unstarted; later requirements pending |
+| `--auto` applies within initialization only | Exact-command and commit policy override workflow auto-chain defaults | No automatic advancement or commits; each publication needs explicit approval |
+
+## Non-blocking Follow-up Candidates
+
+- Enforce explicit initialization of `Diagnostic::severity` before diagnostic construction becomes widespread. Current callers must initialize before reading; no arbitrary default or constructor change is accepted here.
+- Add a combined left-clipping, mixed-escape and empty-span renderer regression test.
+- Consider documenting/testing unsupported initialized severity values.
+
+These are recorded opportunities, not implemented changes or new phase requirements. They do not reopen accepted Phase 2 scope.
 
 ## Platform impact
 
-- Windows: Plan clang-cl with reviewed SDK/CRT/linker configuration, structured paths, portable plain diagnostics, and explicit process invocation. No Windows build evidence exists yet.
-- Linux: Plan clang/clang++ with a reviewed ABI/standard-library profile, platform-native linking, and explicit process handling. No Linux build evidence exists yet.
+- Windows: Reviewed standalone clang-cl with DevShell SDK/CRT/linker environment; hosted Debug/Release foundation and complete source/diagnostic slice validated. Developer-host inspection remains independently pending/non-blocking.
+- Linux: Primary Omarchy developer Debug/Release and separate Ubuntu CI Debug/Release evidence validated; reviewed toolchains remain independent. Source/location/diagnostic contracts preserve original bytes and stored display spelling.
 - macOS future: Keep target/host distinctions and platform boundaries; defer Darwin profiles, Mach-O/framework/linking validation and CI.
 
 ## Evolution
@@ -106,4 +123,4 @@ These summarize canonical inputs. Initialization does not accept new final langu
 Update this document only at owner-authorized lifecycle or milestone boundaries. Reassess active requirements, move actually verified capabilities to Validated, record invalidated scope, and keep the current description accurate. Accepted language semantics belong in the canonical decision log; milestone-local choices belong in the smoke profile and reviewed phase artifacts. Stage completion never authorizes a transition or commit.
 
 ---
-*Last updated: 2026-10-03 after fresh project initialization.*
+*Last updated: 2026-10-15 after owner-authorized Phase 2 GSD lifecycle reconciliation; Phase 1 and Phase 2 validated, Phase 3 unstarted, closeout publication pending owner approval.*
