@@ -16,6 +16,11 @@ veyr_target_policy(source_tests)
 target_link_libraries(source_tests PRIVATE veyrcore GTest::gtest_main GTest::gmock)
 gtest_discover_tests(source_tests DISCOVERY_MODE PRE_TEST)
 
+add_executable(diagnostic_tests diagnostics/diagnostic_test.cpp)
+veyr_target_policy(diagnostic_tests)
+target_link_libraries(diagnostic_tests PRIVATE veyrcore GTest::gtest_main GTest::gmock)
+gtest_discover_tests(diagnostic_tests DISCOVERY_MODE PRE_TEST)
+
 add_executable(llvm_link_tests infrastructure/llvm_link_test.cpp)
 veyr_target_policy(llvm_link_tests)
 target_link_libraries(llvm_link_tests PRIVATE veyr_llvm_support GTest::gtest_main)

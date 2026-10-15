@@ -6,7 +6,7 @@
 
 Deliver the P01 smoke path: one source/root module, fixed provisional entry, one integer-literal return, native executable and observable exit code. The initial roadmap follows the canonical ten-phase breakdown in `docs/design/milestones/MILESTONE_1.md`. Future language, tooling and application probes remain deferred in REQUIREMENTS.md and the canonical milestone strategy.
 
-This roadmap began as fresh initialization, with no previous lifecycle imported. Phase 1 has eight completed execution plans and final four-job acceptance from run 37826767824. BUILD-01 through BUILD-14 are accepted for the reviewed foundation scope; Windows developer-host evidence remains independently pending and non-blocking. Phase 2 discussion/research/planning are committed; the owner invoked `$gsd-execute-phase 2`. Plans 02-01/02-02 are owner-closed for validated Linux developer scope (2/4 complete); Plan 02-03 remains unstarted. Initialization `--auto` did not authorize later lifecycle transitions, builds or commits.
+This roadmap began as fresh initialization, with no previous lifecycle imported. Phase 1 has eight completed execution plans and final four-job acceptance from run 37826767824. BUILD-01 through BUILD-14 are accepted for the reviewed foundation scope; Windows developer-host evidence remains independently pending and non-blocking. Phase 2 discussion/research/planning are committed; the owner invoked `$gsd-execute-phase 2`. Plans 02-01/02-02/02-03 are owner-closed for validated Linux developer scope (3/4 complete); Plan 02-03 is owner-accepted for validated Linux scope; 02-04 remains unstarted. Initialization `--auto` did not authorize later lifecycle transitions, builds or commits.
 
 ## Lifecycle and Design Gates
 
@@ -85,7 +85,7 @@ Platform impact:
 3. Users receive source-linked messages and relevant related locations in deterministic plain text on Windows/Linux without mandatory terminal color or LLVM dependencies.
 4. Path, newline and location cases follow documented platform-aware behavior while final source-encoding semantics remain open.
 
-**Plans:** 2/4 complete for available Linux developer scope; four sequential implementation plans committed in `e9f9adbad0cec21859b8e45b8ffa4f0caf9b8f79`. Plan 02-01 was closed and committed/pushed in `63992411d33d498e3f795f58d87b809dce75196d`. The owner renewed `$gsd-execute-phase 2`; Plan 02-02 Tasks 1–2 are implemented and validated on Linux: focused SourceManager/SourceLocation 20/20, full CTest 55/55 including include-policy, and six-entry C++23 verification in each configuration. Owner approved Plan 02-02 Linux-scope closeout and a dedicated execution checkpoint commit/push; 02-03/02-04 remain unstarted. No dependency downloads/rebuilds occurred. Windows Phase 2/native and hosted CI evidence remain pending/non-blocking; Windows developer-host inspection stays independently pending. Discussion commit `910be08de5cacfa4f585e5e548698644760dc6fd` and research commit `1fe774595b6efda2295d4b1108c746bcac3c5e99` are preserved unchanged. See [02-02-EXECUTION.md](phases/02-source-identity-spans-and-diagnostics/02-02-EXECUTION.md).
+**Plans:** 3/4 owner-closed for Linux developer scope; four sequential plans remain unchanged. Plan 02-02 checkpoint `4c6be3a2e7d4694782c98ac879380458691edd67` was accepted after [run 37908907406](https://github.com/m4rkens/VeyrLang/actions/runs/37908907406) passed Ubuntu/Windows Debug/Release with CTest 55/55, six-entry C++23 verification, prepared and controlled empty-cache acceptance each. The owner then authorized `$gsd-execute-phase 2 --wave 3` only; exact filtering selected 02-03 and excluded 02-04. Plan 02-03 Tasks 1–2 passed Linux Debug/Release diagnostic 14/14, full CTest 69/69 and eight-entry C++23 verification. The owner accepted 02-03 for validated Linux scope and authorized documentation-only closeout; the normal summary is prepared. Commit/publication remains separately gated. New diagnostic hosted/native Windows evidence remains pending/non-blocking; Windows developer-host inspection stays independently pending. No dependencies were added/downloaded/rebuilt, and no rendering was implemented. See [02-03-EXECUTION.md](phases/02-source-identity-spans-and-diagnostics/02-03-EXECUTION.md).
 
 **Wave 1 — owned snapshot/span substrate**
 
@@ -95,17 +95,17 @@ Platform impact:
 
 - [x] 02-02-PLAN.md — Indexed LF/CRLF/EOF byte locations and exact display metadata (SRC-04); complete for validated Linux developer scope, Windows Phase 2/native evidence pending/non-blocking.
 
-**Wave 3 *(Wave 2 Linux-scope prerequisite complete; owner start command required)* — structured diagnostics**
+**Wave 3 — structured diagnostics (complete for validated Linux developer scope)**
 
-- [ ] 02-03-PLAN.md — Owned optional-primary/ordered-related diagnostics, emission order and severity/error accumulation (DIAG-01/DIAG-03).
+- [x] 02-03-PLAN.md — Owned optional-primary/ordered-related diagnostics, emission order and severity/error accumulation (DIAG-01/DIAG-03); owner-accepted for validated Linux developer scope, new Windows native/CI evidence pending/non-blocking.
 
-**Wave 4 *(blocked on Wave 3 completion)* — plain output and integration**
+**Wave 4 *(Wave 3 Linux-scope prerequisite complete; owner start command required)* — plain output and integration**
 
 - [ ] 02-04-PLAN.md — Checked bounded renderer, byte-safe presentation and independent Tier 1 integration evidence behind separate publication/closeout gates (DIAG-02).
 
-**Cross-cutting constraints:** Preserve D-01–D-16, exact immutable bytes, checked infrastructure errors and manager-local identities. Source → diagnostics → renderer dependencies only; no LLVM/driver coupling. Reuse the accepted C++23/GoogleTest foundation and unchanged Conan/package/toolchain/CI policy. No new final syntax/encoding, filesystem/VFS, generic result/reporting framework or package subsystem. Plans 02-01/02-02 implement the reviewed source/span/location APIs; diagnostic/renderer work remains unstarted. Linux developer Debug/Release snapshot/span/location checks passed; hosted Tier 1 Phase 2 evidence remains pending. Windows developer-host inspection stays independently pending/non-blocking, and macOS remains deferred. Execution, publication, commits and phase movement require separate explicit owner commands.
+**Cross-cutting constraints:** Preserve D-01–D-16, exact immutable bytes, checked infrastructure errors and manager-local identities. Source → diagnostics → renderer dependencies only; no LLVM/driver coupling. Reuse the accepted C++23/GoogleTest foundation and unchanged Conan/package/toolchain/CI policy. No new final syntax/encoding, filesystem/VFS, generic result/reporting framework or package subsystem. Plans 02-01/02-02 implement source/span/location APIs; 02-03 adds owner-accepted owned diagnostics with Linux checks passed. Rendering remains unstarted. Earlier source plans have four-job Tier 1 CI evidence; new diagnostic hosted evidence remains pending. Windows developer-host inspection stays independently pending/non-blocking, and macOS remains deferred. Execution, publication, commits and phase movement require separate explicit owner commands.
 
-**Research/design gate:** All sixteen discussion contracts and committed research are authoritative; no settled decision was reopened. The planning packet was reviewed/committed before the owner's explicit execution command. Owner approved Plan 02-01 Linux-scope closeout/publication and explicitly started 02-02 with a renewed execution command. Owner separately approved 02-02 Linux-scope closeout and one dedicated checkpoint commit/push. Stop before 02-03 until explicitly commanded; no manual CI dispatch/retry or next-phase movement is authorized. No general virtual filesystem, final encoding or Phase 3 syntax work.
+**Research/design gate:** All sixteen discussion contracts and committed research are authoritative; no settled decision was reopened. The planning packet was reviewed/committed before the owner's explicit execution command. Owner approved Plan 02-01 Linux-scope closeout/publication and explicitly started 02-02 with a renewed execution command. Owner separately approved 02-02 Linux-scope closeout and one dedicated checkpoint commit/push. Owner accepted 02-02 following four-job evidence and authorized Wave 3/02-03 only. Owner subsequently accepted 02-03 for Linux developer scope and authorized documentation-only closeout. Stop before commit/publication and Wave 4 pending explicit approval; no manual CI action or next-phase movement is authorized. No general virtual filesystem, final encoding or Phase 3 syntax work.
 
 Platform impact:
 - Windows: Preserve useful Windows path spelling and handle CRLF/location display without console encoding assumptions.
@@ -309,7 +309,7 @@ After M1 acceptance and its reviewed verification commit, the owner may start a 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Conan and Compiler Build Foundation | 8/8 | Complete; final four-job native/offline CI acceptance run 37826767824; closeout committed; Windows developer host independently pending; macOS deferred | 2026-10-08 |
-| 2. Source Identity, Spans, and Diagnostics | 2/4 | 02-01/02-02 complete for validated Linux developer scope; Windows Phase 2/native evidence pending/non-blocking; 02-03 unstarted | — |
+| 2. Source Identity, Spans, and Diagnostics | 3/4 | 02-01/02-02 owner-closed with four-job CI evidence; 02-03 owner-accepted for Linux scope; new diagnostic Windows evidence pending/non-blocking; 02-04 unstarted | — |
 | 3. M1 Experimental Smoke Profile, Tokens, and Lexer | 0/TBD | Not started | — |
 | 4. Smoke Profile Parser | 0/TBD | Not started | — |
 | 5. Minimal AST and Semantic Smoke | 0/TBD | Not started | — |
@@ -321,4 +321,4 @@ After M1 acceptance and its reviewed verification commit, the owner may start a 
 **Coverage:** 49 active requirements mapped to exactly one phase; 0 unmapped; BUILD-01 through BUILD-14 accepted from preserved execution and final four-job foundation evidence; 35 later-phase requirements pending. Windows developer-host evidence remains an independent deferred inspection, not credited from CI.
 
 ---
-*Last updated: 2026-10-09; owner-approved Plan 02-02 Linux-scope closeout (Phase 2 2/4); Phase 1 remains closed at 8/8. Seven Phase 2 requirements await phase-wide acceptance; local SRC-01/SRC-02/SRC-03 evidence is recorded in 02-01-SUMMARY.md, and SRC-04 with regressions in 02-02-SUMMARY.md. Closeout adds no implementation/native/package work. Dedicated checkpoint commit/push explicitly authorized; no manual CI action or next-plan/phase transition.*
+*Last updated: 2026-10-15; owner-approved Plan 02-03 Linux-scope documentation closeout. Phase 2 is 3/4, Phase 1 closed at 8/8. Seven Phase 2 requirements await phase-wide acceptance; DIAG-01/DIAG-03 local coverage and non-blocking severity initialization concern are recorded in 02-03-SUMMARY.md. Rendering remains outside 02-03. No code changes, validation reruns, commit/publication, CI action or Wave 4 work.*
