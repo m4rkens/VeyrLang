@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: M1
 milestone_name: Compiler Walking Skeleton
-current_phase: 2
-current_phase_name: Source Identity, Spans, and Diagnostics
-status: complete
-stopped_at: Owner accepted Phase 2 from run 38722486719; 4/4 plans and seven requirements complete. Documentation-only closeout awaits owner review/publication; Phase 3 unstarted.
-last_updated: "2026-10-15T12:49:15Z"
+current_phase: 3
+current_phase_name: M1 Experimental Smoke Profile, Tokens, and Lexer
+status: discussing
+stopped_at: Phase 3 context gathered; fourteen decisions captured. Owner review and dedicated discussion commit pending; research, planning and execution unstarted.
+last_updated: "2026-10-15T13:51:33.410Z"
 last_activity: 2026-10-15
-last_activity_desc: Performed owner-authorized canonical inline Phase 2 goal verification and PROJECT.md reconciliation; verification.status passed, 20/20 deduplicated truths and seven requirements verified. Seven-file closeout packet awaits owner publication approval; no native reruns or Phase 3 work.
+last_activity_desc: Captured all four Phase 3 discussion areas and fourteen explicit decisions, including Invalid-token recovery; created context and audit log. No research, plans, implementation, builds/tests, dependency operations or CI actions.
 progress:
   total_phases: 10
   completed_phases: 2
   total_plans: 12
   completed_plans: 12
-  percent: 100
+  percent: 20
 ---
 
 # Project State
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-15 after Phase 2 lifecycle reconciliation)
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
-**Current focus:** Owner review/publication of the documentation-only Phase 2 closeout. Plan 02-04 is complete, Phase 2 is accepted at 4/4, and all seven requirements are accepted from final four-job evidence. Phase 1 remains closed at 8/8. Phase 3 has not started and needs a separate owner command.
+**Current focus:** Owner review and dedicated commit of the Phase 3 discussion: fourteen decisions captured in 03-CONTEXT.md and 03-DISCUSSION-LOG.md. Research, plans and execution have not started. Phase 1 remains 8/8 and Phase 2 4/4. Earlier Phase 2 closeout prose below is the accepted historical pre-publication snapshot; that closeout was published in fc208b4b200076fc210c75535cbe9e30f64d3c26.
 
 ## Current Position
 
-Phase: 2 of 10 (Source Identity, Spans, and Diagnostics)
-Plan: 02-04 Tasks 1–3 complete; all four approved sequential waves complete
-Status: Phase 2 complete and owner-accepted; 4/4 plans, 7/7 requirements. Closeout documentation is uncommitted and awaits owner review/publication. Phase 3 unstarted.
-Last activity: 2026-10-15 — Owner accepted final run 38722486719 at ab596c7c721fd673b1716db6a1f6f5681a7ff126; all four Ubuntu/Windows Debug/Release jobs passed renderer 27/27, full CTest 96/96, ten-entry C++23 verification, include-policy, prepared/native and controlled empty-cache acceptance. Documentation only; no validation reruns.
+Phase: 3 of 10 (M1 Experimental Smoke Profile, Tokens, and Lexer)
+Plan: None — Phase 3 discussion captured; no Phase 3 plans or execution started
+Status: Discussing Phase 3 — fourteen decisions captured; owner review and dedicated discussion commit pending. No Phase 3 research, plans or execution started.
+Last activity: 2026-10-15 — Captured all four Phase 3 discussion areas and fourteen explicit decisions, including Invalid-token recovery; created context and audit log. No research, plans, implementation, builds/tests, dependency operations or CI actions.
 
 Phase 2 progress: [██████████] 4/4 execution plans accepted
 
@@ -138,15 +138,15 @@ Future probes are tracked in REQUIREMENTS.md v2 and canonical milestone strategy
 
 ## Session Continuity
 
-Last session: 2026-10-15T12:49:15Z
-Stopped at: Owner-authorized Phase 2 final closeout prepared; 4/4 plans and 7/7 requirements accepted; planning-only publication awaits owner review. Phase 3 unstarted.
-Resume file: .planning/phases/02-source-identity-spans-and-diagnostics/02-04-EXECUTION.md
+Last session: 2026-10-15T13:51:33.402Z
+Stopped at: Phase 3 context gathered; fourteen decisions captured. Owner review and dedicated discussion commit pending; research, planning and execution unstarted.
+Resume file: .planning/phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-CONTEXT.md
 Completed summaries: 01-01 through 01-08 and 02-01 through 02-04; Phase 1 closed at 8/8, Phase 2 at 4/4. Windows developer-host inspection independently pending/non-blocking.
-Last completed step: Executed installed GSD 1.6.1 verify_phase_goal inline: actual artifacts/wiring, four roadmap criteria plus all twenty plan truths deduplicated to 20/20 verified, seven requirements, anti-pattern and actual named native-log checks; canonical verification.status returned passed. Reconciled PROJECT.md under explicit owner authorization. No native validation reruns.
-Next owner gate: Review and explicitly authorize the exact seven-file planning closeout commit/publication. Do not stage, commit, push, alter CI or start Phase 3 automatically.
-Current outputs: STATE, ROADMAP, REQUIREMENTS, PROJECT, updated 02-04-EXECUTION.md and new 02-04-SUMMARY.md / 02-VERIFICATION.md (seven files). Retained code/evidence unchanged.
+Last completed step: Phase 3 discussion captured: signed 32-bit result restricted to 0–255; fn main() -> int32 with a mandatory return semicolon; exact ASCII boundaries; Invalid tokens and Error diagnostics with grouped recovery. Context and discussion log prepared for owner review.
+Next owner gate: Review Phase 3 context/discussion log and explicitly authorize their dedicated discussion commit. Do not start research, planning, execution or the profile artifact commit automatically.
+Current outputs: .planning/STATE.md and new .planning/phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-CONTEXT.md / 03-DISCUSSION-LOG.md (three discussion files). No profile, research or plan file exists; accepted implementation/evidence remain unchanged.
 Preserved artifacts: All accepted implementation/tests/CMake/scripts/workflows/recipes/profiles/baselines/dependency versions/four locks; completed discussion/research/plans, earlier execution/summaries and historical planning validation strategy; ignored IDE binding and 36-entry evidence packet.
-Sub-agents: None; canonical verifier work performed inline under the installed adapter and explicit-request policy. This is actual goal-backward verification with authorized reuse of observed native evidence, not an independent agent review or a new runtime test execution.
+Sub-agents: None; Phase 3 discussion and codebase scouting performed inline. No research or execution agent was started.
 Execution checkpoints: 01-01 941c70da327b2977cf35b59938795599aaa4b4e4; 01-02 3f0636bda87da69a8526b0c57bf9844b8448c831; 01-03 9531def3e372d0bbb27aaf2d96e88fdca26b3f3c; 01-04 71c254d10cc495231453e2847a608128d06d2762; 01-05 d34a793575e140680804b45058b68c6436cb0c0e; 01-06 f476fa8d5f5e5e20d61adb8abdc196d7bfe5a267; 01-07 ddec666b43546d8820d7eacd28e6ce4ef2b068ed plus eef4780faa9063a50ae5ede89fc40f55408279bb; 01-08 published implementation through 2741d6514f5e695d36c20cb792bff4985ac5d754, planning closeout committed/pushed in 1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f.
 
 Platform impact:
