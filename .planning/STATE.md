@@ -4,16 +4,16 @@ milestone: M1
 milestone_name: Compiler Walking Skeleton
 current_phase: 3
 current_phase_name: M1 Experimental Smoke Profile, Tokens, and Lexer
-status: planning
-stopped_at: Owner-authorized remote-publication gate reconciliation verified by independent checker cycle 3; awaiting planning review/publication approval. Execution remains 0/3.
-last_updated: "2026-10-17T10:37:52Z"
+status: executing
+stopped_at: Plan 03-01 owner-accepted and complete; five-file closeout publication pending; Wave 2 unauthorized.
+last_updated: "2026-10-17T13:41:07Z"
 last_activity: 2026-10-17
-last_activity_desc: Completed bounded owner-requested publication-gate correction; independent checker cycle 3 passed with zero blockers/warnings. Canonical coverage remains 6/6 requirements, 14/14 decisions and 20/20 post-planning gap items. Execution remains 0/3.
+last_activity_desc: Completed canonical Plan 03-01 bookkeeping and LEX-01 ledger update within the owner-authorized five-file scope; no later-wave execution or publication.
 progress:
   total_phases: 10
   completed_phases: 2
   total_plans: 15
-  completed_plans: 12
+  completed_plans: 13
   percent: 20
 ---
 
@@ -21,179 +21,84 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-10-15 after Phase 2 lifecycle reconciliation)
+See: .planning/PROJECT.md (accepted Phase 1/2 capabilities and remaining M1 work).
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
-**Current focus:** Bounded owner-authorized correction of the explicit remote-publication prerequisite between 03-01 and 03-02 is verified. Independent checker cycle 3 passed with zero blockers/warnings; canonical decision/post-planning checks passed again at 14/14 and 20/20. Three sequential waves, six requirements and fourteen decisions remain unchanged. Planning is uncommitted; execution 0/3. Accepted discussion was published in fe6ed549c2fdade0efd2b46738e83ae9ea7fe0d6. Phase 1 remains 8/8 and Phase 2 4/4. Earlier Phase 2 closeout prose below is the historical pre-publication snapshot, published in fc208b4b200076fc210c75535cbe9e30f64d3c26.
+**Current focus:** Plan 03-01 is owner-accepted and complete. The experimental M1 profile was separately committed and published as 52f598aaf031e549ed3bbe5c598bc43f5f7be6bb with actual remote proof. Its five-file closeout packet awaits separate commit/publication approval. Plans 03-02 and 03-03 remain unstarted; no Wave 2 execution authorization exists.
 
 ## Current Position
 
 Phase: 3 of 10 (M1 Experimental Smoke Profile, Tokens, and Lexer)
-Plan: 03-01 through 03-03 written; three sequential waves, execution 0/3
+Plan: 2 of 3 (administrative next-plan pointer only; 03-02 unstarted and unauthorized)
 Total Plans in Phase: 3
-Status: Planning gate reconciliation verified — owner review/publication approval pending; execution unstarted and no publication authorized.
-Last activity: 2026-10-17 — Completed the owner-requested publication-gate correction, independent checker cycle 3 and canonical coverage/gap rechecks with no blockers/warnings. Documentation/static checks only; no implementation, build/test/dependency command, planning commit, push or CI action.
+Status: Plan 03-01 complete; waiting for owner approval of closeout publication. No later-wave authorization.
+Last activity: 2026-10-17 — Ran canonical GSD bookkeeping, including requirements.mark-complete LEX-01; reconciled summary, execution, roadmap and requirements totals. No native/dependency operations, staging, commit, push or CI action.
 
-Phase 3 progress: [----------] 0/3 execution plans complete; planning verification passed, not native acceptance.
+Phase 3 progress: [███-------] 1/3 complete; phase remains in progress.
+Phase 2 progress: [██████████] 4/4 complete and owner-accepted.
+Phase 1 progress: [██████████] 8/8 complete and owner-accepted.
 
-Phase 2 progress: [██████████] 4/4 execution plans accepted
-
-Phase 1 remains 8/8 complete; 2/10 phases are accepted. Twelve of fifteen written
-plans are complete: Phase 1 eight, Phase 2 four, Phase 3 zero of three.
-The milestone has not been completed; later requirements remain pending.
+Thirteen of fifteen written execution plans are complete: eight in Phase 1,
+four in Phase 2 and one in Phase 3. Two of ten phases are complete (20%);
+plan counts are not whole-milestone acceptance. Global requirements: 22 accepted,
+27 pending. Only LEX-01 is accepted in Phase 3; LEX-02–06 remain pending.
 
 ## Performance Metrics
 
-Earlier-plan metrics retain their original checkpoint scope; Plan 01-08 supplies
-the subsequent hosted CI acceptance for those historical platform deferrals.
+| Phase / Plan | Duration | Tasks | Files |
+|--------------|----------|-------|-------|
+| Phase 03 P01 | not measured; owner-gated documentation | 2 tasks | 2 files |
 
-- Total plans completed: 12; Phase 1 eight plans and Phase 2 four plans complete. Historical Linux-scope closeouts remain intact; final Phase 2 run 38722486719 supplies independent hosted evidence for the entire source/diagnostic slice.
-- Execution: Plan 01-01 Tasks 1–3, owner baseline selection, real CLI prerequisite and corrected Linux doctor acceptance complete
-- Plan 01-02 Tasks 1–2: Source/build/package and separate Linux Debug/Release configure/compile-link/native-run evidence accepted; owner-authorized summary/closeout recorded, independent Windows/CI gaps retained
-- Plan 01-03 Tasks 1–2: Real Linux Debug/Release locks, four external subset graphs, 60 mocked checks and separate native setup/probe/preparation checks passed; owner reviewed and explicitly authorized the dedicated checkpoint commit, two Windows lock outputs deferred
-- Plan 01-04 Tasks 1–2: Target-oriented C++23/Ninja foundation, exact LLVM runtime/provider policy, compile databases and native GoogleTest/GoogleMock/LLVM/CLI tests complete for available Linux scope; CTest 11/11 Debug and Release, owner-authorized closeout recorded
-- Plan 01-05 Tasks 1–2: Read-only canonical include checker and 20 temporary-tree fixtures, direct checker and independent Linux Debug/Release target/CTest routes passed; include-policy 1/1 each, normal closeout recorded
-- Plan 01-06 Tasks 1–2: Complete thin commands, invocation-local reuse, cache-only stale regeneration and liveness/scoped-clean fixtures; 30 new/60 regression tests passed, independent Debug/Release entry points/all passed with CTest 12/12 and four C++23 entries each. Explicit Debug clean preserved Release/tool/cache metadata; normal available-Linux closeout recorded
-- Plan 01-07 Tasks 1–2: Native acceptance harness/Support ownership extension, strict offline matcher and approved runner final-exit correction complete; foundation 16/16 and selected runner 6/6, provider CTest 13/13 each and runtime 5/5 in both configurations, warm/cache/clean accepted, separate Debug/Release offline recoveries passed. Four-row acceptance ledger and normal available-Linux closeout recorded without new commands
-- Plan 01-08 Tasks 1–3: Reviewed CI toolchains, Windows locks, shared commands and portable snapshot transfer validated; final run 37826767824 passes all four rows with CTest 35/35, verify, prepared native and controlled empty-cache acceptance.
-- Phase plans: Phase 1 eight sequential waves remain complete; Phase 2 four sequential waves are now complete and owner-accepted. 02-04 implementation was published in ab596c7c721fd673b1716db6a1f6f5681a7ff126; final four-job CI run 38722486719 passed. 02-04-SUMMARY.md and the required 02-VERIFICATION.md record final evidence/acceptance; closeout publication remains separately gated.
-- Active requirements: 49 mapped once; 21 accepted (BUILD-01 through BUILD-14, SRC-01 through SRC-04 and DIAG-01 through DIAG-03), 28 later-phase requirements pending. No later requirement definition/mapping/status was changed; acceptance does not claim Windows developer-host inspection or general ABI coverage beyond tested contracts.
+The two files above are the dedicated profile/checkpoint commit scope; this
+separately authorized closeout packet has five planning files. Active elapsed
+duration was not measured; no native timing or new validation count is claimed.
+Earlier plan metrics and retained evidence remain in their execution/summaries.
 
 ## Accumulated Context
 
 ### Decisions
 
-- Canonical docs only; no prior planning/implementation/evidence imported.
-- Conan 2 owns package mechanics; thin Python → Conan → CMake → Ninja → Clang.
-- LLVM backend target 23.1.2; narrow Plan 01-02 recipe and Linux Debug/Release native Support evidence complete. Independent Ubuntu/Windows CI acceptance is now complete; broader ABI surfaces remain outside this evidence.
-- Windows/Linux x86_64 Tier 1; macOS implementation deferred.
-- Owner-approved Linux developer baseline is observed Omarchy/Arch x86_64. Ubuntu CI, Windows developer and Windows CI identities remain separate; Windows candidates unchanged.
-- Plan 01-01 Task 3 owns project-local Conan CLI bootstrap; Plan 01-03 owns Conan dependency/package setup. Normal clean in Plan 01-06 preserves both tool environment and dedicated package cache.
-- Doctor reads isolated venv distribution metadata without launching Conan or touching its home. Explicit setup validates the absolute Conan CLI and may initialize home metadata.
-- Initial observations from run 37356855017 remain preserved. Owner approved run 37643695998 candidate policy: Ubuntu Clang 18 with explicit GCC-13, Windows absolute standalone Clang 20.1.8 after DevShell. Omarchy Clang 22 and Windows developer evidence remain separate. Git version/path are utility observations, not ABI/package pins.
-- Owner explicitly approved Plan 01-03 Linux Debug/Release execution with both Windows lock outputs deferred at that checkpoint; both were subsequently generated graph-only, reviewed and imported in b666a6159f8480e5bb31dd783c2d6f3fb6fba48d. Existing managed native locks work for system/custom graph subsets. Explicit --init-lock initializes only missing locks; ordinary setup preserves locks unchanged.
-- Phase 3 reviewed smoke profile precedes syntax-dependent implementation/tests.
-- Phase 2 discussion decisions are captured in `.planning/phases/02-source-identity-spans-and-diagnostics/02-CONTEXT.md`: owned immutable snapshots, manager-local fresh IDs, checked half-open byte spans, exact display names/byte locations, and ordered structured plain-text diagnostics. These remain settled contracts. Discussion was committed in 910be08de5cacfa4f585e5e548698644760dc6fd, research in 1fe774595b6efda2295d4b1108c746bcac3c5e99; planning preserves both unchanged. Concrete C++ API and bounded renderer details are explicit planning proposals for owner review.
+- Canonical docs and owner decisions govern; no automatic stage commits or phase hopping.
+- Conan 2 owns package mechanics; thin Python → Conan → CMake → Ninja → Clang. Conan 2.33.0 and LLVM 23.1.2 remain fixed.
+- Phase 2 immutable snapshots, manager-local fresh IDs, checked byte spans/locations and ordered owned diagnostics are settled. Renderer remains separate from LLVM, terminals and filesystem lookup.
+- Omarchy/Arch developer, Ubuntu CI, Windows CI and Windows developer identities remain separate. Git observations are not ABI/package pins.
+- Phase 3 planning was published in 3dd1df75dc6f5e64befdd5a8af6c2863b8d0b307 after three checker cycles; all 14 decisions and 20/20 requirements/decision gaps were covered. Three sequential waves remain unchanged.
+- [Phase 03]: Preserve all fourteen discussion decisions and experimental non-final M1 scope. — The accepted profile defines only the walking-skeleton boundary, not final syntax, type semantics or ABI.
+- [Phase 03]: Exclude opener bytes from block terminators and require empty lexical Error related spans. — The owner accepted the bounded clarification before the dedicated profile commit.
+- [Phase 03]: Actual remote publication is evidence; a local commit or stale tracking ref is insufficient. — Wave 2 must separately verify current remote containment and receive fresh owner execution authorization.
 
-### Closeout and remaining owner gate
+### Accepted evidence and limits
 
-The owner accepted Plan 02-04 and Phase 2 after read-only inspection of final
-Build foundation run 38722486719 at ab596c7c721fd673b1716db6a1f6f5681a7ff126.
-All four Ubuntu/Windows Debug/Release jobs completed successfully. Actual logs
-show SourceManager 12/12, SourceLocation 8/8, Diagnostic 14/14 and renderer 27/27;
-each normal test, verify and prepared acceptance run passed full CTest 96/96.
-Each job verified ten selected compiler/directory/C++23 entries and include-policy,
-then correctly recognized the isolated empty-cache rejection without acquisition
-or retry. Earlier runs 37908907406 and 38705163273 remain historical source and
-structured-diagnostic publication evidence; the final run includes the renderer.
-
-Owner authorization covers documentation-only finalization of Task 3, the
-02-04 summary, the required phase verification report and tracking state.
-All seven Phase 2 requirements are now accepted. Phase 2 is complete at 4/4;
-Phase 1 remains closed at 8/8. No additional builds/tests, dependency operations,
-implementation/test fixes, CI mutation or accepted-evidence changes occurred.
-
-Closeout is uncommitted. The next gate is explicit owner approval to publish
-exactly the seven planning files after review. Do not start Phase 3 discussion,
-research, planning or implementation from this acceptance. The existing M1
-Experimental Smoke Profile prerequisite remains unchanged; no new Phase 3
-requirements, syntax or semantics are inferred.
+- Phase 1: 8/8; final four-job [run 37826767824](https://github.com/m4rkens/VeyrLang/actions/runs/37826767824), commit 2741d6514f5e695d36c20cb792bff4985ac5d754. All rows passed native/prepared and controlled empty-cache acceptance; CTest 35/35, four compiler/C++23 entries. See 01-08-EXECUTION.md and 01-08-SUMMARY.md for cache/cold-source-build scope and Windows corrections. Closeout published in 1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f.
+- Phase 2: 4/4 and all seven requirements accepted; final four-job [run 38722486719](https://github.com/m4rkens/VeyrLang/actions/runs/38722486719), commit ab596c7c721fd673b1716db6a1f6f5681a7ff126. Each passed SourceManager 12/12, SourceLocation 8/8, Diagnostic 14/14, renderer 27/27, full CTest 96/96, ten compiler/C++23 entries, include-policy and prepared/controlled-empty-cache acceptance. See 02-04-EXECUTION.md, 02-04-SUMMARY.md and 02-VERIFICATION.md; canonical goal verification passed 20/20 truths, 22/22 artifacts, 12/12 manual integration links, 7/7 requirements. Closeout published in fc208b4b200076fc210c75535cbe9e30f64d3c26.
+- Earlier source/location and structured-diagnostic CI runs 37908907406 and 38705163273 remain historical; final Phase 2 evidence covers the entire slice. No skipped step or cache hit is acceptance proof.
+- Plan 03-01: documentation-only acceptance. Profile is 21,726 bytes, SHA-256 1b5cefb5fa40a4a940ce1c0f4a4d7b8049ce591b81b79ecaf2251e5dfb107864. Accepted results: 14/14 decisions, 35/35 recovery rows, 5/5 delimiter cases, 12/12 sample spans, 5/5 location groups and 2/2 artifact-presence checks. No native lexer tests exist yet.
+- Dedicated profile SHA 52f598aaf031e549ed3bbe5c598bc43f5f7be6bb was separately approved for commit and publication. Actual post-push origin refs/heads/main equaled that SHA at 2026-10-17 13:20:11 UTC; saved receipt supplies actual remote proof, not stale tracking-ref inference.
+- Automatic run 39036114634 was observed queued during publication. Current CI status was not queried for this documentation-only closeout; no new success is asserted.
+- The 36-entry accepted Phase 2 evidence packet, four tracked Conan locks, profile bytes and existing ignored IDE binding remain unchanged. Earlier generated records and known resource-measurement limits remain documented in the accepted execution records.
 
 ### Non-blocking follow-up candidates
 
-- Enforce explicit initialization of Diagnostic::severity before construction
-  becomes widespread. Current callers must initialize before reading; no arbitrary
-  default, constructor change or new initialization policy is introduced here.
-- Add combined left-clipping, mixed-escape and empty-span regression coverage.
+- Enforce explicit Diagnostic::severity initialization before widespread construction; current callers initialize before reading. No arbitrary default is introduced.
+- Add combined left-clipping, mixed-escape and empty-span renderer coverage.
 - Consider documenting/testing unsupported initialized severity values.
 
-These were accepted as non-blocking; no improvement is implemented during closeout.
-Allocation-failure behavior was reviewed structurally without fault injection.
-Earlier 02-01/02-02 generated evidence was replaceable; twelve dedicated 02-03
-logs remain valid while five old generated-build hash references are superseded.
-The current 02-04 retained packet has 36 valid hashes and copied generated
-records, and final CI independently covers the entire accepted phase.
-
-Windows hosted CI is validated for both configurations. Windows developer-host
-inspection remains independently pending/non-blocking; macOS remains deferred.
-Omarchy developer and Ubuntu CI toolchains remain separate reviewed baselines.
-
-### Evidence and remaining scope limits
-
-- Final Phase 2 acceptance: [run 38722486719](https://github.com/m4rkens/VeyrLang/actions/runs/38722486719), tested commit ab596c7c721fd673b1716db6a1f6f5681a7ff126; four successful native jobs. Ubuntu doctor 22/22 and Windows doctor 20/20; each passes configure/build, renderer 27/27, full CTest 96/96, ten-entry C++23 verification, include-policy, prepared/native and controlled empty-cache rejection. Exact job IDs/results are recorded in 02-04-EXECUTION.md, 02-04-SUMMARY.md and 02-VERIFICATION.md. Windows Release archive import was skipped; its explicit setup and native gates passed. No cache hit or skipped import is counted as validation, and no new package-reuse/cold-capacity claim is made.
-- SourceManager owns stable immutable snapshots, preserves exact names/bytes and manager-local identity; all span/location failures remain checked. Diagnostic values own their data; engine views invalidate on emit, and renderer output is independently owned. Rendering validates references primary-first, preserves Error state and bounds excerpts/markers without LLVM/terminal/filesystem dependencies. The integrated architecture review found no blocker.
-
-- Final Phase 1 acceptance: [run 37826767824](https://github.com/m4rkens/VeyrLang/actions/runs/37826767824), commit 2741d6514f5e695d36c20cb792bff4985ac5d754; all four jobs successful. Ubuntu doctor 22/22 each; Windows doctor 20/20 each. Each row passed configure/build, CTest 35/35, four-entry C++23 compilation-database verification, prepared native 35/35 and acquisition-disabled empty-cache rejection.
-- Cache: all four restored/imported portable archives, reused LLVM/GoogleTest, passed integrity/export and saved snapshots before project validation. Release imported the same-run Debug snapshot on each platform; Conan retains distinct package IDs/runtime variants. No LLVM/GoogleTest package rebuild in this final run.
-- Windows Release normal and prepared ABI probes use Release flags /O2 /Ob2 /DNDEBUG and -MD, with MultiThreadedDLL and exit 0; Windows Debug uses -MDd/MultiThreadedDebugDLL. Strict CRT/iterator guards remain unchanged.
-- Windows corrections are recorded in 01-08-EXECUTION.md/01-08-SUMMARY.md: reviewed DevShell reuse, linker serialization, exact CRT expression handling, fixture CMake policy, native compiler alias/C++23 verification, CRLF matching with raw preservation and function-local try-compile configuration.
-- Earlier source-build capacity: run 37670754053 built Linux LLVM/GoogleTest with successful setup (~51m42s Debug / ~40m29s Release); run 37786566284 built the required Windows LLVM/GoogleTest runtime variants successfully (LLVM build/package windows ~29m12s Debug-runtime / ~24m02s Release-runtime). These fit hosted six-hour limits; this final run is warm evidence, not a new cold run.
-- Peak RAM/disk/CPU utilization was not measured; manual cold_build=true dispatch has not been claimed executed. Successful actual missing-package source builds establish observed hosted capacity, not a resource bound or future runner-image guarantee.
-- Linux developer baseline remains the observed Omarchy/Arch host with prior read-only doctor 22/22 and native acceptance. Ubuntu CI is separate Clang 18/GCC-13; Windows CI is separate standalone Clang 20.1.8 plus reviewed VC/CRT/SDK/linker. Windows developer-host evidence remains pending.
-- Conan stays 2.33.0, LLVM stays 23.1.2; all four tracked locks are byte-identical to HEAD and to final-run input hashes. Recipes/profiles/baselines/workflow/implementation were not edited by closeout.
-- Non-blocking warnings retained: action-runtime Node deprecations and existing Linux generated-toolchain quotation warnings. No CMP0012 fixture regression, VCVars activation defect, CMAKE_LINKER escape error, compilation-database rejection or unexpected offline failure remains.
-- Raw acceptance JSON retains generic "windows_and_ci: independently pending" and "phase_verification: not performed" labels from the harness. This owner-authorized inspection records actual per-gate results and job URLs; no generated artifact is edited, and no separate automatic GSD verification command is claimed.
-- Discussion, all eight PLAN files and completed earlier summaries remain unchanged. Phase 3 provisional spelling/semantic range still requires its own owner-reviewed smoke profile.
-
-## Deferred Items
-
-Future probes are tracked in REQUIREMENTS.md v2 and canonical milestone strategy. Full language/project/package features, macOS implementation and constrained targets remain outside M1. No previous milestone state imported.
+No improvement is implemented during closeout. General ABI, final language
+syntax/types/encoding and broader project/package semantics remain unaccepted.
 
 ## Session Continuity
 
-Last session: 2026-10-17
-Stopped at: Phase 3 planning and plan verification complete; owner review/publication gate, with execution 0/3.
-Resume file: .planning/phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-PLAN-REVIEW.md
-Completed summaries: 01-01 through 01-08 and 02-01 through 02-04; Phase 1 closed at 8/8, Phase 2 at 4/4. Windows developer-host inspection independently pending/non-blocking.
-Last completed step: Initial planning revision 1 and checker cycle 2 remain historical. Owner-requested publication-gate correction 1 is complete; fresh independent checker cycle 3 passed with zero blockers/warnings. Canonical decision coverage was rerun at 14/14 and post-planning gap analysis at 20/20; requirement ownership remains 6/6.
-Next owner gate: Review the independently verified corrected ten-file packet and explicitly authorize its planning commit/publication. Then separately authorize only documentation-first Wave 1. Profile acceptance/dedicated commit, separately approved live-verified publication and fresh Wave 2 authorization remain future prerequisites; no automatic actions.
-Current outputs: Ten planning files: STATE.md, ROADMAP.md, Phase 3 three PLANs, RESEARCH, PATTERNS, VALIDATION, PLANNING-BREAKDOWN and PLAN-REVIEW. No filled profile, implementation or execution summary created; no requirements accepted by planning.
-Preserved artifacts: All accepted implementation/tests/CMake/scripts/workflows/recipes/profiles/baselines/dependency versions/four locks; completed discussion/research/plans, earlier execution/summaries and historical planning validation strategy; ignored IDE binding and 36-entry evidence packet.
-Sub-agents: Canonical researcher, pattern mapper and planner completed. Independent checker cycle 1 found one blocker/one warning; resumed revision 1 resolved both; fresh checker cycle 2 passed. Independent publication-gate checker cycle 3 passed after owner correction 1. No executor ran. A server interruption before revision edits was inspected and resumed without repeating completed research or checks.
-Execution checkpoints: 01-01 941c70da327b2977cf35b59938795599aaa4b4e4; 01-02 3f0636bda87da69a8526b0c57bf9844b8448c831; 01-03 9531def3e372d0bbb27aaf2d96e88fdca26b3f3c; 01-04 71c254d10cc495231453e2847a608128d06d2762; 01-05 d34a793575e140680804b45058b68c6436cb0c0e; 01-06 f476fa8d5f5e5e20d61adb8abdc196d7bfe5a267; 01-07 ddec666b43546d8820d7eacd28e6ce4ef2b068ed plus eef4780faa9063a50ae5ede89fc40f55408279bb; 01-08 published implementation through 2741d6514f5e695d36c20cb792bff4985ac5d754, planning closeout committed/pushed in 1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f.
-
-### Phase 3 planning completion and remaining owner gates
-
-Installed GSD 1.6.1 planner `/home/m4rkens/.codex/agents/gsd-planner.toml`,
-step `confirm_breakdown` (lines 827–829), requires: "Present breakdown with wave
-structure. Wait for confirmation in interactive mode. Auto-approve in yolo mode."
-Current project mode is interactive. The owner explicitly confirmed the exact
-three-plan, three-wave breakdown and authorized plan creation/checker revisions.
-That checkpoint is completed; do not ask for it again or restart research.
-
-| Planned slice | Wave | Dependency | Scope |
-|---|---|---|---|
-| 03-01 | 1 | Accepted Phase 2 | Documentation-only M1 profile; owner review, explicit dedicated commit approval/verification, separate publication approval/push and live remote containment/content plus ancestry if advanced; stop for fresh Wave 2 authorization |
-| 03-02 | 2 | 03-01 plus exact accepted profile/dedicated SHA, approved successful publication and fresh actual remote containment/ancestry/content evidence and Wave 2 authorization | Unchanged kind/span Token, checked complete lexer, Invalid/Error recovery, existing diagnostics/CMake and focused tests; fail closed if any entry proof is unverifiable |
-| 03-03 | 3 | 03-02 | Expanded hostile-byte/mixed-recovery/lifetime/renderer integration tests; independent Debug/Release validation and retained evidence; owner publication/CI/final acceptance gates |
-
-These are verified plans awaiting owner review, not execution authorization.
-LEX-01 is owned by 03-01; LEX-02–06 by 03-02 with expanded evidence in 03-03.
-All fourteen decisions and five roadmap criteria have concrete task ownership;
-VALIDATION maps all six tasks and `nyquist_compliant: true` denotes planned
-feedback coverage, not passing native tests. PLAN-REVIEW preserves all three checker
-cycles: the initial two findings were resolved in planner revision 1, and the
-owner-requested remote-publication blocker was resolved by gate correction 1
-and independently verified in cycle 3. No functional scope was changed.
-
-Canonical `state.planned-phase` and `roadmap.annotate-dependencies` were executed
-after the checker passed. The state helper normalized ready-to-execute to an
-executing label and inferred the wrong milestone name; this planning-only record
-corrects those metadata fields explicitly. Exact plan enumeration supplies
-15 total/12 completed plans, two accepted phases, and 20% milestone progress.
-The roadmap annotator returned updated=false because the original phase section
-had no concrete plan list; its three waves are recorded explicitly in ROADMAP.
-No completion/execute/next-phase helper or automatic commit was invoked.
-
-Research proposes whole-run rejection for `+12` and `1..2`, preservation of
-numeric/comment boundaries, and comment grouping owning non-ASCII contents.
-These refinements require future profile owner review, its dedicated commit and
-separately approved verified remote publication before dependent code/tests.
-No parser/AST/semantic/backend/driver, new dependency or final Veyr syntax/ABI is
-introduced. Phase 3 remains execution-unstarted; Phase 1/2 acceptance is preserved.
+Last session: 2026-10-17T13:41:07Z
+Stopped at: Completed owner-accepted Plan 03-01; five-file closeout publication awaiting owner approval; Wave 2 unauthorized.
+Resume file: .planning/phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-01-EXECUTION.md
+Completed summaries: 01-01 through 01-08, 02-01 through 02-04 and 03-01.
+Last completed step: Canonical Plan 03-01 bookkeeping, including LEX-01 completion; requirement ledger now 22 accepted/27 pending.
+Next owner gate: Explicit approval to commit/publish this five-file closeout. Wave 2 additionally requires fresh explicit execution authorization and fresh actual remote containment/content proof, with ancestry if advanced; no automatic execution.
+Current outputs: Modified STATE.md, ROADMAP.md, REQUIREMENTS.md and 03-01-EXECUTION.md; new completed 03-01-SUMMARY.md. Nothing staged or published by this reconciliation.
+Preserved artifacts: Accepted implementation, tests, CMake, scripts, workflows, recipes, profiles, baseline/dependency policy, four locks, profile, earlier planning/closeouts and ignored evidence/IDE configuration.
+GSD bookkeeping notes: Administrative pointer advanced from 1 to 2 without executing 03-02. Generic state helpers again miscounted support documents as plans and inferred incorrect milestone/phase metadata; exact numbered PLAN/SUMMARY enumeration reconciles totals to 15/13, two completed phases and M1 Compiler Walking Skeleton. The execution record preserves actual helper results.
 
 Platform impact:
-
-- Windows: Phase 1 and full Phase 2 hosted Debug/Release CI validated; developer-host inspection remains independently pending/non-blocking.
-- Linux: Omarchy Debug/Release local evidence and independent Ubuntu Debug/Release CI accepted for the complete Phase 2 slice; baselines remain separate.
+- Windows: Phase 1/2 hosted Debug/Release CI validated; developer-host inspection independently pending/non-blocking. New lexer/native evidence is future work.
+- Linux: Omarchy primary host; independent Ubuntu CI remains reviewed. This closeout ran documentation/metadata checks only.
 - macOS future: Deferred; no Darwin execution or acceptance claimed.
