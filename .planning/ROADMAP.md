@@ -6,7 +6,7 @@
 
 Deliver the P01 smoke path: one source/root module, fixed provisional entry, one integer-literal return, native executable and observable exit code. The initial roadmap follows the canonical ten-phase breakdown in `docs/design/milestones/MILESTONE_1.md`. Future language, tooling and application probes remain deferred in REQUIREMENTS.md and the canonical milestone strategy.
 
-This roadmap began as fresh initialization, with no previous lifecycle imported. Phase 1 has eight completed execution plans and final four-job acceptance from run 37826767824. BUILD-01 through BUILD-14 are accepted for the reviewed foundation scope; Windows developer-host evidence remains independently pending and non-blocking. Phase 2 discussion/research/planning are committed; the owner invoked `$gsd-execute-phase 2`. Phase 2 is now owner-accepted at 4/4 with all seven requirements accepted from final four-job CI run 38722486719 at ab596c7c721fd673b1716db6a1f6f5681a7ff126. Documentation-only closeout awaits owner review/publication; Phase 3 remains unstarted. Initialization `--auto` did not authorize later lifecycle transitions, builds or commits.
+This roadmap began as fresh initialization, with no previous lifecycle imported. Phase 1 has eight completed execution plans and final four-job acceptance from run 37826767824. BUILD-01 through BUILD-14 are accepted for the reviewed foundation scope; Windows developer-host evidence remains independently pending and non-blocking. Phase 2 is owner-accepted at 4/4 with all seven requirements accepted from final four-job CI run 38722486719 at ab596c7c721fd673b1716db6a1f6f5681a7ff126; its closeout was published in fc208b4b200076fc210c75535cbe9e30f64d3c26. Historical Phase 2 closeout-gate wording below records that earlier checkpoint. Phase 3 discussion was published in fe6ed549c2fdade0efd2b46738e83ae9ea7fe0d6; its three-plan planning packet is verified and awaits owner review/commit, with execution 0/3. Initialization `--auto` did not authorize later lifecycle transitions, builds or commits.
 
 ## Lifecycle and Design Gates
 
@@ -131,7 +131,23 @@ Platform impact:
 4. Lexer behavior recognizes profile-defined tokens/ASCII decimal sequences, skips defined whitespace, and diagnoses comments, unsupported numeric forms and non-ASCII input as M1 limitations.
 5. Malformed input consumes the smallest clearly related offending run, reports its source span, and continues with recovered tokens plus diagnostics.
 
-**Plans:** TBD — created only by an explicit `$gsd-plan-phase 3` command after the preceding review/commit boundary is resolved.
+**Plans:** Three owner-confirmed sequential slices, six tasks; planning verification passed after initial revision 1 and owner publication-gate correction 1, execution **0/3**. Owner review and the dedicated planning commit remain pending. Planning is not implementation authorization.
+
+**Wave 1 — documentation-only profile (pending execution)**
+
+- [ ] 03-01-PLAN.md — Fill the experimental M1 profile from its template, preserving D-01–D-14 and the exact proposed mixed-input recovery table (LEX-01). Blocking owner review, explicit dedicated commit approval/verification, separate publication approval/push, actual authorized-branch containment/content evidence and ancestry if advanced, then stop for fresh Wave 2 authorization. The drafting invocation must stop; no automatic commit, publication or next wave.
+
+**Wave 2 — complete token/lexer slice (blocked on Wave 1 and verified profile publication)**
+
+- [ ] 03-02-PLAN.md — Exact kind/span tokens, checked synchronous complete byte lexer, Invalid/Error recovery and source-end EOF; existing SourceManager/DiagnosticEngine, CMake and focused native tests (LEX-02–06). Require the exact accepted profile/dedicated SHA, approved successful publication, a fresh actual authorized-branch observation with ancestry/content checks if advanced, and fresh Wave 2 authorization. Fail closed if unverifiable; local commit/stale ref is insufficient. Stop for implementation/evidence review; do not automatically start Wave 3.
+
+**Wave 3 — adversarial integration and evidence (blocked on Wave 2)**
+
+- [ ] 03-03-PLAN.md — Extend byte/recovery/lifetime/renderer integration tests; independent Linux Debug/Release native test/verify/include evidence. Publication, new Ubuntu/Windows Debug/Release CI, canonical phase-goal verification and final owner acceptance remain separately authorized gates; no automatic completion.
+
+**Cross-cutting constraints:** Preserve all fourteen discussion decisions and the Phase 2 immutable original-byte/checked-error/location contracts. Tokens contain only kind/span; SourceManager owns lexemes. Exact lowercase whole words, four whitespace bytes and contiguous arrow are profile-local. Each rejected run retains Invalid plus owned Error, with monotonic consumption and exactly one zero-width source-end EOF. Error state survives recovered output; later driver success must consult it. Signed32/0–255 is an experimental later semantic boundary, not a lexical range check or final ABI. Reuse existing diagnostics and prepared dependencies; no new framework, parser/AST/semantic/backend/driver implementation, encoding policy or toolchain change. Windows developer-host inspection remains independent/non-blocking; macOS deferred.
+
+**Planning verification:** Research and pattern mapping completed; all six LEX requirements, fourteen decisions and five success criteria have concrete task coverage. Independent checker cycle 2 passed after initial revision 1; fresh cycle 3 passed with zero blockers/warnings after owner-requested remote-publication gate correction 1. Canonical decision gate and post-planning gap analysis were rerun successfully at 14/14 and 20/20. See 03-PLAN-REVIEW.md and 03-PLANNING-BREAKDOWN.md. These are planning results, not native acceptance; all six LEX requirements remain Pending.
 
 **Research/design gate:** Hard gate: do not choose exact spelling or range during initialization. Discussion/planning may author this explicitly required design document; no lexer source/tests until profile review/commit and an exact execution command. Profile support never accepts final grammar.
 
@@ -313,8 +329,8 @@ After M1 acceptance and its reviewed verification commit, the owner may start a 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Conan and Compiler Build Foundation | 8/8 | Complete; final four-job native/offline CI acceptance run 37826767824; closeout committed; Windows developer host independently pending; macOS deferred | 2026-10-08 |
-| 2. Source Identity, Spans, and Diagnostics | 4/4 | Complete; owner-accepted final four-job native/renderer CI run 38722486719; seven requirements accepted; documentation-only closeout awaiting publication review | 2026-10-15 |
-| 3. M1 Experimental Smoke Profile, Tokens, and Lexer | 0/TBD | Not started | — |
+| 2. Source Identity, Spans, and Diagnostics | 4/4 | Complete; owner-accepted final four-job native/renderer CI run 38722486719; seven requirements accepted; closeout published in fc208b4b200076fc210c75535cbe9e30f64d3c26 | 2026-10-15 |
+| 3. M1 Experimental Smoke Profile, Tokens, and Lexer | 0/3 | Planning verified; owner planning review/commit pending; execution unstarted; profile review/dedicated commit, separately approved live-verified publication and fresh Wave 2 authorization before code/tests | — |
 | 4. Smoke Profile Parser | 0/TBD | Not started | — |
 | 5. Minimal AST and Semantic Smoke | 0/TBD | Not started | — |
 | 6. Minimal IR and Lowering | 0/TBD | Not started | — |
@@ -327,4 +343,4 @@ After M1 acceptance and its reviewed verification commit, the owner may start a 
 ---
 **Non-blocking follow-up candidates:** Enforce explicit Diagnostic::severity initialization before construction becomes widespread; add combined left-clipping/mixed-escape/empty-span coverage; consider documenting/testing unsupported initialized severity values. No improvement is implemented during closeout, and no arbitrary default severity is introduced.
 
-*Last updated: 2026-10-15; owner-authorized final Phase 2 closeout and canonical verification/PROJECT reconciliation from accepted run 38722486719. Phase 2 is complete at 4/4 and seven requirements accepted; Phase 1 remains 8/8. Code/tests/evidence unchanged; no native validation reruns, staging/commit/push, CI mutation or Phase 3 work. Seven-file closeout publication awaits owner review.*
+*Last updated: 2026-10-17; owner-authorized Phase 3 planning completed for three sequential plans after the approved breakdown, initial revision 1 and owner publication-gate correction 1. Independent checker cycle 3 and canonical coverage/gap rechecks passed; execution remains 0/3. Phase 1 remains closed at 8/8 and Phase 2 at 4/4; 21 requirements accepted and 28 pending. Planning packet awaits owner review and explicit commit/publication authorization. No implementation, native/dependency operation, planning commit, push, CI mutation or Phase 4 work.*

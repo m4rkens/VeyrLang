@@ -4,15 +4,15 @@ milestone: M1
 milestone_name: Compiler Walking Skeleton
 current_phase: 3
 current_phase_name: M1 Experimental Smoke Profile, Tokens, and Lexer
-status: discussing
-stopped_at: Phase 3 context gathered; fourteen decisions captured. Owner review and dedicated discussion commit pending; research, planning and execution unstarted.
-last_updated: "2026-10-15T13:51:33.410Z"
-last_activity: 2026-10-15
-last_activity_desc: Captured all four Phase 3 discussion areas and fourteen explicit decisions, including Invalid-token recovery; created context and audit log. No research, plans, implementation, builds/tests, dependency operations or CI actions.
+status: planning
+stopped_at: Owner-authorized remote-publication gate reconciliation verified by independent checker cycle 3; awaiting planning review/publication approval. Execution remains 0/3.
+last_updated: "2026-10-17T10:37:52Z"
+last_activity: 2026-10-17
+last_activity_desc: Completed bounded owner-requested publication-gate correction; independent checker cycle 3 passed with zero blockers/warnings. Canonical coverage remains 6/6 requirements, 14/14 decisions and 20/20 post-planning gap items. Execution remains 0/3.
 progress:
   total_phases: 10
   completed_phases: 2
-  total_plans: 12
+  total_plans: 15
   completed_plans: 12
   percent: 20
 ---
@@ -24,19 +24,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-15 after Phase 2 lifecycle reconciliation)
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
-**Current focus:** Owner review and dedicated commit of the Phase 3 discussion: fourteen decisions captured in 03-CONTEXT.md and 03-DISCUSSION-LOG.md. Research, plans and execution have not started. Phase 1 remains 8/8 and Phase 2 4/4. Earlier Phase 2 closeout prose below is the accepted historical pre-publication snapshot; that closeout was published in fc208b4b200076fc210c75535cbe9e30f64d3c26.
+**Current focus:** Bounded owner-authorized correction of the explicit remote-publication prerequisite between 03-01 and 03-02 is verified. Independent checker cycle 3 passed with zero blockers/warnings; canonical decision/post-planning checks passed again at 14/14 and 20/20. Three sequential waves, six requirements and fourteen decisions remain unchanged. Planning is uncommitted; execution 0/3. Accepted discussion was published in fe6ed549c2fdade0efd2b46738e83ae9ea7fe0d6. Phase 1 remains 8/8 and Phase 2 4/4. Earlier Phase 2 closeout prose below is the historical pre-publication snapshot, published in fc208b4b200076fc210c75535cbe9e30f64d3c26.
 
 ## Current Position
 
 Phase: 3 of 10 (M1 Experimental Smoke Profile, Tokens, and Lexer)
-Plan: None — Phase 3 discussion captured; no Phase 3 plans or execution started
-Status: Discussing Phase 3 — fourteen decisions captured; owner review and dedicated discussion commit pending. No Phase 3 research, plans or execution started.
-Last activity: 2026-10-15 — Captured all four Phase 3 discussion areas and fourteen explicit decisions, including Invalid-token recovery; created context and audit log. No research, plans, implementation, builds/tests, dependency operations or CI actions.
+Plan: 03-01 through 03-03 written; three sequential waves, execution 0/3
+Total Plans in Phase: 3
+Status: Planning gate reconciliation verified — owner review/publication approval pending; execution unstarted and no publication authorized.
+Last activity: 2026-10-17 — Completed the owner-requested publication-gate correction, independent checker cycle 3 and canonical coverage/gap rechecks with no blockers/warnings. Documentation/static checks only; no implementation, build/test/dependency command, planning commit, push or CI action.
+
+Phase 3 progress: [----------] 0/3 execution plans complete; planning verification passed, not native acceptance.
 
 Phase 2 progress: [██████████] 4/4 execution plans accepted
 
-Phase 1 remains 8/8 complete; 2/10 phases are accepted. Twelve written plans
-across Phases 1–2 are complete (100% of written plans, not 100% of M1).
+Phase 1 remains 8/8 complete; 2/10 phases are accepted. Twelve of fifteen written
+plans are complete: Phase 1 eight, Phase 2 four, Phase 3 zero of three.
 The milestone has not been completed; later requirements remain pending.
 
 ## Performance Metrics
@@ -138,16 +141,56 @@ Future probes are tracked in REQUIREMENTS.md v2 and canonical milestone strategy
 
 ## Session Continuity
 
-Last session: 2026-10-15T13:51:33.402Z
-Stopped at: Phase 3 context gathered; fourteen decisions captured. Owner review and dedicated discussion commit pending; research, planning and execution unstarted.
-Resume file: .planning/phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-CONTEXT.md
+Last session: 2026-10-17
+Stopped at: Phase 3 planning and plan verification complete; owner review/publication gate, with execution 0/3.
+Resume file: .planning/phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-PLAN-REVIEW.md
 Completed summaries: 01-01 through 01-08 and 02-01 through 02-04; Phase 1 closed at 8/8, Phase 2 at 4/4. Windows developer-host inspection independently pending/non-blocking.
-Last completed step: Phase 3 discussion captured: signed 32-bit result restricted to 0–255; fn main() -> int32 with a mandatory return semicolon; exact ASCII boundaries; Invalid tokens and Error diagnostics with grouped recovery. Context and discussion log prepared for owner review.
-Next owner gate: Review Phase 3 context/discussion log and explicitly authorize their dedicated discussion commit. Do not start research, planning, execution or the profile artifact commit automatically.
-Current outputs: .planning/STATE.md and new .planning/phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-CONTEXT.md / 03-DISCUSSION-LOG.md (three discussion files). No profile, research or plan file exists; accepted implementation/evidence remain unchanged.
+Last completed step: Initial planning revision 1 and checker cycle 2 remain historical. Owner-requested publication-gate correction 1 is complete; fresh independent checker cycle 3 passed with zero blockers/warnings. Canonical decision coverage was rerun at 14/14 and post-planning gap analysis at 20/20; requirement ownership remains 6/6.
+Next owner gate: Review the independently verified corrected ten-file packet and explicitly authorize its planning commit/publication. Then separately authorize only documentation-first Wave 1. Profile acceptance/dedicated commit, separately approved live-verified publication and fresh Wave 2 authorization remain future prerequisites; no automatic actions.
+Current outputs: Ten planning files: STATE.md, ROADMAP.md, Phase 3 three PLANs, RESEARCH, PATTERNS, VALIDATION, PLANNING-BREAKDOWN and PLAN-REVIEW. No filled profile, implementation or execution summary created; no requirements accepted by planning.
 Preserved artifacts: All accepted implementation/tests/CMake/scripts/workflows/recipes/profiles/baselines/dependency versions/four locks; completed discussion/research/plans, earlier execution/summaries and historical planning validation strategy; ignored IDE binding and 36-entry evidence packet.
-Sub-agents: None; Phase 3 discussion and codebase scouting performed inline. No research or execution agent was started.
+Sub-agents: Canonical researcher, pattern mapper and planner completed. Independent checker cycle 1 found one blocker/one warning; resumed revision 1 resolved both; fresh checker cycle 2 passed. Independent publication-gate checker cycle 3 passed after owner correction 1. No executor ran. A server interruption before revision edits was inspected and resumed without repeating completed research or checks.
 Execution checkpoints: 01-01 941c70da327b2977cf35b59938795599aaa4b4e4; 01-02 3f0636bda87da69a8526b0c57bf9844b8448c831; 01-03 9531def3e372d0bbb27aaf2d96e88fdca26b3f3c; 01-04 71c254d10cc495231453e2847a608128d06d2762; 01-05 d34a793575e140680804b45058b68c6436cb0c0e; 01-06 f476fa8d5f5e5e20d61adb8abdc196d7bfe5a267; 01-07 ddec666b43546d8820d7eacd28e6ce4ef2b068ed plus eef4780faa9063a50ae5ede89fc40f55408279bb; 01-08 published implementation through 2741d6514f5e695d36c20cb792bff4985ac5d754, planning closeout committed/pushed in 1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f.
+
+### Phase 3 planning completion and remaining owner gates
+
+Installed GSD 1.6.1 planner `/home/m4rkens/.codex/agents/gsd-planner.toml`,
+step `confirm_breakdown` (lines 827–829), requires: "Present breakdown with wave
+structure. Wait for confirmation in interactive mode. Auto-approve in yolo mode."
+Current project mode is interactive. The owner explicitly confirmed the exact
+three-plan, three-wave breakdown and authorized plan creation/checker revisions.
+That checkpoint is completed; do not ask for it again or restart research.
+
+| Planned slice | Wave | Dependency | Scope |
+|---|---|---|---|
+| 03-01 | 1 | Accepted Phase 2 | Documentation-only M1 profile; owner review, explicit dedicated commit approval/verification, separate publication approval/push and live remote containment/content plus ancestry if advanced; stop for fresh Wave 2 authorization |
+| 03-02 | 2 | 03-01 plus exact accepted profile/dedicated SHA, approved successful publication and fresh actual remote containment/ancestry/content evidence and Wave 2 authorization | Unchanged kind/span Token, checked complete lexer, Invalid/Error recovery, existing diagnostics/CMake and focused tests; fail closed if any entry proof is unverifiable |
+| 03-03 | 3 | 03-02 | Expanded hostile-byte/mixed-recovery/lifetime/renderer integration tests; independent Debug/Release validation and retained evidence; owner publication/CI/final acceptance gates |
+
+These are verified plans awaiting owner review, not execution authorization.
+LEX-01 is owned by 03-01; LEX-02–06 by 03-02 with expanded evidence in 03-03.
+All fourteen decisions and five roadmap criteria have concrete task ownership;
+VALIDATION maps all six tasks and `nyquist_compliant: true` denotes planned
+feedback coverage, not passing native tests. PLAN-REVIEW preserves all three checker
+cycles: the initial two findings were resolved in planner revision 1, and the
+owner-requested remote-publication blocker was resolved by gate correction 1
+and independently verified in cycle 3. No functional scope was changed.
+
+Canonical `state.planned-phase` and `roadmap.annotate-dependencies` were executed
+after the checker passed. The state helper normalized ready-to-execute to an
+executing label and inferred the wrong milestone name; this planning-only record
+corrects those metadata fields explicitly. Exact plan enumeration supplies
+15 total/12 completed plans, two accepted phases, and 20% milestone progress.
+The roadmap annotator returned updated=false because the original phase section
+had no concrete plan list; its three waves are recorded explicitly in ROADMAP.
+No completion/execute/next-phase helper or automatic commit was invoked.
+
+Research proposes whole-run rejection for `+12` and `1..2`, preservation of
+numeric/comment boundaries, and comment grouping owning non-ASCII contents.
+These refinements require future profile owner review, its dedicated commit and
+separately approved verified remote publication before dependent code/tests.
+No parser/AST/semantic/backend/driver, new dependency or final Veyr syntax/ABI is
+introduced. Phase 3 remains execution-unstarted; Phase 1/2 acceptance is preserved.
 
 Platform impact:
 
