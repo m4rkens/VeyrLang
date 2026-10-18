@@ -6,7 +6,7 @@
 
 Deliver the P01 smoke path: one source/root module, fixed provisional entry, one integer-literal return, native executable and observable exit code. The initial roadmap follows the canonical ten-phase breakdown in `docs/design/milestones/MILESTONE_1.md`. Future language, tooling and application probes remain deferred in REQUIREMENTS.md and the canonical milestone strategy.
 
-This roadmap began as fresh initialization, with no previous lifecycle imported. Phase 1 remains closed at 8/8 from final four-job run 37826767824; Phase 2 remains owner-accepted at 4/4 from run 38722486719, with published closeout fc208b4b200076fc210c75535cbe9e30f64d3c26. Historical closeout-gate wording in their detailed records describes those earlier checkpoints. Phase 3 is now owner-accepted at 3/3 after final four-job run 39107885454 at be84bb9702afa75ad07803a678e7fd5a4e6358d7 and actual canonical goal verification. Its accepted profile was separately committed/published in 52f598aaf031e549ed3bbe5c598bc43f5f7be6bb before lexer implementation; Plan 03-01 closeout was published in 030fd0b5c17d8228f5c2dc86324c325dba5103f3, and Plan 03-02 in da92389b5eb6b6b2bbe949072015dd950d8273b3. All six LEX requirements are accepted; global counts remain 27 accepted/22 pending. Phase 3 final documentation commit/publication still need separate approval. Phase 4 is unstarted and unauthorized. Windows developer-host inspection remains independently pending/non-blocking; macOS deferred. Initialization `--auto` did not authorize later lifecycle transitions, builds or commits.
+This roadmap began as fresh initialization, with no previous lifecycle imported. Phase 1 remains closed at 8/8 from final four-job run 37826767824; Phase 2 remains owner-accepted at 4/4 from run 38722486719, with published closeout fc208b4b200076fc210c75535cbe9e30f64d3c26. Historical closeout-gate wording in their detailed records describes those earlier checkpoints. Phase 3 is owner-accepted at 3/3 after final four-job run 39107885454 at be84bb9702afa75ad07803a678e7fd5a4e6358d7 and actual canonical goal verification. Its accepted profile was separately committed/published in 52f598aaf031e549ed3bbe5c598bc43f5f7be6bb before lexer implementation; Plan 03-01 closeout was published in 030fd0b5c17d8228f5c2dc86324c325dba5103f3, and Plan 03-02 in da92389b5eb6b6b2bbe949072015dd950d8273b3. Final Phase 3 closeout was accepted and published in 15e00afec923ffd1d38ee9c12832fa7cb2e2f040. All six LEX requirements are accepted; global counts remain 27 accepted/22 pending. Phase 4 discussion was published in 9a3c655a35b7b586cfd871514a40133141b17653; its three-plan planning packet has passed owner review, with the bounded roadmap reconciliation awaiting final publication approval. Phase 4 remains planned, 0/3 executed; implementation is unstarted and unauthorized. Windows developer-host inspection remains independently pending/non-blocking; macOS deferred. Initialization `--auto` did not authorize later lifecycle transitions, builds or commits.
 
 ## Lifecycle and Design Gates
 
@@ -132,7 +132,7 @@ Platform impact:
 4. Lexer behavior recognizes profile-defined tokens/ASCII decimal sequences, skips defined whitespace, and diagnoses comments, unsupported numeric forms and non-ASCII input as M1 limitations.
 5. Malformed input consumes the smallest clearly related offending run, reports its source span, and continues with recovered tokens plus diagnostics.
 
-**Plans:** 3/3 complete and owner-accepted. Final [run 39107885454](https://github.com/m4rkens/VeyrLang/actions/runs/39107885454) completed/success at be84bb9702afa75ad07803a678e7fd5a4e6358d7 across Ubuntu/Windows Debug/Release. Each job passed 419/419 native test, verify and prepared acceptance, all 323 focused names including every byte index 0–255 and all 35 normative examples, thirteen selected C++23 compilation entries, include-policy and expected isolated empty-cache rejection without acquisition/retry. Independent Linux developer evidence remains separate. Canonical verification passed all five roadmap criteria, 21 plan truths, 22/22 deduplicated scored truths, 12/12 artifact entries, 11/11 directly inspected links, six requirements and fourteen decisions; verification.status returned passed. See [03-03-SUMMARY.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-03-SUMMARY.md) and [03-VERIFICATION.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-VERIFICATION.md). Final closeout publication remains separately gated.
+**Plans:** 3/3 complete and owner-accepted. Final [run 39107885454](https://github.com/m4rkens/VeyrLang/actions/runs/39107885454) completed/success at be84bb9702afa75ad07803a678e7fd5a4e6358d7 across Ubuntu/Windows Debug/Release. Each job passed 419/419 native test, verify and prepared acceptance, all 323 focused names including every byte index 0–255 and all 35 normative examples, thirteen selected C++23 compilation entries, include-policy and expected isolated empty-cache rejection without acquisition/retry. Independent Linux developer evidence remains separate. Canonical verification passed all five roadmap criteria, 21 plan truths, 22/22 deduplicated scored truths, 12/12 artifact entries, 11/11 directly inspected links, six requirements and fourteen decisions; verification.status returned passed. See [03-03-SUMMARY.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-03-SUMMARY.md) and [03-VERIFICATION.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-VERIFICATION.md). Final closeout was separately owner-approved and published in 15e00afec923ffd1d38ee9c12832fa7cb2e2f040; its former publication gate is satisfied.
 
 **Wave 1 — complete; owner-accepted documentation-only scope**
 
@@ -144,7 +144,7 @@ Platform impact:
 
 **Wave 3 — complete; adversarial integration and final hosted/canonical evidence accepted**
 
-- [x] 03-03-PLAN.md — All-byte, long-run, exact recovery, lifetime, newline/EOF, diagnostic accumulation and renderer integration tests completed without production or CMake changes. Independent local Debug/Release evidence and owner review passed, execution was separately published in be84bb9, and run 39107885454 validated all four hosted configurations. Canonical phase-goal verification and final owner acceptance are complete. Bounded supported GSD closeout operations preserve Phase 3 as the current closed phase; final documentation publication and Phase 4 remain separately gated.
+- [x] 03-03-PLAN.md — All-byte, long-run, exact recovery, lifetime, newline/EOF, diagnostic accumulation and renderer integration tests completed without production or CMake changes. Independent local Debug/Release evidence and owner review passed, execution was separately published in be84bb9, and run 39107885454 validated all four hosted configurations. Canonical phase-goal verification and final owner acceptance are complete. Bounded supported GSD closeout operations completed Phase 3 bookkeeping, and the separately approved final documentation was published in 15e00afec923ffd1d38ee9c12832fa7cb2e2f040. Phase 4 execution remains separately gated.
 
 **Cross-cutting constraints:** Preserve all fourteen discussion decisions and the Phase 2 immutable original-byte/checked-error/location contracts. Tokens contain only kind/span; SourceManager owns lexemes. Exact lowercase whole words, four whitespace bytes and contiguous arrow are profile-local. Each rejected run retains Invalid plus owned Error, with monotonic consumption and exactly one zero-width source-end EOF. Error state survives recovered output; later driver success must consult it. Signed32/0–255 is an experimental later semantic boundary, not a lexical range check or final ABI. Reuse existing diagnostics and prepared dependencies; no new framework, parser/AST/semantic/backend/driver implementation, encoding policy or toolchain change. Windows developer-host inspection remains independent/non-blocking; macOS deferred.
 
@@ -172,11 +172,44 @@ Platform impact:
 3. Parser output retains source relationships and error state; the lexer remains independent of parser/AST/semantics.
 4. Tests and diagnostics label the M1 profile explicitly rather than declaring general functions or final Veyr grammar valid.
 
-**Plans:** TBD — created only by an explicit `$gsd-plan-phase 4` command after the preceding review/commit boundary is resolved.
+**Plans:** 0/3 plans executed; three sequential plans.
+The owner approved the three-wave breakdown and reviewed the completed planning
+packet. This bounded roadmap reconciliation awaits final publication approval.
+Execution is unstarted and unauthorized.
+
+Plans:
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — Complete checked parser, public value/outcomes and baseline tests.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 04-02-PLAN.md — Independent structural/priority and syntax/EOF conformance matrices.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 04-03-PLAN.md — Lexer/renderer/lifetime integration and independent final Debug/Release evidence.
+
+**Planning verification:** Checker cycle 2 passed with zero blockers/warnings
+after one bounded research-resolution annotation. All three requirements, four
+roadmap success criteria and sixteen accepted decisions are covered. The
+canonical decision gate passed 16/16 and post-planning gap analysis passed 19/19.
+See 04-PLAN-REVIEW.md, 04-PLANNING-BREAKDOWN.md and 04-VALIDATION.md. These are
+planned coverage checks, not native parser or hosted acceptance evidence.
+
+**Cross-cutting execution constraints:** Preserve the published experimental M1
+profile and all sixteen decisions; use existing source/token/diagnostic/renderer
+APIs, checked original-byte spans, full structural validation before Invalid and
+first-error syntax rejection, and an independent three-span result. Keep numeric
+conversion/semantic range checks, general AST/grammar and final ABI out of scope.
+Require separate owner commands for each wave and publication, then fresh
+four-job hosted acceptance and canonical phase verification. No automatic
+commit, dependency acquisition or lifecycle advance is authorized.
 
 **Research/design gate:** Use only the committed profile. Phase 4 may introduce the minimal representation needed to return parsing results; Phase 5 consolidates the AST boundary without a second parser or speculative general grammar.
 
 Platform impact:
+
 - Windows: Identical profile behavior and source spans under reviewed Windows fixtures.
 - Linux: Identical profile behavior and source spans under reviewed Linux fixtures.
 - macOS future: Parser contracts remain host-independent; macOS builds deferred.
@@ -332,17 +365,21 @@ After M1 acceptance and its reviewed verification commit, the owner may start a 
 |-------|----------------|--------|-----------|
 | 1. Conan and Compiler Build Foundation | 8/8 | Complete; final four-job native/offline CI acceptance run 37826767824; closeout committed; Windows developer host independently pending; macOS deferred | 2026-10-08 |
 | 2. Source Identity, Spans, and Diagnostics | 4/4 | Complete; owner-accepted final four-job native/renderer CI run 38722486719; seven requirements accepted; closeout published in fc208b4b200076fc210c75535cbe9e30f64d3c26 | 2026-10-15 |
-| 3. M1 Experimental Smoke Profile, Tokens, and Lexer | 3/3 | Complete   | 2026-10-18 |
-| 4. Smoke Profile Parser | 0/TBD | Not started | — |
+| 3. M1 Experimental Smoke Profile, Tokens, and Lexer | 3/3 | Complete; owner-accepted; closeout published in 15e00afec923ffd1d38ee9c12832fa7cb2e2f040 | 2026-10-18 |
+| 4. Smoke Profile Parser | 0/3 | Planned    |  |
 | 5. Minimal AST and Semantic Smoke | 0/TBD | Not started | — |
 | 6. Minimal IR and Lowering | 0/TBD | Not started | — |
 | 7. Single Root-Module Context | 0/TBD | Not started | — |
 | 8. LLVM Backend Smoke | 0/TBD | Not started | — |
 | 9. veyrc Driver Smoke | 0/TBD | Not started | — |
 | 10. End-to-End Native Smoke Acceptance | 0/TBD | Not started | — |
-**Coverage:** 49 active requirements mapped to exactly one phase; 0 unmapped; 27 accepted requirements: BUILD-01 through BUILD-14 from Phase 1, SRC-01 through SRC-04 and DIAG-01 through DIAG-03 from Phase 2, documentation-only LEX-01 from Plan 03-01, and Linux developer-scope LEX-02–06 from Plan 03-02; 22 requirements pending. New lexer hosted CI and phase-wide acceptance remain pending. Windows developer-host evidence remains an independent deferred inspection, not credited from CI.
+**Coverage:** 49 active requirements mapped to exactly one phase; 0 unmapped; 27 accepted requirements: BUILD-01 through BUILD-14 from Phase 1, SRC-01 through SRC-04 and DIAG-01 through DIAG-03 from Phase 2, and LEX-01 through LEX-06 from completed Phase 3. Documentation-only LEX-01 and the earlier Linux developer-scope LEX-02–06 checkpoints are preserved as history; final Phase 3 acceptance includes successful four-job hosted run 39107885454 and canonical phase-goal verification. All 22 future requirements remain pending, including PARSE-01 through PARSE-03. Phase 4 is planned at 0/3 executed; planning does not establish parser acceptance. Windows developer-host evidence remains an independent deferred inspection, not credited from CI; macOS remains deferred.
 
 ---
 **Non-blocking follow-up candidates:** Enforce explicit Diagnostic::severity initialization before construction becomes widespread; add combined left-clipping/mixed-escape/empty-span coverage; consider documenting/testing unsupported initialized severity values. No improvement is implemented during closeout, and no arbitrary default severity is introduced.
 
-*Last updated: 2026-10-18; owner accepted 03-02 Linux Tasks 1–2 and authorized canonical closeout preparation. Phase 1 8/8, Phase 2 4/4, Phase 3 2/3; global ledger 27 accepted/22 pending. New hosted lexer CI, Wave 3 and phase-wide acceptance remain pending. Nothing staged, committed or published; no new native/dependency operation or CI mutation.*
+**Historical checkpoint — Plan 03-02 local closeout, before final Phase 3 hosted acceptance:**
+
+> *Last updated: 2026-10-18; owner accepted 03-02 Linux Tasks 1–2 and authorized canonical closeout preparation. Phase 1 8/8, Phase 2 4/4, Phase 3 2/3; global ledger 27 accepted/22 pending. New hosted lexer CI, Wave 3 and phase-wide acceptance remain pending. Nothing staged, committed or published; no new native/dependency operation or CI mutation.*
+
+*Current checkpoint: 2026-10-18; Phase 1 8/8, Phase 2 4/4 and Phase 3 3/3 complete and owner-accepted. Phase 3 closeout is published in 15e00afec923ffd1d38ee9c12832fa7cb2e2f040. Phase 4 planning is reviewed, with 0/3 plans executed and PARSE-01–03 pending. The corrected ten-file planning packet awaits separate commit/publication authorization; implementation remains unauthorized. Global requirements remain 27 accepted/22 pending. No new build/test, dependency operation or CI mutation accompanies this reconciliation.*

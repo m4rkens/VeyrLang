@@ -4,18 +4,17 @@ milestone: M1
 milestone_name: Compiler Walking Skeleton
 current_phase: 4
 current_phase_name: Smoke Profile Parser
-status: discussing
-stopped_at: Phase 4 context gathered; sixteen decisions captured. Owner review and dedicated discussion commit pending; research, planning and execution unstarted.
-last_updated: "2026-10-18T13:20:39.615409+00:00"
+status: planning
+stopped_at: Phase 4 planning verified; owner review/publication pending; execution 0/3 and unauthorized.
+last_updated: "2026-10-18T17:41:31.467Z"
 last_activity: 2026-10-18
-last_activity_desc: 2026-10-18 — Completed interactive Phase 4 discussion and created context/audit log; no research, plan, implementation, build/test, dependency operation or CI mutation.
+last_activity_desc: Completed Phase 4 research, pattern mapping, three-plan authoring and independent checker cycle 2 (PASS, zero blockers/warnings); decision coverage 16/16 and post-planning gaps 19/19. No native commands, implementation, commit, push or CI mutation.
 progress:
   total_phases: 10
   completed_phases: 3
-  total_plans: 15
+  total_plans: 18
   completed_plans: 15
   percent: 30
-
 ---
 
 # Project State
@@ -25,21 +24,21 @@ progress:
 See: .planning/PROJECT.md (accepted Phase 1/2/3 capabilities and remaining M1 work).
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
-**Current focus:** Owner review of the Phase 4 discussion: sixteen explicit choices in 04-CONTEXT.md and 04-DISCUSSION-LOG.md. Phase 1 remains 8/8, Phase 2 4/4 and Phase 3 3/3 complete. Phase 3 closeout was published in 15e00afec923ffd1d38ee9c12832fa7cb2e2f040; its implementation CI and canonical verification passed. Research, planning, execution and discussion publication remain separately gated.
+**Current focus:** Owner review of the completed Phase 4 planning packet: three approved sequential plans (04-01 complete parser/baseline, 04-02 independent conformance, 04-03 integration/evidence). Research and pattern mapping complete; checker cycle 2 passed after one bounded revision, zero blockers/warnings. All 16 decisions and PARSE-01–03 covered. Phase 1 remains 8/8, Phase 2 4/4 and Phase 3 3/3; Phase 4 execution is 0/3 and unauthorized.
 
 ## Current Position
 
-Phase: 4 of 10 (Smoke Profile Parser) — discussion captured; execution unstarted
-Plan: None — no Phase 4 research, plans or execution started
-Total Plans in Phase: 0 (planning not authorized)
-Status: Discussing Phase 4 — sixteen decisions captured; owner review and dedicated discussion commit pending
-Last activity: 2026-10-18 — Completed interactive Phase 4 discussion and created context/audit log; no research, plan, implementation, build/test, dependency operation or CI mutation.
+Phase: 4 of 10 (Smoke Profile Parser) — planning complete; execution unstarted
+Plan: None executing — 04-01, 04-02 and 04-03 authored in sequential waves 1–3; 0/3 complete
+Total Plans in Phase: 3
+Status: Planning complete — owner review and separate planning publication pending; execution unauthorized
+Last activity: 2026-10-18 — Completed Phase 4 research, pattern mapping, three-plan authoring and independent checker cycle 2 (PASS, zero blockers/warnings); decision coverage 16/16 and post-planning gaps 19/19. No native commands, implementation, commit, push or CI mutation.
 
 Phase 3 progress: [██████████] 3/3 complete and owner-accepted.
 Phase 2 progress: [██████████] 4/4 complete and owner-accepted.
 Phase 1 progress: [██████████] 8/8 complete and owner-accepted.
 
-**Historical Phase 3 closeout snapshot:** The following paragraph predates the newly authorized Phase 4 discussion; current discussion status above supersedes its Phase 4 sentence.
+**Historical Phase 3 closeout snapshot:** The following paragraph predates the authorized Phase 4 discussion and planning. The current planning checkpoint above supersedes its Phase 4 sentence; Phase 1/2/3 acceptance is unchanged.
 
 All fifteen written execution plans are complete: eight in Phase 1, four in
 Phase 2 and three in Phase 3. Three of ten phases are complete (30%); completing
@@ -109,16 +108,16 @@ syntax/types/encoding and broader project/package semantics remain unaccepted.
 
 ## Session Continuity
 
-Last session: 2026-10-18T13:20:38.489Z
-Stopped at: Phase 4 context gathered; sixteen decisions captured. Owner review and dedicated discussion commit pending; research, planning and execution unstarted.
-Resume file: .planning/phases/04-smoke-profile-parser/04-CONTEXT.md
+Last session: 2026-10-18T17:41:16.186Z
+Stopped at: Phase 4 planning verified; owner review and separately authorized planning publication pending. Execution 0/3, Wave 1 unauthorized.
+Resume file: .planning/phases/04-smoke-profile-parser/04-PLAN-REVIEW.md
 Completed summaries: 01-01 through 01-08, 02-01 through 02-04 and 03-01 through 03-03.
-Last completed step: Phase 4 discussion captured with sixteen explicit decisions; the completed Phase 1/2/3 acceptance remains intact.
-Next owner gate: Review the exact three-file Phase 4 discussion packet and separately authorize its dedicated commit/publication. Research/planning require a later explicit owner command; no implementation is authorized.
-Current outputs: STATE.md, 04-CONTEXT.md and 04-DISCUSSION-LOG.md only. Nothing staged or committed; no Phase 4 research, plans or execution.
+Last completed step: Phase 4 canonical planning and verification completed: three sequential two-task plans, 3/3 requirements, 4/4 roadmap criteria, 16/16 decisions; two checker cycles and one bounded research-resolution revision. This verifies planned coverage only, not parser implementation.
+Next owner gate: Review the exact ten-file Phase 4 planning packet, then separately authorize its dedicated commit/publication. Wave 1 requires a fresh concrete execution authorization; later waves, publication, hosted acceptance and phase verification remain separately gated.
+Current outputs: STATE.md, ROADMAP.md, 04-RESEARCH.md, 04-PATTERNS.md, 04-VALIDATION.md, 04-PLANNING-BREAKDOWN.md, 04-PLAN-REVIEW.md and 04-01/02/03-PLAN.md only. Nothing staged or committed; no Phase 4 implementation, tests or execution evidence created.
 Preserved artifacts: Accepted source/tests/CMake, APIs, scripts/workflows, recipes/profiles/toolchain/dependency policy, four locks, M1 profile, completed Phase 1/2/3 artifacts and ignored IDE binding remain unchanged.
-Evidence integrity: Accepted historical manifests retain their approved archive mappings. Published pre-discussion STATE is retained under .veyr-dev/discussion/04/accepted-inputs/STATE.md, alongside the final discussion checkpoint and input hashes. No implementation or accepted evidence was overwritten.
-GSD bookkeeping: Phase 4 discussion follows installed 1.6.1 default/text flow, init.phase-op, roadmap/prior-context/API scout, no matching todos, empty pre/post hooks and state.record-session. Supported state.update/frontmatter.merge reconcile only this discussion checkpoint and preserve actual 15/15 written plans, three completed phases and 27 accepted/22 pending. No auto-commit, plan, execute, phase.complete or next-phase helper ran. Prior Phase 3 bounded completion receipts remain under .veyr-dev/execution/03-03/closeout/.
+Evidence integrity: Accepted historical manifests retain their approved archive mappings. The published discussion STATE and ROADMAP are retained under .veyr-dev/planning/04/accepted-inputs/ with planning-entry tracked hashes. Earlier discussion receipts are unchanged; no accepted implementation/evidence was overwritten.
+GSD bookkeeping: Installed GSD 1.6.1 plan-phase resumed after the owner-approved research and three-plan breakdown gates. Typed researcher, pattern mapper, planner and independent checker roles ran. Canonical plan frontmatter/structure, decision coverage and plan:post gap checks passed. state.planned-phase and roadmap.annotate-dependencies ran; supported state.patch/record-session/frontmatter.merge reconcile this planning-only checkpoint and actual 18 written/15 completed plans, three completed phases, and 27 accepted/22 pending requirements. No auto-commit, execute, phase.complete or next-phase helper ran.
 
 Platform impact:
 
