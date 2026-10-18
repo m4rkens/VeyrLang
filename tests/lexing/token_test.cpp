@@ -1,4 +1,5 @@
 #include <veyr/lexing/token.hpp>
+#include <veyr/lexing/lexer.hpp>
 #include <veyr/source/source_manager.hpp>
 
 #include <gtest/gtest.h>
@@ -9,7 +10,9 @@
 #include <string>
 #include <string_view>
 #include <type_traits>
+#include <utility>
 #include <variant>
+#include <vector>
 
 namespace {
 
@@ -126,6 +129,50 @@ TEST(SmokeProfileToken, ResolutionRequiresTheOriginatingManager) {
   EXPECT_EQ(std::get<std::string_view>(first.text(token.span)), "fn");
   // Numeric SourceIds cannot detect a caller choosing an unrelated manager.
   EXPECT_EQ(std::get<std::string_view>(second.text(token.span)), "42");
+}
+
+TEST(SmokeProfileToken, ReturnedTokensOutliveCallerStorageAndFurtherRegistrations) {
+  veyr::SourceManager sources;
+  std::vector<Token> tokens;
+  {
+    std::string caller_bytes = "fn main() -> int32 { return 42; }";
+    std::string caller_name = "caller.vyr";
+    const auto registered = sources.register_source(caller_name, caller_bytes);
+    ASSERT_TRUE(std::holds_alternative<veyr::SourceId>(registered));
+    caller_bytes.assign(4096, '?');
+    caller_name.assign(4096, '!');
+    veyr::DiagnosticEngine diagnostics;
+    auto result = veyr::lex(sources, std::get<veyr::SourceId>(registered), diagnostics);
+    ASSERT_TRUE(std::holds_alternative<std::vector<Token>>(result));
+    EXPECT_FALSE(diagnostics.has_errors());
+    tokens = std::get<std::vector<Token>>(std::move(result));
+  }  // Caller storage, result wrapper and DiagnosticEngine are gone; manager lives.
+  const std::array<std::string_view, 12> expected = {
+      "fn", "main", "(", ")", "->", "int32", "{", "return", "42", ";", "}", ""};
+  ASSERT_EQ(tokens.size(), expected.size());
+  std::vector<std::string_view> saved;
+  for (const auto& token : tokens) {
+    const auto text = sources.text(token.span);
+    ASSERT_TRUE(std::holds_alternative<std::string_view>(text));
+    saved.push_back(std::get<std::string_view>(text));
+  }
+  for (int index = 0; index < 3000; ++index) {
+    const auto added = sources.register_source(index % 2 == 0 ? "caller.vyr" : "other",
+                                                "fn main() -> int32 { return 42; }");
+    ASSERT_TRUE(std::holds_alternative<veyr::SourceId>(added));
+    EXPECT_NE(std::get<veyr::SourceId>(added), tokens.front().span.source_id);
+  }
+  for (std::size_t index = 0; index < tokens.size(); ++index) {
+    SCOPED_TRACE(index);
+    const auto resolved = sources.text(tokens[index].span);
+    ASSERT_TRUE(std::holds_alternative<std::string_view>(resolved));
+    EXPECT_EQ(saved[index], expected[index]);
+    EXPECT_EQ(std::get<std::string_view>(resolved), expected[index]);
+    EXPECT_EQ(saved[index].data(), std::get<std::string_view>(resolved).data());
+  }
+  EXPECT_EQ(std::get<std::string_view>(sources.display_name(tokens.front().span.source_id)),
+            "caller.vyr");
+  EXPECT_EQ(tokens.back().kind, TokenKind::EndOfFile);
 }
 
 }  // namespace
