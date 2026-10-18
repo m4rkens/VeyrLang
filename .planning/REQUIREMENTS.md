@@ -6,7 +6,7 @@
 
 ## v1 Requirements
 
-Here v1 means the first walking-skeleton milestone, not a stable language release. At fresh initialization all requirements were pending hypotheses and no prior implementation/evidence was credited. Phase 1 BUILD-01 through BUILD-14 remain accepted from this lifecycle's preserved execution and final four-job run 37826767824. Phase 2 SRC-01 through SRC-04 and DIAG-01 through DIAG-03 are now owner-accepted from final four-job run 38722486719; Plan 03-01 documentation-only LEX-01 is also owner-accepted, supported by its reviewed and actually published profile; 22 requirements are accepted and the other 27 remain pending. Every requirement maps to exactly one active phase. P01 forces the compiler path; PLAT_01/02/03/06 force the related platform/build constraints.
+Here v1 means the first walking-skeleton milestone, not a stable language release. At fresh initialization all requirements were pending hypotheses and no prior implementation/evidence was credited. Phase 1 BUILD-01 through BUILD-14 remain accepted from this lifecycle's preserved execution and final four-job run 37826767824. Phase 2 SRC-01 through SRC-04 and DIAG-01 through DIAG-03 are now owner-accepted from final four-job run 38722486719; Plan 03-01 documentation-only LEX-01 is also owner-accepted, supported by its reviewed and actually published profile; Plan 03-02 LEX-02–06 are owner-accepted for validated Linux developer scope; 27 requirements are accepted and the other 22 remain pending. New lexer hosted CI and final Phase 3 acceptance remain pending. Every requirement maps to exactly one active phase. P01 forces the compiler path; PLAT_01/02/03/06 force the related platform/build constraints.
 
 ### Build and developer foundation
 
@@ -41,11 +41,11 @@ Here v1 means the first walking-skeleton milestone, not a stable language releas
 ### M1 profile and recovered lexing
 
 - [x] **LEX-01**: Owner can review the completed docs/design/milestones/M1_EXPERIMENTAL_SMOKE_PROFILE.md defining exact provisional spelling, supported forms, semantic-range boundary, valid/invalid examples, expected diagnostics, and explicit non-final status before dependent implementation.
-- [ ] **LEX-02**: Compiler client can represent M1 tokens using only TokenKind and SourceSpan, with lexemes retrieved from SourceManager.
-- [ ] **LEX-03**: Lexer can recognize the reviewed profile tokens and one-or-more ASCII decimal digits while rejecting signs, prefixes, separators, suffixes, and non-decimal numeric forms as unsupported M1 spellings.
-- [ ] **LEX-04**: Lexer can skip profile-defined whitespace without trivia tokens and diagnose comments/non-ASCII input as unsupported in M1 without defining final encoding semantics.
-- [ ] **LEX-05**: Lexer can append an explicit EOF token with a zero-width source-end span, including for empty or erroneous input.
-- [ ] **LEX-06**: Compiler client can receive recovered tokens plus source-linked diagnostics after the lexer consumes the smallest clearly related offending run and continues.
+- [x] **LEX-02**: Compiler client can represent M1 tokens using only TokenKind and SourceSpan, with lexemes retrieved from SourceManager.
+- [x] **LEX-03**: Lexer can recognize the reviewed profile tokens and one-or-more ASCII decimal digits while rejecting signs, prefixes, separators, suffixes, and non-decimal numeric forms as unsupported M1 spellings.
+- [x] **LEX-04**: Lexer can skip profile-defined whitespace without trivia tokens and diagnose comments/non-ASCII input as unsupported in M1 without defining final encoding semantics.
+- [x] **LEX-05**: Lexer can append an explicit EOF token with a zero-width source-end span, including for empty or erroneous input.
+- [x] **LEX-06**: Compiler client can receive recovered tokens plus source-linked diagnostics after the lexer consumes the smallest clearly related offending run and continues.
 
 ### Smoke parser
 
@@ -172,11 +172,11 @@ These are deferred probe-driven directions, not the next release contract or aut
 | DIAG-02 | Phase 2 | Complete — owner accepted final run 38722486719 |
 | DIAG-03 | Phase 2 | Complete — owner accepted final run 38722486719 |
 | LEX-01 | Phase 3 | Complete |
-| LEX-02 | Phase 3 | Pending |
-| LEX-03 | Phase 3 | Pending |
-| LEX-04 | Phase 3 | Pending |
-| LEX-05 | Phase 3 | Pending |
-| LEX-06 | Phase 3 | Pending |
+| LEX-02 | Phase 3 | Complete |
+| LEX-03 | Phase 3 | Complete |
+| LEX-04 | Phase 3 | Complete |
+| LEX-05 | Phase 3 | Complete |
+| LEX-06 | Phase 3 | Complete |
 | PARSE-01 | Phase 4 | Pending |
 | PARSE-02 | Phase 4 | Pending |
 | PARSE-03 | Phase 4 | Pending |
@@ -201,20 +201,24 @@ These are deferred probe-driven directions, not the next release contract or aut
 | E2E-04 | Phase 10 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 49 total
 - Mapped to exactly one phase: 49
 - Unmapped: 0
 - Accepted Phase 1 foundation requirements: 14
 - Accepted Phase 2 source/diagnostic requirements: 7
 - Accepted Phase 3 experimental profile requirement: 1 (LEX-01)
-- Total accepted requirements: 22
-- Pending requirements: 27
+- Accepted Phase 3 Linux developer-scope token/lexer requirements: 5 (LEX-02–06)
+- Total accepted requirements: 27
+- Pending requirements: 22
 
 Phase 1 evidence: [01-08-EXECUTION.md](phases/01-conan-and-compiler-build-foundation/01-08-EXECUTION.md) and [01-08-SUMMARY.md](phases/01-conan-and-compiler-build-foundation/01-08-SUMMARY.md). Four hosted CI configurations passed; preserved Omarchy evidence remains separate. Windows developer-host acceptance is independently pending; macOS deferred. Acceptance does not assert general ABI compatibility beyond the exercised foundation.
 
 Phase 2 evidence: [02-04-EXECUTION.md](phases/02-source-identity-spans-and-diagnostics/02-04-EXECUTION.md), [02-04-SUMMARY.md](phases/02-source-identity-spans-and-diagnostics/02-04-SUMMARY.md) and [02-VERIFICATION.md](phases/02-source-identity-spans-and-diagnostics/02-VERIFICATION.md). The owner accepted SRC-01 through SRC-04 and DIAG-01 through DIAG-03 after all four Ubuntu/Windows Debug/Release jobs in run 38722486719 passed at ab596c7c721fd673b1716db6a1f6f5681a7ff126. Each passed renderer 27/27, full CTest 96/96, ten selected C++23 entries, include-policy, prepared/native and controlled empty-cache acceptance. Preserved Linux developer evidence remains separate; Windows developer-host inspection remains pending/non-blocking and macOS deferred. At that Phase 2 closeout, no later-phase requirement was accepted or redefined. Subsequent Plan 03-01 acceptance is recorded separately below.
 
-Plan 03-01 / LEX-01 evidence: [03-01-EXECUTION.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-01-EXECUTION.md) and [03-01-SUMMARY.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-01-SUMMARY.md). The owner accepted the experimental M1 profile and formal plan closeout. Dedicated commit 52f598aaf031e549ed3bbe5c598bc43f5f7be6bb was separately approved for publication; the actual post-push origin refs/heads/main observation equaled that SHA. The unchanged profile defines provisional spelling, supported/unsupported forms, semantic-range separation, valid/invalid examples, exact byte recovery/diagnostics and explicit non-final scope. Accepted documentary results: 14/14 decisions, 35/35 recovery examples, 5/5 delimiter cases, 12/12 sample spans and 5/5 location groups. Installed GSD `query requirements.mark-complete LEX-01` completed only this requirement. No lexer implementation/native tests or new CI success is claimed; LEX-02–06 and all later requirements remain pending. Fresh remote checks and owner authorization are still required before Wave 2.
+Plan 03-01 / LEX-01 evidence: [03-01-EXECUTION.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-01-EXECUTION.md) and [03-01-SUMMARY.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-01-SUMMARY.md). The owner accepted the experimental M1 profile and formal plan closeout. Dedicated commit 52f598aaf031e549ed3bbe5c598bc43f5f7be6bb was separately approved for publication; the actual post-push origin refs/heads/main observation equaled that SHA. The unchanged profile defines provisional spelling, supported/unsupported forms, semantic-range separation, valid/invalid examples, exact byte recovery/diagnostics and explicit non-final scope. Accepted documentary results: 14/14 decisions, 35/35 recovery examples, 5/5 delimiter cases, 12/12 sample spans and 5/5 location groups. Installed GSD `query requirements.mark-complete LEX-01` completed only this requirement. At that documentation-only checkpoint, no lexer implementation/native tests or new CI success were claimed and LEX-02–06 were pending. Its remote checks and fresh Wave 2 authorization were later satisfied before the separately accepted implementation below.
+
+Plan 03-02 / LEX-02–06 evidence: [03-02-EXECUTION.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-02-EXECUTION.md) and [03-02-SUMMARY.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-02-SUMMARY.md). The owner accepted Tasks 1–2 for validated Linux developer scope after read-only architecture, correctness, security and evidence review found no acceptance blockers. Debug and Release independently passed doctor 22/22, focused 55/55 (all 35 normative cases actually executed), existing components 61/61, full CTest 151/151, thirteen compiler/directory/C++23 entries and direct includes. All 65 manifest entries and 28 command logs were verified before closeout; superseded planning bytes are separately archived without altering accepted evidence. Canonical requirements.mark-complete completed only LEX-02 through LEX-06. This accepts representation, recognition, whitespace/rejection, EOF and checked recovery for that scope; it does not claim hosted validation of the new lexer, Wave 3 adversarial/integration evidence, final Phase 3 acceptance, parser or driver success behavior. Windows developer-host inspection remains independently pending/non-blocking; macOS deferred.
 
 ---
-*Last updated: 2026-10-17 after owner-accepted Plan 03-01 and canonical LEX-01 bookkeeping; 22 accepted/27 pending. Definitions, phase mapping, Phase 1/2 acceptance and all other requirement statuses unchanged.*
+*Last updated: 2026-10-18 after owner-accepted Plan 03-02 Linux scope and canonical requirement bookkeeping; 27 accepted/22 pending. Requirement definitions, mappings, Phase 1/2 acceptance and all later requirement statuses unchanged.*
