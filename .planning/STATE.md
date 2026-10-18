@@ -2,20 +2,20 @@
 gsd_state_version: 1.0
 milestone: M1
 milestone_name: Compiler Walking Skeleton
-current_phase: 3
-status: completed
-stopped_at: Phase 3 owner-accepted and complete; closeout publication awaits separate approval; Phase 4 unstarted and unauthorized
-last_updated: "2026-10-18T12:28:08.182463+00:00"
+current_phase: 4
+current_phase_name: Smoke Profile Parser
+status: discussing
+stopped_at: Phase 4 context gathered; sixteen decisions captured. Owner review and dedicated discussion commit pending; research, planning and execution unstarted.
+last_updated: "2026-10-18T13:20:39.615409+00:00"
 last_activity: 2026-10-18
-last_activity_desc: Owner-accepted Phase 3 closeout prepared through bounded canonical operations; Phase 4 unstarted.
+last_activity_desc: 2026-10-18 — Completed interactive Phase 4 discussion and created context/audit log; no research, plan, implementation, build/test, dependency operation or CI mutation.
 progress:
   total_phases: 10
   completed_phases: 3
   total_plans: 15
   completed_plans: 15
   percent: 30
-current_phase_name: M1 Experimental Smoke Profile, Tokens, and Lexer
-current_plan: 3
+
 ---
 
 # Project State
@@ -25,19 +25,21 @@ current_plan: 3
 See: .planning/PROJECT.md (accepted Phase 1/2/3 capabilities and remaining M1 work).
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
-**Current focus:** Phase 3 and Plan 03-03 are owner-accepted and complete after final four-job hosted CI and canonical goal verification. The seven-file documentation closeout is prepared for separate commit/publication approval. Phase 4 remains unstarted and unauthorized.
+**Current focus:** Owner review of the Phase 4 discussion: sixteen explicit choices in 04-CONTEXT.md and 04-DISCUSSION-LOG.md. Phase 1 remains 8/8, Phase 2 4/4 and Phase 3 3/3 complete. Phase 3 closeout was published in 15e00afec923ffd1d38ee9c12832fa7cb2e2f040; its implementation CI and canonical verification passed. Research, planning, execution and discussion publication remain separately gated.
 
 ## Current Position
 
-Phase: 3 of 10 (M1 Experimental Smoke Profile, Tokens, and Lexer) — COMPLETE
-Plan: 3 of 3 (03-03 complete and owner-accepted)
-Total Plans in Phase: 3
-Status: Phase 3 complete and owner-accepted; closeout publication pending
-Last activity: 2026-10-18 — Owner accepted final Phase 3 verification; bounded canonical closeout preparation completed without selecting Phase 4.
+Phase: 4 of 10 (Smoke Profile Parser) — discussion captured; execution unstarted
+Plan: None — no Phase 4 research, plans or execution started
+Total Plans in Phase: 0 (planning not authorized)
+Status: Discussing Phase 4 — sixteen decisions captured; owner review and dedicated discussion commit pending
+Last activity: 2026-10-18 — Completed interactive Phase 4 discussion and created context/audit log; no research, plan, implementation, build/test, dependency operation or CI mutation.
 
 Phase 3 progress: [██████████] 3/3 complete and owner-accepted.
 Phase 2 progress: [██████████] 4/4 complete and owner-accepted.
 Phase 1 progress: [██████████] 8/8 complete and owner-accepted.
+
+**Historical Phase 3 closeout snapshot:** The following paragraph predates the newly authorized Phase 4 discussion; current discussion status above supersedes its Phase 4 sentence.
 
 All fifteen written execution plans are complete: eight in Phase 1, four in
 Phase 2 and three in Phase 3. Three of ten phases are complete (30%); completing
@@ -107,16 +109,16 @@ syntax/types/encoding and broader project/package semantics remain unaccepted.
 
 ## Session Continuity
 
-Last session: 2026-10-18T08:34:03.829Z
-Stopped at: Phase 3 owner-accepted and complete; closeout publication awaits separate approval; Phase 4 unstarted and unauthorized
-Resume file: .planning/phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-03-EXECUTION.md
+Last session: 2026-10-18T13:20:38.489Z
+Stopped at: Phase 4 context gathered; sixteen decisions captured. Owner review and dedicated discussion commit pending; research, planning and execution unstarted.
+Resume file: .planning/phases/04-smoke-profile-parser/04-CONTEXT.md
 Completed summaries: 01-01 through 01-08, 02-01 through 02-04 and 03-01 through 03-03.
-Last completed step: Final owner Phase 3 acceptance and supported bounded GSD closeout preparation; Phase 3 is 3/3 complete.
-Next owner gate: Review the exact seven-file planning closeout and separately authorize its commit/publication. Phase 4 requires a later explicit owner command.
-Current outputs: STATE.md, ROADMAP.md, REQUIREMENTS.md, PROJECT.md, 03-03-EXECUTION.md, 03-03-SUMMARY.md and 03-VERIFICATION.md only. Nothing staged or committed during closeout.
-Preserved artifacts: Existing APIs/source/tests, scripts, workflows, recipes, profiles, baseline/dependency policy, four locks, accepted M1 profile, prior plans/closeouts and ignored IDE configuration. Accepted new implementation is unchanged.
-Evidence integrity: Original 62/65/36-entry packets and raw logs retain approved historical mappings. The accepted 18-entry verification packet is unchanged; its superseded planning files are archived under .veyr-dev/execution/03-03/closeout/accepted-inputs/. No accepted implementation or evidence was overwritten.
-GSD bookkeeping: state.advance-plan reported last_plan without advancement; metrics, three decisions and session continuity were recorded. roadmap.update-plan-progress 3 completed 3/3 and phase/plan checkboxes; requirements.mark-complete confirmed only LEX-01–06 already complete. Supported state.complete-phase --phase 3 completed STATE without selecting Phase 4. Generic progress again counted support documents and misderived milestone/completion metadata; supported frontmatter.merge reconciles actual numbered totals to 15/15, three completed phases and M1 Compiler Walking Skeleton. Raw receipts remain under closeout/. Unrestricted phase.complete, auto-transition and commit helpers were not invoked.
+Last completed step: Phase 4 discussion captured with sixteen explicit decisions; the completed Phase 1/2/3 acceptance remains intact.
+Next owner gate: Review the exact three-file Phase 4 discussion packet and separately authorize its dedicated commit/publication. Research/planning require a later explicit owner command; no implementation is authorized.
+Current outputs: STATE.md, 04-CONTEXT.md and 04-DISCUSSION-LOG.md only. Nothing staged or committed; no Phase 4 research, plans or execution.
+Preserved artifacts: Accepted source/tests/CMake, APIs, scripts/workflows, recipes/profiles/toolchain/dependency policy, four locks, M1 profile, completed Phase 1/2/3 artifacts and ignored IDE binding remain unchanged.
+Evidence integrity: Accepted historical manifests retain their approved archive mappings. Published pre-discussion STATE is retained under .veyr-dev/discussion/04/accepted-inputs/STATE.md, alongside the final discussion checkpoint and input hashes. No implementation or accepted evidence was overwritten.
+GSD bookkeeping: Phase 4 discussion follows installed 1.6.1 default/text flow, init.phase-op, roadmap/prior-context/API scout, no matching todos, empty pre/post hooks and state.record-session. Supported state.update/frontmatter.merge reconcile only this discussion checkpoint and preserve actual 15/15 written plans, three completed phases and 27 accepted/22 pending. No auto-commit, plan, execute, phase.complete or next-phase helper ran. Prior Phase 3 bounded completion receipts remain under .veyr-dev/execution/03-03/closeout/.
 
 Platform impact:
 
