@@ -3,46 +3,48 @@ gsd_state_version: 1.0
 milestone: M1
 milestone_name: Compiler Walking Skeleton
 current_phase: 3
-current_phase_name: M1 Experimental Smoke Profile, Tokens, and Lexer
-status: executing
-stopped_at: Plan 03-02 owner-accepted for Linux; closeout publication awaits separate approval; Wave 3 unstarted and unauthorized.
-last_updated: "2026-10-18T06:42:06.195Z"
+status: completed
+stopped_at: Phase 3 owner-accepted and complete; closeout publication awaits separate approval; Phase 4 unstarted and unauthorized
+last_updated: "2026-10-18T12:28:08.182463+00:00"
 last_activity: 2026-10-18
-last_activity_desc: Owner accepted Plan 03-02 Linux scope; canonical closeout bookkeeping completes LEX-02–06; publication and Wave 3 remain gated.
+last_activity_desc: Owner-accepted Phase 3 closeout prepared through bounded canonical operations; Phase 4 unstarted.
 progress:
   total_phases: 10
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 15
-  completed_plans: 14
-  percent: 20
+  completed_plans: 15
+  percent: 30
+current_phase_name: M1 Experimental Smoke Profile, Tokens, and Lexer
+current_plan: 3
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (accepted Phase 1/2 capabilities and remaining M1 work).
+See: .planning/PROJECT.md (accepted Phase 1/2/3 capabilities and remaining M1 work).
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
-**Current focus:** Plan 03-02 is owner-accepted and complete for validated Linux developer scope. Canonical closeout preparation records Phase 3 at 2/3 and LEX-01–06 complete, with new hosted lexer CI and phase-wide acceptance still pending. Nothing is staged or committed; publication and Wave 3 require separate owner authorization.
+**Current focus:** Phase 3 and Plan 03-03 are owner-accepted and complete after final four-job hosted CI and canonical goal verification. The seven-file documentation closeout is prepared for separate commit/publication approval. Phase 4 remains unstarted and unauthorized.
 
 ## Current Position
 
-Phase: 3 of 10 (M1 Experimental Smoke Profile, Tokens, and Lexer)
-Plan: 3 of 3 (administrative next-plan pointer only; 03-03 unstarted and unauthorized)
+Phase: 3 of 10 (M1 Experimental Smoke Profile, Tokens, and Lexer) — COMPLETE
+Plan: 3 of 3 (03-03 complete and owner-accepted)
 Total Plans in Phase: 3
-Status: Plan 03-02 accepted for Linux; closeout packet awaits owner publication review. Phase 3 remains in progress; no Wave 3 authorization.
-Last activity: 2026-10-18 — Created 03-02 summary and performed canonical state/roadmap/requirements bookkeeping; retained accepted evidence, without native commands, staging, commit, push or CI mutation.
+Status: Phase 3 complete and owner-accepted; closeout publication pending
+Last activity: 2026-10-18 — Owner accepted final Phase 3 verification; bounded canonical closeout preparation completed without selecting Phase 4.
 
-Phase 3 progress: [███████---] 2/3 complete; phase remains in progress.
+Phase 3 progress: [██████████] 3/3 complete and owner-accepted.
 Phase 2 progress: [██████████] 4/4 complete and owner-accepted.
 Phase 1 progress: [██████████] 8/8 complete and owner-accepted.
 
-Fourteen of fifteen written execution plans are complete: eight in Phase 1,
-four in Phase 2 and two in Phase 3. Two of ten phases are complete (20%);
-plan counts are not whole-milestone acceptance. Global requirements: 27 accepted,
-22 pending. LEX-01 is documentation-accepted; LEX-02–06 are accepted for Linux
-developer scope. New hosted lexer evidence and final Phase 3 acceptance remain pending.
+All fifteen written execution plans are complete: eight in Phase 1, four in
+Phase 2 and three in Phase 3. Three of ten phases are complete (30%); completing
+the written plans is not whole-milestone acceptance. Global requirements remain
+27 accepted/22 pending. LEX-01–06 are owner-accepted for final Phase 3 scope,
+with independent Linux developer and Ubuntu/Windows hosted evidence. Phase 4
+discussion, research, planning and implementation remain unstarted and unauthorized.
 
 ## Performance Metrics
 
@@ -50,11 +52,15 @@ developer scope. New hosted lexer evidence and final Phase 3 acceptance remain p
 |--------------|----------|-------|-------|
 | Phase 03 P01 | not measured; owner-gated documentation | 2 tasks | 2 files |
 | Phase 03 P02 | not measured; 38.856s recorded command time | 2 tasks | 7 files |
+| Phase 03 P03 | unmeasured active work; 52.230s recorded local commands | 2 tasks | 3 files |
 
 P01's two files describe its dedicated profile/checkpoint commit. P02's seven
 files describe implementation/test/CMake scope; its closeout has five planning
 files (twelve overall candidates). Recorded command time is not active development
-or total elapsed time. Earlier evidence/metrics remain in accepted summaries.
+or total elapsed time. P03's three files describe the published test/checkpoint
+packet; final closeout has seven planning files. Fresh canonical verification
+recorded one 419-test Debug run and direct includes separately; it did not rebuild
+or acquire dependencies. Earlier evidence/metrics remain in accepted summaries.
 
 ## Accumulated Context
 
@@ -70,7 +76,10 @@ or total elapsed time. Earlier evidence/metrics remain in accepted summaries.
 - [Phase 03]: Actual remote publication is evidence; a local commit or stale tracking ref is insufficient. — Wave 2 must separately verify current remote containment and receive fresh owner execution authorization.
 - [Phase 03]: Preserve the published experimental profile and all fourteen accepted decisions without semantic conversion or final ABI commitments — Plan 03-02 implements only the accepted M1 lexical library slice.
 - [Phase 03]: Recovered tokens require the caller to inspect persistent DiagnosticEngine Error state before any successful compilation handoff — A vector is a completed recovered scan, not compilation success; later driver work remains out of scope.
-- [Phase 03]: Complete this plan for accepted Linux developer evidence while retaining new hosted CI and Wave 3 as separate gates — Owner accepted Tasks 1–2; new hosted lexer evidence and phase-wide acceptance remain pending.
+- [Phase 03]: Complete Plan 03-02 first for accepted Linux developer scope — Its later hosted CI, Wave 3 and phase-wide verification remained separate gates and have now been satisfied by the final evidence below.
+- [Phase 03]: Preserve the accepted lexer and profile; adversarial coverage required no production or CMake correction — All 268 new cases passed without changing the accepted implementation.
+- [Phase 03]: Recovered token vectors do not imply compilation success; persistent Error state remains authoritative — Exact Invalid/Error and shared-engine/renderer integration tests preserve the accepted handoff contract.
+- [Phase 03]: Owner accepted Phase 3 after four-job hosted success and canonical verification; Phase 4 remains unauthorized — Closeout uses only bounded installed helpers and separately reviewed publication gates.
 
 ### Accepted evidence and limits
 
@@ -82,31 +91,35 @@ or total elapsed time. Earlier evidence/metrics remain in accepted summaries.
 - Profile publication run 39036114634 was historically observed queued. The subsequent 03-01 closeout run 39047427666 is now observed completed/success at 030fd0b5c17d8228f5c2dc86324c325dba5103f3 across all four Ubuntu/Windows jobs; it does not validate uncommitted lexer code.
 - The 36-entry accepted Phase 2 evidence packet, four tracked Conan locks, profile bytes and existing ignored IDE binding remain unchanged. Earlier generated records and known resource-measurement limits remain documented in the accepted execution records.
 
-- Plan 03-02 local Linux evidence: Debug/Release each doctor 22/22, token 7/7, lexer 48/48 (35 normative rows), focused 55/55, prior component tests 61/61, full CTest 151/151, 13 selected compiler/directory/C++23 entries and direct include-policy PASS. See 03-02-EXECUTION.md and ignored .veyr-dev/execution/03-02/REVIEW.md/evidence.json. Owner accepted this Linux scope; canonical bookkeeping completes LEX-02–06. New Windows/Ubuntu hosted lexer evidence and phase-wide acceptance remain pending.
+- Plan 03-02 local Linux evidence: Debug/Release each doctor 22/22, token 7/7, lexer 48/48 (35 normative rows), focused 55/55, prior component tests 61/61, full CTest 151/151, 13 selected compiler/directory/C++23 entries and direct include-policy PASS. Its publication da92389b5eb6b6b2bbe949072015dd950d8273b3 passed all four jobs in run 39105535767. Those earlier records remain historical; final Phase 3 evidence follows.
+- Phase 3 final acceptance: [run 39107885454](https://github.com/m4rkens/VeyrLang/actions/runs/39107885454), commit be84bb9702afa75ad07803a678e7fd5a4e6358d7, completed/success across Ubuntu/Windows Debug/Release. Every job passed 419/419 native test, verify and prepared acceptance, including 323 focused, all 256 byte values and 35 normative examples; verify reports 13 selected C++23 entries. Include-policy and expected isolated empty-cache rejection passed without acquisition/retry. Independent local Debug/Release evidence matches; all 268 new cases ran.
+- Canonical Phase 3 verification actually ran: five roadmap criteria, 21 source plan truths, 22/22 deduplicated scored truths, 12/12 artifact entries, 11/11 directly inspected key links, six requirements and 14/14 decisions. verification.status returned passed; the owner ACCEPTED Phase 3. See 03-03-EXECUTION.md, 03-03-SUMMARY.md and 03-VERIFICATION.md. Original helper key-link misses remain retained; report/query existence alone was not used as proof.
 
 ### Non-blocking follow-up candidates
 
 - Enforce explicit Diagnostic::severity initialization before widespread construction; current callers initialize before reading. No arbitrary default is introduced.
 - Add combined left-clipping, mixed-escape and empty-span renderer coverage.
 - Consider documenting/testing unsupported initialized severity values.
+- Optional per-case traces for looped long-run/EOF lexer regression fixtures.
 
 No improvement is implemented during closeout. General ABI, final language
 syntax/types/encoding and broader project/package semantics remain unaccepted.
 
 ## Session Continuity
 
-Last session: 2026-10-18T06:42:06.188Z
-Stopped at: Plan 03-02 owner-accepted for Linux; closeout publication awaits separate approval; Wave 3 unstarted and unauthorized.
-Resume file: .planning/phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-02-EXECUTION.md
-Completed summaries: 01-01 through 01-08, 02-01 through 02-04, 03-01 and 03-02.
-Last completed step: Owner-accepted 03-02 Linux scope and canonical summary/state/roadmap/requirements closeout preparation. Phase 3 remains 2/3.
-Next owner gate: Review the five-file closeout documentation and separately authorize any sensitive-file commit/publication. No automatic next plan or Wave 3.
-Current outputs: Seven accepted implementation/test/CMake files plus STATE.md, ROADMAP.md, REQUIREMENTS.md and 03-02-EXECUTION.md/03-02-SUMMARY.md (twelve candidates). Nothing staged or committed; 03-03 unstarted.
+Last session: 2026-10-18T08:34:03.829Z
+Stopped at: Phase 3 owner-accepted and complete; closeout publication awaits separate approval; Phase 4 unstarted and unauthorized
+Resume file: .planning/phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-03-EXECUTION.md
+Completed summaries: 01-01 through 01-08, 02-01 through 02-04 and 03-01 through 03-03.
+Last completed step: Final owner Phase 3 acceptance and supported bounded GSD closeout preparation; Phase 3 is 3/3 complete.
+Next owner gate: Review the exact seven-file planning closeout and separately authorize its commit/publication. Phase 4 requires a later explicit owner command.
+Current outputs: STATE.md, ROADMAP.md, REQUIREMENTS.md, PROJECT.md, 03-03-EXECUTION.md, 03-03-SUMMARY.md and 03-VERIFICATION.md only. Nothing staged or committed during closeout.
 Preserved artifacts: Existing APIs/source/tests, scripts, workflows, recipes, profiles, baseline/dependency policy, four locks, accepted M1 profile, prior plans/closeouts and ignored IDE configuration. Accepted new implementation is unchanged.
-Evidence integrity: Original 03-02 manifest and 28 logs remain untouched. Its three superseded planning inputs are archived under .veyr-dev/execution/03-02/closeout/accepted-inputs/; all 65 accepted byte sets remain verifiable. Prior 36-entry packet retains 34 live matches and two original CMake baseline copies.
-GSD bookkeeping notes: Canonical advance-plan changed only the administrative pointer to 3; no 03-03 task ran. Generic helpers counted 20 files as plans and inferred incorrect milestone/completed-phase metadata; numbered PLAN/SUMMARY enumeration reconciles totals to 15/14, two completed phases and M1 Compiler Walking Skeleton. Actual helper receipts remain under closeout/. LEX-02–06 were completed through requirements.mark-complete; no phase-completion or commit helper ran.
+Evidence integrity: Original 62/65/36-entry packets and raw logs retain approved historical mappings. The accepted 18-entry verification packet is unchanged; its superseded planning files are archived under .veyr-dev/execution/03-03/closeout/accepted-inputs/. No accepted implementation or evidence was overwritten.
+GSD bookkeeping: state.advance-plan reported last_plan without advancement; metrics, three decisions and session continuity were recorded. roadmap.update-plan-progress 3 completed 3/3 and phase/plan checkboxes; requirements.mark-complete confirmed only LEX-01–06 already complete. Supported state.complete-phase --phase 3 completed STATE without selecting Phase 4. Generic progress again counted support documents and misderived milestone/completion metadata; supported frontmatter.merge reconciles actual numbered totals to 15/15, three completed phases and M1 Compiler Walking Skeleton. Raw receipts remain under closeout/. Unrestricted phase.complete, auto-transition and commit helpers were not invoked.
 
 Platform impact:
-- Windows: Prior hosted CI accepted; new lexer hosted/native evidence pending, developer-host inspection independently pending/non-blocking. Existing toolchain/CRT/profile/locks unchanged.
-- Linux: Omarchy Debug/Release validated for the local lexer candidate; independent Ubuntu CI remains reviewed and awaits publication of the new code.
+
+- Windows: Hosted Debug/Release token/lexer/adversarial integration and native/prepared/offline evidence validated. Developer-host inspection independently pending/non-blocking; existing toolchain/CRT/profile/locks unchanged.
+- Linux: Omarchy developer Debug/Release and independent Ubuntu hosted Debug/Release validated; source bytes, checked errors and diagnostic contracts preserved.
 - macOS future: Deferred; no Darwin execution or acceptance claimed.

@@ -6,7 +6,7 @@
 
 ## v1 Requirements
 
-Here v1 means the first walking-skeleton milestone, not a stable language release. At fresh initialization all requirements were pending hypotheses and no prior implementation/evidence was credited. Phase 1 BUILD-01 through BUILD-14 remain accepted from this lifecycle's preserved execution and final four-job run 37826767824. Phase 2 SRC-01 through SRC-04 and DIAG-01 through DIAG-03 are now owner-accepted from final four-job run 38722486719; Plan 03-01 documentation-only LEX-01 is also owner-accepted, supported by its reviewed and actually published profile; Plan 03-02 LEX-02–06 are owner-accepted for validated Linux developer scope; 27 requirements are accepted and the other 22 remain pending. New lexer hosted CI and final Phase 3 acceptance remain pending. Every requirement maps to exactly one active phase. P01 forces the compiler path; PLAT_01/02/03/06 force the related platform/build constraints.
+Here v1 means the first walking-skeleton milestone, not a stable language release. At fresh initialization all requirements were pending hypotheses and no prior implementation/evidence was credited. Phase 1 BUILD-01 through BUILD-14 remain accepted from final four-job run 37826767824. Phase 2 SRC-01 through SRC-04 and DIAG-01 through DIAG-03 remain accepted from run 38722486719. Phase 3 LEX-01 through LEX-06 are now owner-accepted after the actually published profile, independent Linux validation, final four-job run 39107885454 and canonical goal verification. Global counts remain 27 accepted/22 pending; no future requirement is accepted. Every requirement maps to exactly one active phase. P01 forces the compiler path; PLAT_01/02/03/06 force the related platform/build constraints.
 
 ### Build and developer foundation
 
@@ -171,12 +171,12 @@ These are deferred probe-driven directions, not the next release contract or aut
 | DIAG-01 | Phase 2 | Complete — owner accepted final run 38722486719 |
 | DIAG-02 | Phase 2 | Complete — owner accepted final run 38722486719 |
 | DIAG-03 | Phase 2 | Complete — owner accepted final run 38722486719 |
-| LEX-01 | Phase 3 | Complete |
-| LEX-02 | Phase 3 | Complete |
-| LEX-03 | Phase 3 | Complete |
-| LEX-04 | Phase 3 | Complete |
-| LEX-05 | Phase 3 | Complete |
-| LEX-06 | Phase 3 | Complete |
+| LEX-01 | Phase 3 | Complete — owner accepted final profile/phase verification and run 39107885454 |
+| LEX-02 | Phase 3 | Complete — owner accepted final run 39107885454 and canonical verification |
+| LEX-03 | Phase 3 | Complete — owner accepted final run 39107885454 and canonical verification |
+| LEX-04 | Phase 3 | Complete — owner accepted final run 39107885454 and canonical verification |
+| LEX-05 | Phase 3 | Complete — owner accepted final run 39107885454 and canonical verification |
+| LEX-06 | Phase 3 | Complete — owner accepted final run 39107885454 and canonical verification |
 | PARSE-01 | Phase 4 | Pending |
 | PARSE-02 | Phase 4 | Pending |
 | PARSE-03 | Phase 4 | Pending |
@@ -208,7 +208,7 @@ These are deferred probe-driven directions, not the next release contract or aut
 - Accepted Phase 1 foundation requirements: 14
 - Accepted Phase 2 source/diagnostic requirements: 7
 - Accepted Phase 3 experimental profile requirement: 1 (LEX-01)
-- Accepted Phase 3 Linux developer-scope token/lexer requirements: 5 (LEX-02–06)
+- Accepted Phase 3 token/lexer requirements with Linux developer and Ubuntu/Windows hosted evidence: 5 (LEX-02–06)
 - Total accepted requirements: 27
 - Pending requirements: 22
 
@@ -220,5 +220,7 @@ Plan 03-01 / LEX-01 evidence: [03-01-EXECUTION.md](phases/03-m1-experimental-smo
 
 Plan 03-02 / LEX-02–06 evidence: [03-02-EXECUTION.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-02-EXECUTION.md) and [03-02-SUMMARY.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-02-SUMMARY.md). The owner accepted Tasks 1–2 for validated Linux developer scope after read-only architecture, correctness, security and evidence review found no acceptance blockers. Debug and Release independently passed doctor 22/22, focused 55/55 (all 35 normative cases actually executed), existing components 61/61, full CTest 151/151, thirteen compiler/directory/C++23 entries and direct includes. All 65 manifest entries and 28 command logs were verified before closeout; superseded planning bytes are separately archived without altering accepted evidence. Canonical requirements.mark-complete completed only LEX-02 through LEX-06. This accepts representation, recognition, whitespace/rejection, EOF and checked recovery for that scope; it does not claim hosted validation of the new lexer, Wave 3 adversarial/integration evidence, final Phase 3 acceptance, parser or driver success behavior. Windows developer-host inspection remains independently pending/non-blocking; macOS deferred.
 
+Final Phase 3 / LEX-01–06 acceptance: the owner ACCEPTED Phase 3 after completed/success [run 39107885454](https://github.com/m4rkens/VeyrLang/actions/runs/39107885454) at be84bb9702afa75ad07803a678e7fd5a4e6358d7 and actual canonical GSD 1.6.1 goal verification. See [03-03-EXECUTION.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-03-EXECUTION.md), [03-03-SUMMARY.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-03-SUMMARY.md) and [03-VERIFICATION.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-VERIFICATION.md). All four Ubuntu/Windows Debug/Release jobs passed 419/419 native test, verify and prepared acceptance with all 323 focused, 256 byte and 35 normative cases, thirteen selected C++23 entries, include-policy and expected isolated empty-cache rejection without acquisition/retry. Canonical results: five roadmap criteria, 21 plan truths, 22 deduplicated truths, 12 artifact entries, 11 directly inspected links, six requirements and fourteen decisions; verification.status passed. The scoped canonical requirements helper confirmed only LEX-01–06 already complete. This final evidence supplements the historical plan scopes above; it does not accept parser, semantic-range enforcement, final grammar/ABI or driver/end-to-end requirements. Windows developer-host inspection remains independently pending/non-blocking; macOS deferred.
+
 ---
-*Last updated: 2026-10-18 after owner-accepted Plan 03-02 Linux scope and canonical requirement bookkeeping; 27 accepted/22 pending. Requirement definitions, mappings, Phase 1/2 acceptance and all later requirement statuses unchanged.*
+*Last updated: 2026-10-18 after final owner Phase 3 acceptance and bounded GSD closeout preparation; 27 accepted/22 pending. Requirement definitions, phase mappings, Phase 1/2 acceptance and all future requirement statuses remain unchanged. Phase 4 is unstarted and unauthorized.*

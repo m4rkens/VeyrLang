@@ -15,13 +15,14 @@ Give programmers system-level control while moving as much error detection as pr
 - [x] Establish the compiler build with C++23, Conan 2, CMake, Ninja, Clang, GoogleTest/GoogleMock, and LLVM 23.1.2. Validated in Phase 1: Conan and Compiler Build Foundation; BUILD-01 through BUILD-14 accepted.
 - [x] Provide equivalent Windows/Linux developer operations through thin Python orchestration and explicit reviewed profiles. Validated in Phase 1 through preserved Omarchy developer evidence and independent Ubuntu/Windows hosted Debug/Release execution. Windows developer-host inspection remains independently pending/non-blocking; hosted CI does not establish local-host acceptance.
 - [x] Establish source identity, byte-offset spans, and portable plain-text diagnostics independent of LLVM. Validated in Phase 2: Source Identity, Spans, and Diagnostics; SRC-01 through SRC-04 and DIAG-01 through DIAG-03 accepted.
+- [x] Define, review and separately publish the experimental M1 smoke profile before syntax-dependent implementation. Validated in Phase 3: M1 Experimental Smoke Profile, Tokens, and Lexer; LEX-01 accepted. The profile is milestone-local and does not freeze final syntax, semantics, encoding or ABI.
+- [x] Provide checked kind/span tokens and deterministic original-byte lexical recovery with explicit Invalid tokens, owning ordered Error diagnostics and final EOF. Validated in Phase 3; LEX-02–LEX-06 accepted, including source-snapshot lifetime and separate renderer integration, adversarial coverage and Ubuntu/Windows hosted Debug/Release evidence.
 
 These capabilities were implemented and verified in this fresh lifecycle; no previous run's artifacts or evidence are credited. Long-term language-design decisions remain constraints rather than implemented language capabilities.
 
 ### Active
 
-- [ ] Define and review the M1 Experimental Smoke Profile in Phase 3 before syntax-dependent implementation.
-- [ ] Implement token recovery, parsing, a minimal AST, semantic validation, and lowering for that profile only.
+- [ ] Implement parsing, a minimal AST, semantic validation and lowering for the accepted experimental profile only, under separately authorized later phases.
 - [ ] Carry one root-module identity through the pipeline without imports or package resolution.
 - [ ] Emit native code through LLVM and expose the smoke path through `veyrc`.
 - [ ] Demonstrate positive and negative end-to-end behavior on Windows x86_64 and Linux x86_64 under separately authorized verification.
@@ -40,11 +41,13 @@ Detailed, phase-mapped requirements are in [REQUIREMENTS.md](REQUIREMENTS.md).
 
 ## Current State
 
-Phase 1 is closed at 8/8 and Phase 2 is complete and owner-accepted at 4/4. The canonical Phase 2 goal-verification procedure has now been performed inline using actual code/wiring inspection and accepted native evidence; see [02-VERIFICATION.md](phases/02-source-identity-spans-and-diagnostics/02-VERIFICATION.md). There are 21 accepted requirements and 28 pending later requirements across the ten-phase M1 roadmap. Phase 3 discussion, research, planning and implementation have not started; M1 is not complete.
+Phase 1 is closed at 8/8, Phase 2 at 4/4 and Phase 3 at 3/3, all owner-accepted. Actual canonical Phase 2 and Phase 3 goal verification is recorded in their verification artifacts. There are 27 accepted requirements and 22 pending later requirements across the ten-phase M1 roadmap. Phase 4 remains unstarted and unauthorized; M1 is not complete.
 
 Phase 1 acceptance is recorded in [01-08-SUMMARY.md](phases/01-conan-and-compiler-build-foundation/01-08-SUMMARY.md), final four-job [run 37826767824](https://github.com/m4rkens/VeyrLang/actions/runs/37826767824). Phase 2 acceptance is recorded in [02-04-SUMMARY.md](phases/02-source-identity-spans-and-diagnostics/02-04-SUMMARY.md), final four-job [run 38722486719](https://github.com/m4rkens/VeyrLang/actions/runs/38722486719) at ab596c7c721fd673b1716db6a1f6f5681a7ff126. Ubuntu and Windows hosted Debug/Release jobs validated the complete Phase 2 slice: source 12, location 8, diagnostic 14 and renderer 27 tests, full CTest 96/96, ten selected C++23 compilation entries, include-policy, prepared/native and controlled acquisition-disabled rejection.
 
-Linux remains the primary development host; Omarchy developer and Ubuntu CI baselines remain separate. Windows hosted CI is validated; Windows developer-host inspection is independently pending/non-blocking. macOS remains deferred. Canonical lifecycle reconciliation changes planning documentation only; the final closeout packet still needs owner review and separate commit/publication authorization.
+Phase 3 acceptance is recorded in [03-03-SUMMARY.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-03-SUMMARY.md) and [03-VERIFICATION.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-VERIFICATION.md). Final [run 39107885454](https://github.com/m4rkens/VeyrLang/actions/runs/39107885454) at be84bb9702afa75ad07803a678e7fd5a4e6358d7 passed Ubuntu/Windows Debug/Release: 419/419 native test, verify and prepared acceptance, 323 focused cases including all 256 byte values and 35 normative examples, thirteen selected compiler/directory/C++23 entries, include-policy and controlled empty-cache rejection. Canonical verification passed five roadmap criteria, 21 original plan truths, 22 deduplicated scored truths, 12 artifact entries, 11 directly inspected links, six requirements and all fourteen discussion decisions. This validates the token/lexer foundation, not a parser, final Veyr grammar, general type system or native smoke compiler pipeline.
+
+Linux remains the primary development host; Omarchy developer and Ubuntu CI baselines remain separate. Windows hosted CI is validated; Windows developer-host inspection is independently pending/non-blocking. macOS remains deferred. Canonical lifecycle reconciliation changes planning documentation only; the final Phase 3 closeout packet needs separate commit/publication authorization. No later phase is started by this acceptance.
 
 ## Context
 
@@ -100,8 +103,8 @@ These summarize canonical inputs and accepted phase results. Phase completion do
 | LLVM 23.1.2 through Conan | D-065; exact target confirmed by official release | Narrow recipe/package integration validated in Phase 1; unchanged in Phase 2 |
 | Thin Python wrapper → Conan → CMake → Ninja → Clang | Build architecture; avoid a second package manager | Shared operations validated in Phase 1; used unchanged for Phase 2 |
 | Windows/Linux x86_64 Tier 1, macOS deferred | Owner request and platform policy | Hosted Debug/Release validated in both phases; Windows developer host independently pending; macOS deferred |
-| Phase 3 profile precedes concrete syntax work | M1 syntax must stay milestone-local | Profile not yet authored |
-| Ten M1 phases with explicit stage gates | Canonical M1 decomposition and workflow | Phase 1 8/8 and Phase 2 4/4 accepted; Phase 3 unstarted; later requirements pending |
+| Phase 3 profile precedes concrete syntax work | M1 syntax must stay milestone-local | Accepted profile published in 52f598a before lexer implementation; actual remote/ancestry/content evidence preserved |
+| Ten M1 phases with explicit stage gates | Canonical M1 decomposition and workflow | Phase 1 8/8, Phase 2 4/4 and Phase 3 3/3 accepted; Phase 4 unstarted; 22 future requirements pending |
 | `--auto` applies within initialization only | Exact-command and commit policy override workflow auto-chain defaults | No automatic advancement or commits; each publication needs explicit approval |
 
 ## Non-blocking Follow-up Candidates
@@ -109,13 +112,14 @@ These summarize canonical inputs and accepted phase results. Phase completion do
 - Enforce explicit initialization of `Diagnostic::severity` before diagnostic construction becomes widespread. Current callers must initialize before reading; no arbitrary default or constructor change is accepted here.
 - Add a combined left-clipping, mixed-escape and empty-span renderer regression test.
 - Consider documenting/testing unsupported initialized severity values.
+- Optional per-case traces for looped long-run/EOF lexer regression fixtures.
 
 These are recorded opportunities, not implemented changes or new phase requirements. They do not reopen accepted Phase 2 scope.
 
 ## Platform impact
 
-- Windows: Reviewed standalone clang-cl with DevShell SDK/CRT/linker environment; hosted Debug/Release foundation and complete source/diagnostic slice validated. Developer-host inspection remains independently pending/non-blocking.
-- Linux: Primary Omarchy developer Debug/Release and separate Ubuntu CI Debug/Release evidence validated; reviewed toolchains remain independent. Source/location/diagnostic contracts preserve original bytes and stored display spelling.
+- Windows: Reviewed standalone clang-cl with DevShell SDK/CRT/linker environment; hosted Debug/Release foundation, source/diagnostic and token/lexer/adversarial integration validated. Developer-host inspection remains independently pending/non-blocking.
+- Linux: Primary Omarchy developer Debug/Release and separate Ubuntu CI Debug/Release evidence validated; reviewed toolchains remain independent. Source/location/diagnostic/lexer contracts preserve original bytes and stored display spelling.
 - macOS future: Keep target/host distinctions and platform boundaries; defer Darwin profiles, Mach-O/framework/linking validation and CI.
 
 ## Evolution
@@ -123,4 +127,4 @@ These are recorded opportunities, not implemented changes or new phase requireme
 Update this document only at owner-authorized lifecycle or milestone boundaries. Reassess active requirements, move actually verified capabilities to Validated, record invalidated scope, and keep the current description accurate. Accepted language semantics belong in the canonical decision log; milestone-local choices belong in the smoke profile and reviewed phase artifacts. Stage completion never authorizes a transition or commit.
 
 ---
-*Last updated: 2026-10-15 after owner-authorized Phase 2 GSD lifecycle reconciliation; Phase 1 and Phase 2 validated, Phase 3 unstarted, closeout publication pending owner approval.*
+*Last updated: 2026-10-18 after owner acceptance of Phase 3 and bounded GSD closeout preparation; Phases 1–3 validated, Phase 4 unstarted and unauthorized, final closeout publication pending separate owner approval.*

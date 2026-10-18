@@ -3,8 +3,8 @@
 **Date:** 2026-10-18
 **Invocation:** `$gsd-execute-phase 3 --wave 3`
 **Base commit:** `da92389b5eb6b6b2bbe949072015dd950d8273b3` (`main`)
-**Status:** Owner ACCEPTED Tasks 1–2 for the validated Linux developer scope. Local implementation/evidence review is complete; publication, hosted validation, canonical phase-goal verification and final plan/phase closeout remain separately gated. No summary or formal 03-03 completion is claimed.
-**Lifecycle:** Phase 1 8/8; Phase 2 4/4; Phase 3 remains 2/3, in progress. LEX-01–06 retain their existing accepted scopes; global requirements remain 27 accepted/22 pending. No lifecycle completion mutation occurred.
+**Status:** Plan 03-03 and Phase 3 are formally owner-accepted and complete after four-job hosted success and canonical goal verification. Published execution commit: be84bb9702afa75ad07803a678e7fd5a4e6358d7. Bounded closeout bookkeeping is authorized; the final documentation commit/publication remain separately gated.
+**Lifecycle:** Phase 1 8/8; Phase 2 4/4; Phase 3 3/3 complete and owner-accepted. LEX-01–06 are accepted; global requirements remain 27 accepted/22 pending. Phase 4 remains unstarted and unauthorized. Earlier checkpoints below retain their historical states.
 
 ## Verified entry and canonical execution route
 
@@ -254,10 +254,166 @@ ignored checkpoint receipts preserve its pre-update version and integrity proof.
 No builds, tests, dependency operations, staging, commits, pushes or CI mutations
 were performed during checkpoint preparation. Phase 4 remains unstarted.
 
+## Published execution and final hosted evidence — 2026-10-18
+
+Under separate explicit publication authorization, the exact three-file packet
+was committed as be84bb9702afa75ad07803a678e7fd5a4e6358d7 and pushed normally to
+origin/main. A direct post-push refs/heads/main query returned that exact SHA;
+local main and tracked origin/main agreed, with a clean worktree. Accepted test
+and checkpoint hashes were checked before staging and against the resulting
+commit. No additional implementation or lifecycle file was included.
+
+[Build foundation run 39107885454](https://github.com/m4rkens/VeyrLang/actions/runs/39107885454)
+was triggered automatically by that push and is now independently confirmed
+completed/success for the exact commit. Actual raw logs prove the following for
+each of ubuntu-ci-Debug, ubuntu-ci-Release, windows-ci-Debug and windows-ci-Release:
+
+- Native test, native verify and prepared acceptance each executed 419/419 tests.
+- Each of those three executions includes all 323 expected focused names,
+  every byte-case index 0–255 and all 35 normative profile names.
+- Verify and prepared acceptance report 13 selected compiler/directory/C++23 entries.
+- include-policy passed in each execution; its CTest registration directly calls
+  scripts/check_includes.py. No separate standalone hosted command is claimed.
+- Isolated empty-cache rejection was observed once with expected missing-package/
+  no-remote diagnostics and no acquisition/retry. Normal native/prepared paths
+  did not report that failure.
+
+New read-only run metadata, raw hosted log and per-job/stage Passed name sets are
+retained in .veyr-dev/execution/03-03/verification/run.json, hosted-run.log and
+hosted.json. The earlier CI observations above remain historical rather than
+being rewritten. The published execution record was archived under
+verification/accepted-inputs/ before this authorized documentation reconciliation.
+The original 62-entry manifest still resolves through its approved archive mapping;
+the separate checkpoint receipt's pre-reconciliation record is also retained.
+
+The owner authorized final verification/documentation preparation after local
+review and hosted success. Created [03-03-SUMMARY.md](03-03-SUMMARY.md) using the
+installed template, preserving the exact LEX-02–06 requirements array and
+per-deliverable evidence classifications. It records verified task scope while
+explicitly withholding formal final plan/phase acceptance. No state, roadmap,
+requirement or PROJECT reconciliation helper is invoked at this preparation gate.
+Canonical summary and final phase-verification query receipts are retained under
+verification/. Actual findings are now recorded in
+[03-VERIFICATION.md](03-VERIFICATION.md); no status is inferred from the existence
+of a document alone.
+
+## Canonical final verification performed — owner acceptance pending
+
+Applied installed GSD 1.6.1 checkpoint reconciliation, summary creation/validation
+and verify_phase_goal procedures inline under repository agent policy. Summary
+schema and verify-summary passed; coverage classification validates 6/6
+deliverables. Canonical decision coverage reports 14/14. Artifact queries passed
+2/2 + 7/7 + 3/3. The key-link text query recognizes only 1/11; actual C++/CMake/
+documentary wiring was inspected directly for all 11 and raw helper misses remain
+retained rather than being misreported as query success. No execute:post or
+verify:post capability hook is active, so no extra review/security/TDD artifact
+was fabricated. No parent gap-closure or user-setup artifact applies.
+
+Verified all five roadmap criteria and all 21 plan truths. Four clear restatements
+were deduplicated, preserving source-row traceability, for 22/22 scored truths.
+All six LEX requirements and all fourteen decisions are supported. Checked actual
+production/test/CMake artifacts, original publication-before-implementation
+history and the integrated SourceManager/DiagnosticEngine/renderer paths.
+
+The canonical prior-phase regression/behavior gate ran one fresh complete
+prepared Linux Debug CTest suite: 419/419, exit 0, including all original 96
+Phase 2 native names. Direct check_includes.py also passed. Retained independently
+accepted Release evidence and new four-job hosted results cover that configuration;
+no repeated full suite per truth, project build, configure, dependency operation
+or new production change was introduced. Actual receipts are in
+verification/native-commands.json and canonical-Debug-ctest.log.
+
+Created the canonical verification report from real findings. Installed
+frontmatter.validate --schema verification returned valid true. The actual
+query verification.status returned exactly:
+
+```json
+{
+  "status": "passed",
+  "next_action": "Verification passed — continue.",
+  "next_command": ""
+}
+```
+
+That generic next_action is not owner authorization. No completion or requirement
+helper, commit, push or Phase 4 transition followed. No blocker, unresolved
+human-verification item or behavior-unverified invariant remains in the verified
+scope. Optional loop-case traces and prior diagnostic improvements remain
+non-blocking. Phase 1 remains 8/8, Phase 2 4/4 and Phase 3 2/3; global requirements
+remain 27 accepted/22 pending. Final owner acceptance and bounded lifecycle/
+PROJECT reconciliation, followed by separately approved publication, remain next.
+
+## Formal owner acceptance and bounded closeout — 2026-10-18
+
+The owner explicitly ACCEPTED Phase 3, all six LEX requirements and the complete
+canonical verification evidence: hosted run 39107885454 at be84bb9, all four jobs
+successful with 419/419 per native test/verify/prepared path, 5/5 roadmap criteria,
+21/21 original plan truths, 22/22 deduplicated truths, 12/12 artifact entries,
+11/11 directly inspected links, 14/14 decisions and verification.status passed.
+No accepted technical finding was changed or new native evidence fabricated.
+
+Re-read the installed GSD 1.6.1 execute-plan/execute-phase completion conventions
+and actual command handlers before mutation. Unrestricted phase.complete has no
+preserve-current-phase option and explicitly selects the next phase. Instead,
+the installed supported state.complete-phase --phase 3 marks this phase complete
+without selecting Phase 4. The canonical roadmap.update-plan-progress 3 updates
+its 3/3 count, phase/plan checkboxes and completion date. Scoped requirements and
+state metrics/session/decision operations complete the remaining plan bookkeeping;
+actual command outputs, any metadata reconciliation and final checks are retained
+in .veyr-dev/execution/03-03/closeout/. These are supported bounded operations,
+not a simulated phase.complete call or an altered GSD implementation.
+
+Finalized [03-03-SUMMARY.md](03-03-SUMMARY.md), recorded owner acceptance alongside
+unchanged findings in [03-VERIFICATION.md](03-VERIFICATION.md), and reconciled
+STATE/ROADMAP/REQUIREMENTS/PROJECT. PROJECT moves the actual profile and token/lexer
+capabilities to Validated while leaving parser, AST, semantics, lowering, module,
+backend, driver and end-to-end work active/pending. No future capability is credited.
+All seven pre-closeout documents were retained under closeout/accepted-inputs/;
+the accepted 18-entry verification manifest remains untouched and resolves its
+superseded planning files there. Earlier 62/65/36-entry evidence packets and raw
+logs retain their original approved archive mappings.
+
+Phase 1 remains 8/8; Phase 2 4/4; Phase 3 is owner-accepted at 3/3. Global
+requirements remain 27 accepted/22 pending. No unrestricted phase.complete,
+automatic transition, native build/test/dependency operation, staging, commit,
+push or CI mutation ran during this closeout. No new blocker or human item arose.
+Severity initialization, combined renderer-clipping, unsupported-severity and
+optional loop-trace improvements remain non-blocking future work.
+The exact seven-file closeout packet stops for separate owner publication review.
+
+### Final closeout checks
+
+The installed summary schema and verify-summary checks pass, including commit,
+file-existence and self-check validation. Coverage classification reports all
+six entries automatically covered, with no human-verification item. The
+verification schema passes; a fresh canonical verification.status query returns
+`passed` with an empty next_command. Phase-completeness reports three plans,
+three summaries, no incomplete plans, no orphan summaries, errors or warnings.
+The separate plan index discovers the same three plans and reports its existing
+naming advisory for 03-PLAN-REVIEW.md and 03-PLANNING-BREAKDOWN.md. These support
+documents are not execution plans; no rename or extra execution is required.
+
+Generic state helpers again counted support documents and misderived milestone
+metadata. Their raw results are preserved. The supported frontmatter.merge
+operation reconciled the exact numbered inventory to 15/15 completed written
+plans, three of ten completed phases (30%), M1 Compiler Walking Skeleton and
+current_phase 3. This correction does not select or authorize Phase 4.
+
+Final archive-aware integrity checks pass for the original 62/65/36-entry
+manifests, their 16/28/16 command logs and the accepted 18-entry canonical
+verification packet. All 267 protected tracked inputs outside the seven-file
+closeout scope are byte-identical to closeout entry. The profile matches its
+published dedicated commit; four locks match HEAD. All 49 requirement definitions
+and phase mappings are unchanged, with 27 accepted and 22 pending. Unrelated
+roadmap phase sections remain byte-identical. Local documentation links, fences,
+frontmatter, LF/final-newline and whitespace checks pass. Nothing is staged.
+Receipts and exact final-document hashes are retained separately under
+`.veyr-dev/execution/03-03/closeout/`; accepted manifests are not rewritten.
+
 Platform impact:
 - Windows: Portable C++23 in-memory byte tests; existing compiler/runtime/DevShell,
-  linker/profile/locks unchanged. New test hosted/native evidence remains pending;
+  linker/profile/locks unchanged. New hosted Debug/Release evidence is validated;
   developer-host inspection independently pending/non-blocking.
-- Linux: Omarchy Debug/Release locally validated; Ubuntu is an independent hosted
-  baseline, and prior 03-02 Ubuntu success does not validate these new tests.
+- Linux: Omarchy Debug/Release locally validated; independent Ubuntu Debug/Release
+  hosted evidence now validates the published new tests as well.
 - macOS future: Deferred; no OS, filesystem, console, encoding or ABI dependency added.
