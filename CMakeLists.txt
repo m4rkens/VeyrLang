@@ -45,6 +45,7 @@ add_library(veyrcore STATIC
   src/diagnostics/diagnostic_engine.cpp
   src/diagnostics/plain_text_renderer.cpp
   src/lexing/lexer.cpp
+  src/parsing/parser.cpp
   src/source/source_manager.cpp)
 veyr_target_policy(veyrcore)
 target_include_directories(veyrcore PUBLIC "${PROJECT_SOURCE_DIR}/include")

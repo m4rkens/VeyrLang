@@ -30,6 +30,11 @@ veyr_target_policy(lexer_tests)
 target_link_libraries(lexer_tests PRIVATE veyrcore GTest::gtest_main GTest::gmock)
 gtest_discover_tests(lexer_tests DISCOVERY_MODE PRE_TEST)
 
+add_executable(parser_tests parsing/parser_test.cpp)
+veyr_target_policy(parser_tests)
+target_link_libraries(parser_tests PRIVATE veyrcore GTest::gtest_main GTest::gmock)
+gtest_discover_tests(parser_tests DISCOVERY_MODE PRE_TEST)
+
 add_executable(llvm_link_tests infrastructure/llvm_link_test.cpp)
 veyr_target_policy(llvm_link_tests)
 target_link_libraries(llvm_link_tests PRIVATE veyr_llvm_support GTest::gtest_main)
