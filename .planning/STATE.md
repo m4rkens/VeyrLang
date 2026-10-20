@@ -4,16 +4,16 @@ milestone: M1
 milestone_name: Compiler Walking Skeleton
 current_phase: 4
 current_phase_name: Smoke Profile Parser
-status: awaiting-publication-authorization
-stopped_at: 04-01 Tasks 1–2 owner-accepted for Linux developer scope; awaiting separate commit/publication and formal-closeout authorization. Phase 4 remains 0/3; Wave 2/3 and PARSE acceptance gated.
-last_updated: "2026-10-19T08:13:21.230558+00:00"
-last_activity: 2026-10-19
-last_activity_desc: 04-01 Tasks 1–2 accepted for Linux developer scope; 0/3 formally complete; publication/closeout pending
+status: awaiting-closeout-publication-and-wave2-authorization
+stopped_at: Formal 04-01 local closeout complete; Phase 4 is 1/3. Awaiting final lifecycle review and separate publication approval. Wave 2/3 unstarted and unauthorized; PARSE requirements remain pending by explicit owner exception.
+last_updated: "2026-10-20T15:50:37.879175+00:00"
+last_activity: 2026-10-20
+last_activity_desc: Owner-authorized formal 04-01 local closeout; 1/3 plans complete with no requirement acceptance or next-wave execution
 progress:
   total_phases: 10
   completed_phases: 3
   total_plans: 18
-  completed_plans: 15
+  completed_plans: 16
   percent: 30
 ---
 
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (accepted Phase 1/2/3 capabilities and remaining M1 wo
 
 ## Current Position
 
-Phase: 4 (Smoke Profile Parser) — LOCAL OWNER-REVIEW CHECKPOINT; 0/3 formally complete
-Plan: 1 of 3
+Phase: 4 (Smoke Profile Parser) — 1/3 FORMALLY COMPLETE; closeout publication/Wave 2 authorization pending
+Plan: 2 of 3 — next planned unit 04-02, unstarted and unauthorized
 Total Plans in Phase: 3
-Status: 04-01 Tasks 1–2 owner-accepted for Linux developer scope; formal plan completion/publication pending
-Last activity: 2026-10-19 — Recorded explicit owner acceptance of Linux 04-01 Tasks 1–2; checkpoint only, no native rerun or completion
+Status: 04-01 formally complete with local/hosted acceptance; 04-02/03 unstarted; PARSE acceptance deferred by owner exception
+Last activity: 2026-10-20 — Reconciled formal 04-01 closeout in phase4/parser-closeout; no native rerun, publication or Wave 2 execution
 
 Phase 3 progress: [██████████] 3/3 complete and owner-accepted.
 Phase 2 progress: [██████████] 4/4 complete and owner-accepted.
@@ -82,6 +82,8 @@ or acquire dependencies. Earlier evidence/metrics remain in accepted summaries.
 - [Phase 03]: Recovered token vectors do not imply compilation success; persistent Error state remains authoritative — Exact Invalid/Error and shared-engine/renderer integration tests preserve the accepted handoff contract.
 - [Phase 03]: Owner accepted Phase 3 after four-job hosted success and canonical verification; Phase 4 remains unauthorized — Closeout uses only bounded installed helpers and separately reviewed publication gates.
 
+The owner explicitly excepted PARSE-01–03 from generic 04-01 requirement completion: full acceptance spans later plans; all remain pending. Formal plan completion does not authorize Wave 2.
+
 ### Accepted evidence and limits
 
 - Phase 1: 8/8; final four-job [run 37826767824](https://github.com/m4rkens/VeyrLang/actions/runs/37826767824), commit 2741d6514f5e695d36c20cb792bff4985ac5d754. All rows passed native/prepared and controlled empty-cache acceptance; CTest 35/35, four compiler/C++23 entries. See 01-08-EXECUTION.md and 01-08-SUMMARY.md for cache/cold-source-build scope and Windows corrections. Closeout published in 1f7e67d11ea6a68790d29b27bd3e1750a1c5d29f.
@@ -108,16 +110,17 @@ syntax/types/encoding and broader project/package semantics remain unaccepted.
 
 ## Session Continuity
 
-Last session: 2026-10-19T08:13:21.204Z
-Stopped at: 04-01 Tasks 1–2 owner-accepted for Linux developer scope; awaiting separate commit/publication and formal-closeout authorization. Phase 4 remains 0/3; Wave 2/3 and PARSE acceptance gated.
-Resume file: .planning/phases/04-smoke-profile-parser/04-01-EXECUTION.md
-Completed summaries: 01-01 through 01-08, 02-01 through 02-04 and 03-01 through 03-03.
-Last completed step: 04-01 Tasks 1–2 passed independent read-only owner review and were explicitly accepted for Linux developer scope: doctor 22/22, focused 13/13, regressions 93/93, full test/verify 432/432, strict verification PASS, 15 compiler/directory/C++23 entries and includes PASS per configuration. Formal plan acceptance remains pending.
-Next owner gate: Review this accepted-local-task checkpoint and separately authorize the seven-file sensitive execution commit/publication. Formal 04-01 closeout/SUMMARY, fresh hosted parser evidence, later-wave execution and final phase acceptance remain separately gated; no PARSE requirement is accepted.
-Current outputs: Exactly seven review candidates: parser API/implementation/baseline tests, two bounded CMake edits, owner-accepted-local-scope 04-01-EXECUTION.md and STATE. Original ignored REVIEW/logs/75-entry manifest remain immutable; owner-acceptance/receipt.json records archival resolution and updated documentation hashes. Nothing staged or committed.
-Preserved artifacts: Existing source/token/lexer/diagnostic/renderer APIs, scripts/workflows, recipes/profiles/toolchain/dependency policy, four locks, published M1 profile, completed Phase 1/2/3 artifacts, accepted Phase 4 plans and ignored IDE binding are unchanged.
-Evidence integrity: 75/75 original manifest entries, 31/31 command logs, 201 historical entries and ten planning inputs verified. Before acceptance documentation edits, exact reviewed STATE/EXECUTION bytes were archived under .veyr-dev/execution/04-01/owner-acceptance/accepted-inputs/; original manifest/parent-checkpoint hashes now resolve through those snapshots. Accepted source/tests/CMake remain unchanged.
-GSD bookkeeping: Installed GSD 1.6.1 checkpoint_protocol/checkpoint_return_for_orchestrator and checkpoint_handling inspected; actual owner acceptance recorded through factual execution documentation and supported frontmatter.merge/state.update/state.record-session operations. No summary, plan/phase completion, requirements completion, metric/progress advance, commit/publication or next-wave helper ran.
+Last session: 2026-10-20T15:50:37.879175+00:00
+Stopped at: Formal Plan 04-01 local closeout complete; Phase 4 1/3, requirements 27 accepted/22 pending. Awaiting independent final review and separate commit/publication approval. Wave 2/3 are unstarted and unauthorized.
+Resume file: .planning/phases/04-smoke-profile-parser/04-01-SUMMARY.md
+Completed summaries: 01-01 through 01-08, 02-01 through 02-04, 03-01 through 03-03 and 04-01; 16 completed plans across 18 written plans. Only three whole phases are complete (30%).
+Last completed technical step: Parser publication 425e5ff456a59cafc04a2fa46ddbaa0f2318e792 and successful four-job run 39222510470, with accepted Linux doctor 22/22, focused 13/13, regressions 93/93, full CTest 432/432, fifteen C++23 entries and includes PASS per configuration. No new native evidence is claimed.
+Last completed lifecycle step: Owner-authorized formal 04-01 local closeout; summary/execution completion fields, Phase 4 1/3, completed-plan count 16 and ROADMAP checkbox agree. The PARSE exception leaves every requirement unchanged.
+Next owner gate: Independent final lifecycle review, separate closeout commit/publication approval, then fresh explicit Wave 2 command. 04-02 is the next planned unit, not active execution; 04-03 remains dependent on 04-02.
+Current outputs: Four closeout files only: STATE, ROADMAP, 04-01-EXECUTION and 04-01-SUMMARY, on phase4/parser-closeout at baseline b466763b77f8dbf39b4ec8b8ad5efdd0e45332d9. Nothing staged or committed. Original main/Stage 1 and the separate Stage 2 correction are preserved.
+Preserved artifacts: Published compiler APIs, implementation/tests/CMake, M1 profile, locks, toolchain/CI policies, Phase 1–3 artifacts and Phase 4 plans are unchanged. The deferred Stage 2 performance objective does not block compiler work.
+Evidence integrity: Original 75-entry parser evidence, 31 logs, five implementation freeze hashes and 201 historical references retain their archive mappings. Reviewed preparation bytes/receipts are separately archived under formal-closeout; original receipts are not rewritten. Final-state queries and manifest are separate ignored evidence.
+GSD bookkeeping: Installed summary/template, worktree single-writer reconciliation and read-only validation/index conventions applied. No requirements.mark-complete, phase.complete, auto-execution, automatic commit or installed-system modification. Final summary discovery agrees with actual owner acceptance; execution still requires explicit authorization.
 
 Platform impact:
 

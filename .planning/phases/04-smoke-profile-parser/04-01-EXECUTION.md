@@ -1,16 +1,95 @@
 ---
 phase: 04-smoke-profile-parser
 plan: "01"
-status: local-owner-accepted
+status: complete
 tasks_locally_complete: 2
-owner_acceptance: Linux developer Tasks 1–2 accepted; formal plan completion pending
+owner_acceptance: Formal Plan 04-01 accepted with established Linux and four-job hosted evidence; PARSE requirement acceptance explicitly deferred
 checkpoint_type: human-verify
 owner_review: passed
-plan_completion: pending
-hosted_parser_validation: pending
+plan_completion: complete
+formal_acceptance_recorded_at: "2026-10-20T15:50:37.879175+00:00"
+requirements_completed: []
+requirements_exception: Owner-approved PARSE-01 through PARSE-03 deferral across subsequent Phase 4 plans
+hosted_parser_validation: passed; run 39222510470 for 425e5ff456a59cafc04a2fa46ddbaa0f2318e792
 ---
 
 # Phase 4 Plan 01 — Checked Smoke Parser Execution
+
+## Formal Plan 04-01 acceptance and local closeout — 2026-10-20
+
+The owner explicitly approved bounded local formal completion, recorded at
+2026-10-20T15:50:37.879175+00:00. Published implementation and hosted acceptance were
+already established; no native command, dependency operation or new CI run was
+performed. Plan 04-01 is complete, Phase 4 is 1/3 formally complete, and 04-02/03
+remain unstarted. STATE records 16 completed plans, up from the verified 15.
+
+**Owner-approved requirement exception:** PARSE-01, PARSE-02 and PARSE-03 stay
+pending because full acceptance extends across later Phase 4 plans. The generic
+requirements.mark-complete step and automatic summary requirements-completed
+population are deliberately not applied. Definitions/mappings and global counts
+remain 27 accepted/22 pending. This is plan acceptance, not phase-wide acceptance.
+
+The reviewed candidate and original evidence were preserved in separate ignored
+formal-closeout/reviewed-inputs archives. Summary discovery was temporarily removed
+while the worktree orchestrator reconciled these four documents and finalized the
+canonical summary last. Installed schema/coverage/self-check and final phase-index
+queries verify the resulting state; their evidence belongs to formal-closeout/.
+No unrestricted lifecycle or commit helper ran and no installed GSD code changed.
+
+Remaining gates are independent final lifecycle review, separate closeout commit
+and publication authorization, and fresh explicit 04-02/Wave 2 authorization.
+Mechanical prerequisite satisfaction is not execution authorization. Phase 4
+goal verification, final acceptance and all PARSE completion remain later.
+Stage 1 and Stage 2 remain isolated; deferred performance work is not a blocker.
+
+## Historical publication and closeout preparation checkpoint — 2026-10-20
+
+The following section records the reviewed preparation state before the formal
+acceptance above. Its pending-closeout wording is historical, not current status.
+
+The owner separately authorized publication of the seven-file implementation
+checkpoint, committed and pushed as 425e5ff456a59cafc04a2fa46ddbaa0f2318e792.
+[Build foundation run 39222510470](https://github.com/m4rkens/VeyrLang/actions/runs/39222510470)
+is independently observed completed/success for that exact commit. All four
+Ubuntu/Windows Debug/Release jobs succeeded. Actual logs contain all thirteen
+parser test names, 432/432 tests in native test/verify/prepared acceptance and
+fifteen selected C++23 entries per configuration. Native configure/build,
+include verification, prepared acceptance and acquisition-disabled isolated
+empty-cache rejection succeeded. Linux owner acceptance remains distinct from
+Windows hosted validation; Windows developer-host inspection is not credited.
+
+The owner now authorized clean Phase 4 worktree preparation and bounded closeout
+preparation only. Branch phase4/parser-closeout in .veyr-dev/worktrees/phase4
+starts at verified published main b466763b77f8dbf39b4ec8b8ad5efdd0e45332d9.
+The original Stage 1 candidate and separate Stage 2 correction are excluded and
+preserved. Stage 2 performance remediation remains independent and deferred.
+
+[04-01-SUMMARY.md](04-01-SUMMARY.md) is a pending owner-review candidate using
+the installed execute-plan summary structure; it does not close the plan.
+No completion date, requirement acceptance, progress advance, commit or push is
+authorized here. Phase 4 remains 0/3, PARSE-01–03 pending and global requirements
+27 accepted/22 pending. Plans 04-02/03 remain unstarted. The canonical earlier-wave
+safety gate still applies; summary filename existence alone is not authorization.
+
+Original Linux evidence remains in the original checkout's ignored
+.veyr-dev/execution/04-01/. Its 75-entry manifest, 31 command logs, five accepted
+implementation hashes, six immutable receipts and 201 historical references
+were checked again through the existing archival mappings. New read-only hosted
+captures and checks are separate in this worktree's ignored
+.veyr-dev/execution/04-01/closeout-preparation/. Nothing rewrites the original
+evidence or claims another native run.
+
+Remaining gates: independent review and explicit formal 04-01 closeout/bookkeeping
+approval, separate closeout commit/publication approval, then fresh Wave 2
+authorization. Exhaustive malformed/precedence/syntax tests remain 04-02; actual
+token-storage destruction, source lifetime and renderer integration remain 04-03.
+Canonical phase-goal verification and final Phase 4 acceptance remain later.
+
+## Historical accepted local execution record
+
+The following original record describes the pre-publication Linux checkpoint.
+Its then-pending publication and hosted gates were subsequently satisfied as
+recorded above; formal closeout and later-wave gates have not been satisfied.
 
 **Date:** 2026-10-18. **Scope:** owner-invoked `$gsd-execute-phase 4 --wave 1`,
 04-01 Tasks 1–2 only. **Base:** `5222c585686eecb0eeabca049b6f01d610716a5c`,
