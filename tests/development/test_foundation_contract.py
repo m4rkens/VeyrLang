@@ -589,17 +589,21 @@ class ConanCacheWorkflowTests(unittest.TestCase):
         self.save = "Save completed Conan package snapshot before project validation"
         self.baseline = json.loads((self.root / "scripts/devtools/baseline.json").read_text())
 
-    def enabled(self, name, *, cold=False, success=True, outcomes=None, matched="snapshot"):
+    def enabled(self, name, *, cold=False, success=True, outcomes=None, matched="snapshot",
+                publish="true", event="push", ref="refs/heads/main"):
         guard = re.search(r"^\s+if: \$\{\{ (.*?) \}\}$", self.blocks[name], re.MULTILINE)
         if guard is None:
             return success  # GitHub's default step guard.
         expression = guard.group(1).replace("success()", str(success))
         expression = expression.replace("inputs.cold_build", str(cold))
         expression = expression.replace("steps.cache_restore.outputs.cache-matched-key", repr(matched))
+        expression = expression.replace("steps.export_cache.outputs.publish", repr(publish))
+        expression = expression.replace("github.event_name", repr(event))
+        expression = expression.replace("github.ref", repr(ref))
         expression = re.sub(r"steps\.([a-z_]+)\.outcome",
                             lambda match: repr((outcomes or {}).get(match.group(1), "skipped")),
                             expression)
-        expression = expression.replace("&&", " and ")
+        expression = expression.replace("&&", " and ").replace("||", " or ")
         expression = re.sub(r"!(?!=)", " not ", expression)
         return eval(expression.strip(), {"__builtins__": {}}, {})
 
@@ -621,8 +625,9 @@ class ConanCacheWorkflowTests(unittest.TestCase):
         export = self.blocks[self.export]
         self.assertLess(export.index("cache check-integrity"), export.index("exit $LASTEXITCODE"))
         self.assertLess(export.index("exit $LASTEXITCODE"), export.index("cache save"))
-        self.assertEqual(export.count("exit $LASTEXITCODE"), 2)
+        self.assertEqual(export.count("exit $LASTEXITCODE"), 3)
         self.assertIn("cache save '*#*:*#*'", export)
+        self.assertIn("if ($decision.publish -eq $true)", export)
         self.assertNotIn("package_id", export)  # Conan retains the distinct IDs/revisions.
         self.assertNotIn("if:", self.blocks[self.setup])
         self.assertIn("if (-not (Test-Path -LiteralPath $archive -PathType Leaf))",
@@ -653,6 +658,13 @@ class ConanCacheWorkflowTests(unittest.TestCase):
         self.assertFalse(self.enabled(self.export, outcomes={"dependencies": "failure"}))
         self.assertTrue(self.enabled(self.save, outcomes={
             "dependencies": "success", "export_cache": "success"}))
+
+    def test_unchanged_and_pr_decisions_cannot_save_even_if_helper_is_tampered(self):
+        outcomes = {"dependencies": "success", "export_cache": "success"}
+        self.assertFalse(self.enabled(self.save, outcomes=outcomes, publish="false"))
+        for event, ref in (("pull_request", "refs/pull/1/merge"),
+                           ("pull_request_target", "refs/heads/main"), ("push", "refs/heads/topic")):
+            self.assertFalse(self.enabled(self.save, outcomes=outcomes, publish="true", event=event, ref=ref))
 
     def test_later_project_failures_happen_after_successful_snapshot_save(self):
         for failure in ("Native cache-only configure", "Native incremental build",

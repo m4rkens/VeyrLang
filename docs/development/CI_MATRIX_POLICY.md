@@ -140,14 +140,74 @@ into the current home through its absolute project-owned executable. Conan owns
 package IDs/revisions and archive serialization; remotes/configuration, CLI venvs
 and project build output are not restored as policy authority.
 
-Explicit dependency setup always runs, including on a cache hit. Only after it
-succeeds, Conan checks package integrity and exports a fresh archive containing
-recipes, sources and completed packages/revisions, excluding temporary binary
-build/download folders. Pinned `actions/cache/save` saves that archive immediately
-before project configure/build/test/verify. A later project failure does not
-discard a successfully saved dependency snapshot. Failed setup, integrity checks
-or export stop without publishing a new snapshot; bootstrap-only jobs cannot
-publish one. No automatic repair, retry or acceptance bypass is introduced.
+Explicit dependency setup always runs, including on a cache hit. Imported
+packages pass Conan integrity verification before setup; the existing successful
+setup and post-setup integrity gates remain mandatory on non-cold runs.
+
+The unpublished Stage 2 candidate conditionally avoids export/save on trusted
+main runs only after successful restore/import, both integrity gates, successful
+setup and equality of complete read-only export-scope observations. A hit alone
+is never sufficient. The Stage 1 planning classifier remains deferred and is not
+part of this candidate; all four native jobs still run for every existing trigger.
+
+The observer supports pinned Conan 2.33.0 only. Conan supplies recipe revisions,
+package IDs/revisions and non-timestamp inventory information. Public cache path
+queries resolve recipe exports, sources and metadata. Package contents require
+a narrow version-bound adapter: the reviewed isolated Conan interpreter calls
+`PkgCache(home, global_conf).pkg_layout(full_pref).package()`, exactly as pinned
+`CacheAPI.save` does. It does not use `cache path` for package contents, because
+that command may return a finalized consumer folder instead of the immutable
+folder exported by cache save. No folder names or database paths are guessed.
+This explicitly reviewed internal Conan API coupling is not a future-version
+guarantee; missing/unsupported resolution requires export. No graph evaluation,
+migration, acquisition or package mutation is introduced by the adapter.
+
+All export, exported-source, source, recipe-metadata, immutable-package and
+package-metadata scopes are compared, including file contents, permissions,
+names, empty directories and symlink targets without following links. Conan
+continues to own cache layout, resolution, acquisition, serialization and writes.
+No parallel package-storage implementation is introduced. Observation schema 2
+rejects older receipts that did not establish immutable package scope.
+
+Only Conan inventory timestamps and filesystem access/modification times are
+excluded from material equality. Actual exported manifest files are hashed in
+full. Same revision IDs cannot hide metadata/source changes. Missing required
+evidence, an unsupported CLI/schema/path response, hardlinks, junctions, special files
+or a changing tree disables the unchanged-snapshot optimization. A genuine miss,
+new/completed packages, revisions or any material change retains full export on
+trusted main. A reported hit with a missing/changed archive, failed import or
+failed integrity check stops without cleanup, repair, retry or broader fallback.
+
+Conan exports recipes, sources and completed packages/revisions, excluding only
+the existing temporary binary build/download folders. Archive format and contents
+are unchanged. Pinned `actions/cache/save` remains before project validation, so
+later configure/build/test/verify failure does not discard a confirmed snapshot.
+Failed setup, integrity or export cannot publish. Bootstrap-only jobs cannot
+publish. Unknown comparison states export conservatively rather than asserting
+reuse. Local mocked tests do not establish hosted performance or acceptance.
+
+Only pushes or separately authorized workflow dispatches on `refs/heads/main`
+may export/save. The YAML save guard independently checks event/ref and the
+explicit publication output. PRs retain import, integrity, setup and the full
+matrix but do not request snapshot publication. No privileged PR trigger, new
+write permission or secret is introduced. GitHub's merge-ref cache isolation
+prevents PR caches being restored by main; no externally protected workflow
+integrity is assumed. Malicious PR YAML replacement remains the separately
+documented enforcement limitation, not a protection claimed by these tests.
+
+Every decision records its reason in `.veyr-dev/ci/cache-decision.json`, with
+before/after observations when supported. The existing always-upload CI scope
+preserves these records. After save, a pinned restore action with `lookup-only:
+true` confirms the exact new key without downloading or changing the archive.
+`cache-publication.json` records confirmation or failure; save-step success alone
+is insufficient because the action can emit warning-only save failures. Failed
+confirmation stops before native validation without automatic retry.
+Unsupported observations include the affected reference/role, failure category
+and bounded actionable detail. Raw subprocess stderr, credentials and absolute
+paths are excluded from diagnostic details. Real 2.33.0 data-only local fixtures
+compare all exported package files against the selected immutable trees, with
+distinct finalized folders and multiple revisions; this does not establish
+Windows execution, hosted transfer behavior or archive authentication.
 
 The compatibility prefix contains cache schema `conan-v2`, OS/architecture, CI
 environment, native profile, actual runner image, and two SHA256 hashes. The
@@ -169,7 +229,7 @@ Conan profiles, locks and explicit setup remain authoritative. A cache hit or
 integrity check is not native/package acceptance.
 
 Manual `cold_build: true` skips Actions restore, Conan import, archive
-integrity/export and Actions save. The new job-owned home has no
+integrity/export, Actions save and publication lookup. The new job-owned home has no
 dependency packages; explicit setup uses standard source-built LLVM 23.1.2 and
 `--build=missing`. No forced rebuild, active-home deletion, cache purge or foreign
 backend archive. Isolated CMake/Ninja and Conan CLI tools are distinct from LLVM
@@ -180,6 +240,33 @@ Conan's portable cache format is experimental and version-bound; the pinned
 Conan version and cache schema isolate snapshots. Cache upload, archive size,
 eviction and actual cross-job reuse require observed CI evidence. This policy
 does not claim cache retention or native acceptance before a successful run.
+
+Stage 2 publication requires independent implementation/evidence review and
+separate owner commit/publication authorization. Then require a full four-job
+hosted canary with the unchanged native/prepared/isolated-empty-cache gates,
+actual skip/export reasons, inventory support and measured observer overhead.
+Do not run a deliberate cold LLVM build or dispatch/retry CI without separate
+authorization. No GSD requirement, plan or phase is completed by this mechanism.
+Roll back only through an owner-reviewed change restoring unconditional trusted
+main export/save; do not purge caches, weaken PR write restrictions or alter locks.
+
+Recorded pre-change run 39222510470 spent about 14.72 aggregate runner-minutes
+compressing archives plus 22 seconds saving them. That is a removable-cost
+baseline, not achieved Stage 2 savings. Two complete content observations and an
+additional imported-package integrity pass add unmeasured I/O/CLI cost. Net warm
+savings equal avoided compression/save minus that overhead and require canary
+measurement. Unsupported inventories, material changes and normal cache misses
+retain export cost. Deliberate `cold_build: true` still bypasses export/save;
+there is no guarantee of positive savings before actual hosted observation.
+
+Stage 2 platform impact:
+- Windows: Both hosted configurations, native CRT distinctions and isolated homes
+  remain; directory junctions disable skipping. Developer-host evidence remains
+  independently pending/non-blocking.
+- Linux: Both configurations and full native validation remain; symlink targets
+  are inventoried without following them. Read-only hashing adds I/O to measure.
+- macOS future: Deferred; public Conan/Python boundaries do not structurally
+  exclude it. No Darwin acceptance is claimed.
 
 ## Supervision, capacity and evidence
 

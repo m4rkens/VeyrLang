@@ -493,6 +493,24 @@ jobs:
           & $env:VEYR_CONAN_EXECUTABLE cache restore $archive 2>&1 | Tee-Object .veyr-dev/ci/cache-import.log
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+      - name: Validate and observe imported Conan export scope
+        if: ${{ success() && !inputs.cold_build && steps.cache_import.outcome == 'success' }}
+        env:
+          VEYR_CONAN_EXECUTABLE: ${{ steps.doctor.outputs.conan }}
+          SNAPSHOT_PREFIX: ${{ steps.cache_keys.outputs.prefix }}
+          SNAPSHOT_MATCHED: ${{ steps.cache_restore.outputs.cache-matched-key }}
+          SNAPSHOT_ENVIRONMENT: ${{ matrix.environment }}
+          SNAPSHOT_PROFILE: ${{ matrix.profile }}
+          SNAPSHOT_CONFIG: ${{ matrix.config }}
+        run: |
+          & $env:VEYR_CONAN_EXECUTABLE cache check-integrity '*#*:*#*' 2>&1 | Tee-Object .veyr-dev/ci/cache-import-integrity.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # PRs retain integrity/setup/native validation but never publish snapshots.
+          if ($env:GITHUB_REF -eq 'refs/heads/main' -and $env:GITHUB_EVENT_NAME -in @('push', 'workflow_dispatch')) {
+            & $env:VEYR_BASE_PYTHON -B scripts/ci_conan_snapshot.py observe
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+
       - name: Explicit Conan dependency setup (downloads/source builds allowed)
         id: dependencies
         run: |
@@ -508,21 +526,57 @@ jobs:
         if: ${{ success() && !inputs.cold_build && steps.dependencies.outcome == 'success' }}
         env:
           VEYR_CONAN_EXECUTABLE: ${{ steps.doctor.outputs.conan }}
+          SNAPSHOT_PREFIX: ${{ steps.cache_keys.outputs.prefix }}
+          SNAPSHOT_MATCHED: ${{ steps.cache_restore.outputs.cache-matched-key }}
+          SNAPSHOT_ENVIRONMENT: ${{ matrix.environment }}
+          SNAPSHOT_PROFILE: ${{ matrix.profile }}
+          SNAPSHOT_CONFIG: ${{ matrix.config }}
+          SNAPSHOT_IMPORT_RESULT: ${{ steps.cache_import.outcome }}
+          SNAPSHOT_SETUP_RESULT: ${{ steps.dependencies.outcome }}
         run: |
           & $env:VEYR_CONAN_EXECUTABLE cache check-integrity '*#*:*#*' 2>&1 | Tee-Object .veyr-dev/ci/cache-integrity.log
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          New-Item -ItemType Directory -Force .veyr-dev/conan-cache | Out-Null
-          & $env:VEYR_CONAN_EXECUTABLE cache save '*#*:*#*' --file .veyr-dev/conan-cache/dependencies.tgz 2>&1 | Tee-Object .veyr-dev/ci/cache-export.log
+          $env:SNAPSHOT_INTEGRITY_RESULT = 'success'
+          & $env:VEYR_BASE_PYTHON -B scripts/ci_conan_snapshot.py decide
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $decision = Get-Content .veyr-dev/ci/cache-decision.json -Raw | ConvertFrom-Json
+          if ($decision.publish -eq $true) {
+            New-Item -ItemType Directory -Force .veyr-dev/conan-cache | Out-Null
+            & $env:VEYR_CONAN_EXECUTABLE cache save '*#*:*#*' --file .veyr-dev/conan-cache/dependencies.tgz 2>&1 | Tee-Object .veyr-dev/ci/cache-export.log
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          } else {
+            "Snapshot export/save not requested: $($decision.reason)" | Set-Content .veyr-dev/ci/cache-export.log
+          }
 
       - name: Save completed Conan package snapshot before project validation
         id: cache_save
-        if: ${{ success() && !inputs.cold_build && steps.dependencies.outcome == 'success' && steps.export_cache.outcome == 'success' }}
+        if: ${{ success() && !inputs.cold_build && steps.dependencies.outcome == 'success' && steps.export_cache.outcome == 'success' && steps.export_cache.outputs.publish == 'true' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         uses: actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: .veyr-dev/conan-cache/dependencies.tgz
           key: ${{ steps.cache_keys.outputs.key }}
           enableCrossOsArchive: false
+
+      - name: Confirm early snapshot publication without downloading
+        id: cache_confirm
+        if: ${{ success() && !inputs.cold_build && steps.cache_save.outcome == 'success' && steps.export_cache.outputs.publish == 'true' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+        uses: actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: .veyr-dev/conan-cache/dependencies.tgz
+          key: ${{ steps.cache_keys.outputs.key }}
+          lookup-only: true
+          enableCrossOsArchive: false
+
+      - name: Record actual snapshot publication outcome
+        if: ${{ always() }}
+        env:
+          SNAPSHOT_SAVE_RESULT: ${{ steps.cache_save.outcome }}
+          SNAPSHOT_LOOKUP_RESULT: ${{ steps.cache_confirm.outcome }}
+          SNAPSHOT_EXACT_HIT: ${{ steps.cache_confirm.outputs.cache-hit }}
+          SNAPSHOT_COLD: ${{ inputs.cold_build }}
+        run: |
+          & $env:VEYR_BASE_PYTHON -B scripts/ci_conan_snapshot.py report
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Native cache-only configure
         run: |
