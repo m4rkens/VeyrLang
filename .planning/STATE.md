@@ -4,17 +4,17 @@ milestone: M1
 milestone_name: Compiler Walking Skeleton
 current_phase: 5
 current_phase_name: Minimal AST and Semantic Smoke
-status: phase5-planned-awaiting-owner-review
-stopped_at: Phase 5 planning complete locally; owner review/publication and concrete execution command pending
-last_updated: "2026-10-21T17:12:56.158702+00:00"
+status: phase5-05-01-local-validation-awaiting-owner-review
+stopped_at: 05-01 local Tasks 1–2 complete; owner implementation/evidence checkpoint pending
+last_updated: "2026-10-21T21:10:15.822375+00:00"
 last_activity: 2026-10-21
-last_activity_desc: Discussion published; research and three sequential plans checked inline; 0/3 executed
 progress:
   total_phases: 10
   completed_phases: 4
   total_plans: 21
   completed_plans: 18
   percent: 40
+last_activity_desc: 05-01 local validation passed; owner checkpoint pending
 ---
 
 # Project State
@@ -24,15 +24,15 @@ progress:
 See: .planning/PROJECT.md (accepted Phase 1–4 capabilities and remaining M1 work).
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
-**Current focus:** Phase 5 — Minimal AST and Semantic Smoke; planning complete locally, awaiting owner review/publication; no execution authorized
+**Current focus:** Phase 5 — Minimal AST and Semantic Smoke
 
 ## Current Position
 
-Phase: 5 (Minimal AST and Semantic Smoke) — planned 0/3 executed; Phases 1–4 remain owner-accepted
-Plan: 0 of 3 executed; 05-01 next only after owner planning review/publication and explicit execution command
+Phase: 5 (Minimal AST and Semantic Smoke) — 05-01 LOCAL VALIDATION COMPLETE; OWNER REVIEW PENDING
+Plan: 1 of 3; Phase 5 remains 0/3 formally complete
 Total Plans in Phase: 3
-Status: Phase 5 planning review pending; 0/3 executed; prior 18/21 written plans complete, 4/10 phases accepted; requirements 30 accepted/19 pending
-Last activity: 2026-10-21 — Discussion published in 8e7bb1d; research, three sequential plans and inline checker complete; no native execution
+Status: 05-01 Tasks 1–2 locally validated; owner implementation/evidence checkpoint pending
+Last activity: 2026-10-21T21:06:59.979113+00:00 — Debug/Release validation reconciled; execution stopped at owner checkpoint
 Historical publication boundary: Implementation baseline 08e50520afdab9e46da39182a8dcc4b56be66801 recorded 2/3 and 17/18; this owner-accepted closeout supersedes it with 3/3 and 18/18. Exact publication proof is retained separately.
 
 Phase 3 progress: [██████████] 3/3 complete and owner-accepted.
@@ -113,17 +113,17 @@ syntax/types/encoding and broader project/package semantics remain unaccepted.
 
 ## Session Continuity
 
-Last session: 2026-10-21T17:12:56.144Z
-Stopped at: Phase 5 research/planning/checks complete locally; owner planning review/publication pending; 0/3 executed; no next command authorized
-Resume file: .planning/phases/05-minimal-ast-and-semantic-smoke/05-PLAN-REVIEW.md
-Completed summaries: Eighteen prior written plans in Phases 1–4 complete; three new Phase 5 plans unexecuted (18/21 written). Four of ten phases accepted (40%); M1 incomplete.
+Last session: 2026-10-21T21:07:00.136Z
+Stopped at: 05-01 Tasks 1–2 locally validated; blocking owner implementation/evidence review pending; no publication or formal completion
+Resume file: .planning/phases/05-minimal-ast-and-semantic-smoke/05-01-EXECUTION.md
+Completed summaries: Eighteen prior execution plans in Phases 1–4 complete; no Phase 5 summary exists (18/21 written plans). Four of ten phases accepted (40%); Phase 5 0/3 formally complete.
 Technical evidence: Actual canonical verification passed 4 roadmap criteria, 18 original truths, 20 deduplicated truths, 12 artifact entries, 11 manual links, 16 decisions and 3 requirements; four fresh named tests passed. Run 39580960005 passed all four hosted jobs at 08e50520 with 142 parser/561 full/16 C++23 per job.
 Requirement ledger: Only PARSE-01/02/03 accepted after explicit owner decision; global 30 accepted/19 pending. Earlier cross-plan deferral preserved in history.
-Next owner gate: Review Phase 5 planning candidate and explicitly authorize its dedicated commit/publication. Only a separate concrete execution command may begin 05-01; no automatic transition.
-Publication: Discussion published in 8e7bb1d8ce1f42cedfda06e498887507774635d9 after actual remote verification. Phase 5 planning artifacts remain uncommitted; no planning publication authorized.
-Preserved history: Accepted discussion STATE/ROADMAP bytes retained under ignored .veyr-dev/planning/05/; original discussion and earlier evidence manifests untouched, resolved through archived mappings. No native validation repeated.
-Preserved isolation: Original main, held Stage 1/Stage 2/abandoned CI-policy candidates unchanged. Implementation/tests/CMake/profile/locks/policies unchanged.
-GSD bookkeeping: Installed plan-phase with research choice 1; inline research/pattern/planner/checker fallback, canonical schema/structure/decision/gap checks, state.planned-phase, roadmap progress/dependency annotations and bounded STATE updates. No auto-commit/completion/requirement helper or execution.
+Next owner gate: Independent owner implementation/evidence review of 05-01 Tasks 1–2, then separate acceptance/publication/closeout authorization. No automatic 05-02 execution or requirement acceptance.
+Publication: Discussion 8e7bb1d8ce1f42cedfda06e498887507774635d9 and planning 20e0685c1e523dcf5716cac34680554204c833a6 verified on actual remote main. Current 05-01 implementation remains uncommitted/unpublished.
+Preserved history: Original published planning STATE and shared parser/CMake bytes retained under ignored .veyr-dev/execution/05-01/baseline/. Previous manifests remain unchanged and hash-resolve through archive-resolution.json.
+Preserved isolation: Original main, held Stage 1/Stage 2/abandoned CI-policy candidates unchanged. Profile, locks, policies, workflows, parser implementation and existing tests unchanged; only approved AST/semantic source/test/build integration and checkpoint changes.
+GSD bookkeeping: Installed 1.6.1 execute-phase --wave 1; init/index selected only 05-01, execute-plan inline fallback and tests-first Tasks 1–2. Canonical state.begin-phase, state.patch, state.record-session, bounded frontmatter reconciliation; no completion, requirement, commit, summary or next-wave helper.
 
 Platform impact:
 
