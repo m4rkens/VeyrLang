@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: M1
 milestone_name: Compiler Walking Skeleton
-current_phase: 4
-current_phase_name: Smoke Profile Parser
-status: phase4-complete-owner-accepted
-stopped_at: Owner-accepted Phase 4 after actual passed verification; all three PARSE accepted; controlled closeout publication authorized; Phase 5 unstarted and unauthorized.
-last_updated: "2026-10-21T15:37:51.333576+00:00"
+current_phase: 5
+current_phase_name: Minimal AST and Semantic Smoke
+status: phase5-discussion-captured-awaiting-owner-review
+stopped_at: Phase 5 discussion captured; owner review and dedicated discussion commit pending; no research/planning/execution authorized
+last_updated: "2026-10-21T16:32:31.365674+00:00"
 last_activity: 2026-10-21
-last_activity_desc: Owner accepted verified Phase 4 and PARSE-01/02/03; bounded completion without Phase 5 advancement
+last_activity_desc: Captured sixteen owner-selected Phase 5 decisions; requirement/progress counts unchanged
 progress:
   total_phases: 10
   completed_phases: 4
@@ -24,15 +24,15 @@ progress:
 See: .planning/PROJECT.md (accepted Phase 1–4 capabilities and remaining M1 work).
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
-**Current focus:** Phase 4 — Smoke Profile Parser
+**Current focus:** Phase 5 — Minimal AST and Semantic Smoke; discussion captured, awaiting owner review and dedicated discussion commit
 
 ## Current Position
 
-Phase: 4 (Smoke Profile Parser) — 3/3 plans complete and whole phase owner-accepted
-Plan: 3 of 3 — 04-03 formally complete locally at 2026-10-21T15:20:21.322895+00:00
-Total Plans in Phase: 3
-Status: All eighteen written plans complete; Phase 4 owner-accepted; PARSE-01/02/03 accepted, global 30 accepted/19 pending; Phase 5 unstarted
-Last activity: 2026-10-21 — Final owner acceptance of verified Phase 4 and PARSE-01/02/03; controlled closeout publication authorized; Phase 5 unstarted
+Phase: 5 (Minimal AST and Semantic Smoke) — discussion captured only; implementation unstarted
+Plan: Not planned; research/planning/execution require separate owner authorization
+Total Plans in Phase: 0
+Status: Sixteen Phase 5 decisions captured; no plans or implementation. Phases 1–4 remain complete; requirements unchanged at 30 accepted/19 pending
+Last activity: 2026-10-21 — Phase 5 discussion context/log prepared after explicit owner choices; no native, requirement or publication operation
 Historical publication boundary: Implementation baseline 08e50520afdab9e46da39182a8dcc4b56be66801 recorded 2/3 and 17/18; this owner-accepted closeout supersedes it with 3/3 and 18/18. Exact publication proof is retained separately.
 
 Phase 3 progress: [██████████] 3/3 complete and owner-accepted.
@@ -113,17 +113,17 @@ syntax/types/encoding and broader project/package semantics remain unaccepted.
 
 ## Session Continuity
 
-Last session: 2026-10-21T15:37:51.333576+00:00
-Stopped at: Owner accepted technically verified Phase 4 and PARSE-01/02/03; bounded final closeout and publication authorized; Phase 5 unstarted.
-Resume file: .planning/phases/04-smoke-profile-parser/04-VERIFICATION.md
+Last session: 2026-10-21T16:32:31.351Z
+Stopped at: Phase 5 context gathered: sixteen explicit decisions across four areas; owner discussion review/commit pending; research/planning/execution unstarted
+Resume file: .planning/phases/05-minimal-ast-and-semantic-smoke/05-CONTEXT.md
 Completed summaries: All eighteen written plans in Phases 1–4 complete. Four of ten whole phases are owner-accepted (40%); M1 remains incomplete.
 Technical evidence: Actual canonical verification passed 4 roadmap criteria, 18 original truths, 20 deduplicated truths, 12 artifact entries, 11 manual links, 16 decisions and 3 requirements; four fresh named tests passed. Run 39580960005 passed all four hosted jobs at 08e50520 with 142 parser/561 full/16 C++23 per job.
 Requirement ledger: Only PARSE-01/02/03 accepted after explicit owner decision; global 30 accepted/19 pending. Earlier cross-plan deferral preserved in history.
-Next owner gate: Phase 5 remains unstarted/unauthorized; any discussion/planning/execution requires its concrete owner command. No automatic transition.
-Publication: The owner authorized this exact seven-file closeout commit. Actual commit/remote proof is retained in ignored final-publication evidence; no self-referential commit SHA is fabricated in tracked documents.
-Preserved history: Original planning/checkpoint and all acceptance evidence resolve through immutable baseline/historical archives. No native rebuild, CI or dependency operation repeated.
+Next owner gate: Review Phase 5 CONTEXT/DISCUSSION-LOG and explicitly approve the dedicated discussion commit/publication. Research/planning remains separately gated; no automatic next command.
+Publication: Phase 4 closeout published in 012bebd6cd40388bfb075016f9ebdaa5e404e95a. Phase 5 discussion records are uncommitted and require separate explicit approval.
+Preserved history: Accepted Phase 4 STATE bytes archived under ignored .veyr-dev/discussion/05/STATE-before.md; earlier immutable planning/checkpoint and evidence mappings remain valid. No native validation was repeated.
 Preserved isolation: Original main, held Stage 1/Stage 2/abandoned CI-policy candidates unchanged. Implementation/tests/CMake/profile/locks/policies unchanged.
-GSD bookkeeping: Supported bounded STATE merge and only three owner-approved requirements completions; no unrestricted phase.complete, automatic commit or next-phase execution.
+GSD bookkeeping: Installed discuss-phase text-mode questioning and templates; supported state.update/state.record-session and bounded frontmatter metadata update only. No commit helper, phase.complete, requirement completion or plan/execute command.
 
 Platform impact:
 
