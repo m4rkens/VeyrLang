@@ -2,18 +2,21 @@
 phase: 04-smoke-profile-parser
 plan: "03"
 wave: 3
-status: local_validation_complete_owner_review_pending
-plan_completion: pending
+status: complete_phase_verified_and_owner_accepted
+plan_completion: complete
 requirements: [PARSE-01, PARSE-02, PARSE-03]
-requirements_completed: []
-owner_acceptance: pending
-publication: not_authorized
-hosted_acceptance: pending_for_this_packet
-phase_goal_verification: not_performed
+requirements_completed: [PARSE-01, PARSE-02, PARSE-03]
+owner_acceptance: Tasks 1-2 and verified whole Phase 4 accepted by explicit owner decision
+publication: implementation_08e50520afdab9e46da39182a8dcc4b56be66801_formal_closeout_in_this_owner_authorized_commit
+hosted_acceptance: four_configurations_success_39580960005
+phase_goal_verification: passed_and_owner_accepted
 recorded_at: "2026-10-21T09:34:22.377089+00:00"
+formal_completion_recorded_at: "2026-10-21T15:20:21.322895+00:00"
 ---
 
-# Plan 04-03 — Local integration execution checkpoint
+# Plan 04-03 — Integration execution and formal local closeout
+
+The implementation checkpoint below is historical (recorded 2026-10-21T09:34:22.377089+00:00). Its pending-gate statements describe that event; the current reconciliation appended below supersedes them. Original bytes remain in the accepted closeout-preparation/baseline archive.
 
 ## Authorization and canonical selection
 
@@ -168,3 +171,59 @@ Platform impact:
 - `tests/parsing/parser_test.cpp`: `f9fd7899506a0c2aa227c3dcfe72d3a1da5cedb9ffb76fc963f010ff00256693`
 - `src/parsing/parser.cpp`: `91cb9612310dcebf4eb8018353e15fddbb1ddb5dbb9a469a401e41972af6ac8c`
 - `include/veyr/parsing/parser.hpp`: `6f9c9cf002619cc4db40d16fe686e92018dfcdd9e7a7c05c4282384535e3a476`
+
+## Authorized formal local closeout and canonical verification — historical technical checkpoint
+
+Formal local completion recorded at **2026-10-21T15:20:21.322895+00:00**, after explicit owner authorization.
+Tasks 1–2 passed independent owner review and were separately published in
+08e50520afdab9e46da39182a8dcc4b56be66801. Run
+[39580960005](https://github.com/m4rkens/VeyrLang/actions/runs/39580960005)
+completed/success on that exact commit across all four native configurations.
+Every native test/strict-verify/prepared suite executed 561 identities, including
+all 142 parser cases (32 integration + 110 retained), with 16 C++23 entries.
+Includes, mandatory integrity/setup/prepared gates and exactly one expected
+isolated empty-cache rejection per job passed. No unexpected hosted error occurred.
+
+The installed GSD 1.6.1 verify_phase_goal procedure was performed inline using
+its verifier role and repository adapter: source/contract inspection, all four
+roadmap criteria, all eighteen original truths (20 deduplicated scored truths),
+twelve artifact entries and eleven manually inspected wiring/dataflow links,
+all sixteen decisions and all three PARSE technical requirements. Four approved
+named existing tests actually ran and passed: ownership after token destruction,
+checked corruption precedence, persistent prior Error state and ordered duplicate
+syntax errors. Exact commands/outputs and raw helper link-query limitations are
+retained under ignored `.veyr-dev/execution/04-03/canonical-verification/`.
+No full suite, build, Conan operation or hosted workflow was repeated.
+
+Canonical summary promotion is local only: GSD discovers 3/3 Phase 4 summaries
+and eighteen complete written plans; the unchanged published baseline still
+records 2/3 and seventeen. Final Phase 4 owner acceptance and closeout publication
+remain pending. PARSE-01/02/03 stay Pending, global 27 accepted/22 pending:
+the owner-approved cross-plan exception prevents generic plan completion from
+accepting requirements before final phase acceptance. No requirement helper,
+phase.complete, commit/push or Phase 5 action was invoked.
+
+See [04-03-SUMMARY.md](04-03-SUMMARY.md) and
+[04-VERIFICATION.md](04-VERIFICATION.md) for factual results. Current evidence
+includes the new canonical-verification/evidence.json; accepted original 83-entry
+manifest/19 logs and all historical mappings remain immutable and resolve through
+closeout-preparation/baseline-resolution.json for changed planning bytes.
+
+The actual installed verification.status query returned passed. Summary schema,
+coverage (3/3), self-check, verification schema/references and decision coverage
+(16/16) passed. This does not accept the whole phase or its requirements.
+
+Platform impact:
+- Windows: Hosted Debug/Release validated; developer-host inspection independently pending/non-blocking.
+- Linux: Accepted local/Ubuntu hosted evidence plus the four fresh Debug behavioral checks passed.
+- macOS future: Deferred. No new OS, dependency or technical contract introduced.
+
+## Final owner phase and requirement acceptance
+
+Recorded at 2026-10-21T15:37:51.333576+00:00 after explicit owner authorization:
+actual canonical verification passed; the owner accepts Phase 4 and only PARSE-01,
+PARSE-02 and PARSE-03. Global 30 accepted/19 pending; all eighteen plans complete.
+Earlier pending-gate statements above describe their historical checkpoints.
+The owner authorized controlled seven-file publication; Phase 5 is unstarted/unauthorized.
+
+Controlled publication authorization recorded at 2026-10-21T15:37:51.333576+00:00; exact commit/remote receipts are retained separately under ignored final-publication/. No implementation, test, dependency or workflow change accompanies this acceptance.

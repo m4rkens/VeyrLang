@@ -6,7 +6,7 @@
 
 ## v1 Requirements
 
-Here v1 means the first walking-skeleton milestone, not a stable language release. At fresh initialization all requirements were pending hypotheses and no prior implementation/evidence was credited. Phase 1 BUILD-01 through BUILD-14 remain accepted from final four-job run 37826767824. Phase 2 SRC-01 through SRC-04 and DIAG-01 through DIAG-03 remain accepted from run 38722486719. Phase 3 LEX-01 through LEX-06 are now owner-accepted after the actually published profile, independent Linux validation, final four-job run 39107885454 and canonical goal verification. Global counts remain 27 accepted/22 pending; no future requirement is accepted. Every requirement maps to exactly one active phase. P01 forces the compiler path; PLAT_01/02/03/06 force the related platform/build constraints.
+Here v1 means the first walking-skeleton milestone, not a stable language release. At fresh initialization all requirements were pending hypotheses and no prior implementation/evidence was credited. Phase 1 BUILD-01 through BUILD-14 remain accepted from final four-job run 37826767824. Phase 2 SRC-01 through SRC-04 and DIAG-01 through DIAG-03 remain accepted from run 38722486719. Phase 3 LEX-01 through LEX-06 are now owner-accepted after the actually published profile, independent Linux validation, final four-job run 39107885454 and canonical goal verification. After actual passed Phase 4 canonical verification and explicit owner acceptance, only PARSE-01/02/03 are newly accepted. Global 30 accepted/19 pending; no future requirement is accepted. Every requirement maps to exactly one active phase. P01 forces the compiler path; PLAT_01/02/03/06 force the related platform/build constraints.
 
 ### Build and developer foundation
 
@@ -49,9 +49,9 @@ Here v1 means the first walking-skeleton milestone, not a stable language releas
 
 ### Smoke parser
 
-- [ ] **PARSE-01**: Parser can recognize exactly one profile-defined fixed entry containing one integer-literal return followed by EOF.
-- [ ] **PARSE-02**: User can receive source-linked parser diagnostics for malformed, incomplete, trailing, or unsupported input without treating recovery as successful compilation.
-- [ ] **PARSE-03**: Compiler client can consume a minimal source-linked parse representation without lexer dependencies on parser, AST, or semantic components.
+- [x] **PARSE-01**: Parser can recognize exactly one profile-defined fixed entry containing one integer-literal return followed by EOF.
+- [x] **PARSE-02**: User can receive source-linked parser diagnostics for malformed, incomplete, trailing, or unsupported input without treating recovery as successful compilation.
+- [x] **PARSE-03**: Compiler client can consume a minimal source-linked parse representation without lexer dependencies on parser, AST, or semantic components.
 
 ### Minimal AST
 
@@ -177,9 +177,9 @@ These are deferred probe-driven directions, not the next release contract or aut
 | LEX-04 | Phase 3 | Complete — owner accepted final run 39107885454 and canonical verification |
 | LEX-05 | Phase 3 | Complete — owner accepted final run 39107885454 and canonical verification |
 | LEX-06 | Phase 3 | Complete — owner accepted final run 39107885454 and canonical verification |
-| PARSE-01 | Phase 4 | Pending |
-| PARSE-02 | Phase 4 | Pending |
-| PARSE-03 | Phase 4 | Pending |
+| PARSE-01 | Phase 4 | Complete |
+| PARSE-02 | Phase 4 | Complete |
+| PARSE-03 | Phase 4 | Complete |
 | AST-01 | Phase 5 | Pending |
 | AST-02 | Phase 5 | Pending |
 | SEMA-01 | Phase 5 | Pending |
@@ -223,4 +223,4 @@ Plan 03-02 / LEX-02–06 evidence: [03-02-EXECUTION.md](phases/03-m1-experimenta
 Final Phase 3 / LEX-01–06 acceptance: the owner ACCEPTED Phase 3 after completed/success [run 39107885454](https://github.com/m4rkens/VeyrLang/actions/runs/39107885454) at be84bb9702afa75ad07803a678e7fd5a4e6358d7 and actual canonical GSD 1.6.1 goal verification. See [03-03-EXECUTION.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-03-EXECUTION.md), [03-03-SUMMARY.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-03-SUMMARY.md) and [03-VERIFICATION.md](phases/03-m1-experimental-smoke-profile-tokens-and-lexer/03-VERIFICATION.md). All four Ubuntu/Windows Debug/Release jobs passed 419/419 native test, verify and prepared acceptance with all 323 focused, 256 byte and 35 normative cases, thirteen selected C++23 entries, include-policy and expected isolated empty-cache rejection without acquisition/retry. Canonical results: five roadmap criteria, 21 plan truths, 22 deduplicated truths, 12 artifact entries, 11 directly inspected links, six requirements and fourteen decisions; verification.status passed. The scoped canonical requirements helper confirmed only LEX-01–06 already complete. This final evidence supplements the historical plan scopes above; it does not accept parser, semantic-range enforcement, final grammar/ABI or driver/end-to-end requirements. Windows developer-host inspection remains independently pending/non-blocking; macOS deferred.
 
 ---
-*Last updated: 2026-10-18 after final owner Phase 3 acceptance and bounded GSD closeout preparation; 27 accepted/22 pending. Requirement definitions, phase mappings, Phase 1/2 acceptance and all future requirement statuses remain unchanged. Phase 4 is unstarted and unauthorized.*
+*Last updated: 2026-10-21T15:37:51.333576+00:00; accepted PARSE-01/02/03 only after canonical Phase 4 pass and explicit owner acceptance;30 accepted/19 pending; future requirements unchanged.*

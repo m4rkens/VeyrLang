@@ -4,35 +4,36 @@ milestone: M1
 milestone_name: Compiler Walking Skeleton
 current_phase: 4
 current_phase_name: Smoke Profile Parser
-status: 04-02-complete-awaiting-wave3-authorization
-stopped_at: Formal 04-02 closeout; Phase 4 2/3 and 17 completed plans. Implementation/local review/four-job hosted acceptance passed. Dedicated closeout publication is owner-approved; fresh Wave 3 authorization remains required; PARSE requirements remain Pending.
-last_updated: "2026-10-21T09:06:46.513877+00:00"
+status: phase4-complete-owner-accepted
+stopped_at: Owner-accepted Phase 4 after actual passed verification; all three PARSE accepted; controlled closeout publication authorized; Phase 5 unstarted and unauthorized.
+last_updated: "2026-10-21T15:37:51.333576+00:00"
 last_activity: 2026-10-21
-last_activity_desc: Formal 04-02 closeout after accepted local review and exact four-job hosted evidence; requirements unchanged; 04-03 unstarted
+last_activity_desc: Owner accepted verified Phase 4 and PARSE-01/02/03; bounded completion without Phase 5 advancement
 progress:
   total_phases: 10
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 18
-  completed_plans: 17
-  percent: 30
+  completed_plans: 18
+  percent: 40
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (accepted Phase 1/2/3 capabilities and remaining M1 work).
+See: .planning/PROJECT.md (accepted Phase 1–4 capabilities and remaining M1 work).
 
 **Core value:** Give programmers system-level control while moving as much error detection as practical into the compiler and integrated analyzer.
 **Current focus:** Phase 4 — Smoke Profile Parser
 
 ## Current Position
 
-Phase: 4 (Smoke Profile Parser) — 2/3 FORMALLY COMPLETE; fresh Wave 3 authorization pending
-Plan: 3 of 3 — next planned unit 04-03, unstarted and unauthorized
+Phase: 4 (Smoke Profile Parser) — 3/3 plans complete and whole phase owner-accepted
+Plan: 3 of 3 — 04-03 formally complete locally at 2026-10-21T15:20:21.322895+00:00
 Total Plans in Phase: 3
-Status: 04-01/04-02 complete with local/hosted acceptance; 04-03 unstarted; all PARSE requirements Pending by explicit cross-plan exception
-Last activity: 2026-10-21 — Formal 04-02 closeout; no native rerun, requirement acceptance or Wave 3 execution
+Status: All eighteen written plans complete; Phase 4 owner-accepted; PARSE-01/02/03 accepted, global 30 accepted/19 pending; Phase 5 unstarted
+Last activity: 2026-10-21 — Final owner acceptance of verified Phase 4 and PARSE-01/02/03; controlled closeout publication authorized; Phase 5 unstarted
+Historical publication boundary: Implementation baseline 08e50520afdab9e46da39182a8dcc4b56be66801 recorded 2/3 and 17/18; this owner-accepted closeout supersedes it with 3/3 and 18/18. Exact publication proof is retained separately.
 
 Phase 3 progress: [██████████] 3/3 complete and owner-accepted.
 Phase 2 progress: [██████████] 4/4 complete and owner-accepted.
@@ -82,7 +83,7 @@ or acquire dependencies. Earlier evidence/metrics remain in accepted summaries.
 - [Phase 03]: Recovered token vectors do not imply compilation success; persistent Error state remains authoritative — Exact Invalid/Error and shared-engine/renderer integration tests preserve the accepted handoff contract.
 - [Phase 03]: Owner accepted Phase 3 after four-job hosted success and canonical verification; Phase 4 remains unauthorized — Closeout uses only bounded installed helpers and separately reviewed publication gates.
 
-The owner explicitly excepted PARSE-01–03 from generic 04-01/04-02 requirement completion: full acceptance spans 04-03 integration and phase verification; all remain Pending. Formal plan completion never authorizes the next wave.
+The owner deferred PARSE-01–03 through all three plan closeouts. After actual canonical passed verification, final owner acceptance now accepts only those three requirements. No future requirement or automatic next-stage transition is authorized.
 
 ### Accepted evidence and limits
 
@@ -112,17 +113,17 @@ syntax/types/encoding and broader project/package semantics remain unaccepted.
 
 ## Session Continuity
 
-Last session: 2026-10-21T09:06:46.513877+00:00
-Stopped at: Formal 04-02 closeout; Phase 4 2/3. Dedicated closeout publication is approved; await fresh 04-03 execution authorization. No phase-wide acceptance.
-Resume file: .planning/phases/04-smoke-profile-parser/04-02-SUMMARY.md
-Completed summaries: 01-01 through 01-08, 02-01 through 02-04, 03-01 through 03-03 and 04-01/04-02; 17 completed plans across 18 written plans. Only three whole phases are complete (30%).
-Last completed technical step: Published conformance tests and successful four-job run 39493376090; exact 529/110/97/13 test identity reconciliation, fifteen C++23 entries, include/prepared/offline acceptance. No native evidence was regenerated for closeout.
-Last completed lifecycle step: Formal 04-02 plan closeout with the explicit PARSE exception; REQUIREMENTS.md stays unchanged at 27 accepted/22 pending.
-Next owner gate: Fresh explicit 04-03/Wave 3 execution after verifying actual closeout publication. 04-03 supplies real lexer/parser/renderer/lifetime integration before phase verification and final acceptance.
-Current outputs: Four-file 04-02 closeout only: STATE, ROADMAP, EXECUTION and SUMMARY. The preparation projection remained outside canonical discovery until formal owner approval; actual event timestamps are recorded only then.
-Preserved history: Formal 04-01 acceptance/publication in e35b9e24c23709c9f9e4b2c0e5f1d6af229311b8 and its summary/execution remain unchanged. Original 04-02 prerequisite/implementation checkpoints are retained in its execution record and immutable evidence archives.
-Preserved artifacts: Parser/lexer/source/diagnostic APIs, implementation/tests/CMake, M1 profile, four locks, CI/toolchain policies and Phase 1–3 evidence unchanged. Stage 1, Stage 2 correction and abandoned phase-end CI candidate remain excluded; performance remediation does not block compiler work.
-GSD bookkeeping: Installed summary/coverage and single-writer worktree conventions; no generic requirement completion, unrestricted phase.complete, auto-commit or next-plan execution.
+Last session: 2026-10-21T15:37:51.333576+00:00
+Stopped at: Owner accepted technically verified Phase 4 and PARSE-01/02/03; bounded final closeout and publication authorized; Phase 5 unstarted.
+Resume file: .planning/phases/04-smoke-profile-parser/04-VERIFICATION.md
+Completed summaries: All eighteen written plans in Phases 1–4 complete. Four of ten whole phases are owner-accepted (40%); M1 remains incomplete.
+Technical evidence: Actual canonical verification passed 4 roadmap criteria, 18 original truths, 20 deduplicated truths, 12 artifact entries, 11 manual links, 16 decisions and 3 requirements; four fresh named tests passed. Run 39580960005 passed all four hosted jobs at 08e50520 with 142 parser/561 full/16 C++23 per job.
+Requirement ledger: Only PARSE-01/02/03 accepted after explicit owner decision; global 30 accepted/19 pending. Earlier cross-plan deferral preserved in history.
+Next owner gate: Phase 5 remains unstarted/unauthorized; any discussion/planning/execution requires its concrete owner command. No automatic transition.
+Publication: The owner authorized this exact seven-file closeout commit. Actual commit/remote proof is retained in ignored final-publication evidence; no self-referential commit SHA is fabricated in tracked documents.
+Preserved history: Original planning/checkpoint and all acceptance evidence resolve through immutable baseline/historical archives. No native rebuild, CI or dependency operation repeated.
+Preserved isolation: Original main, held Stage 1/Stage 2/abandoned CI-policy candidates unchanged. Implementation/tests/CMake/profile/locks/policies unchanged.
+GSD bookkeeping: Supported bounded STATE merge and only three owner-approved requirements completions; no unrestricted phase.complete, automatic commit or next-phase execution.
 
 Platform impact:
 
