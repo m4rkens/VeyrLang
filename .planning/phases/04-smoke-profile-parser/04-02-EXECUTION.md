@@ -1,12 +1,76 @@
 ---
 phase: 04-smoke-profile-parser
 plan: "02"
-status: local-validated-awaiting-owner-review
+status: complete
 tasks_locally_complete: 2
-plan_completion: pending
-owner_review: pending
+plan_completion: complete
+owner_review: accepted-linux-tasks-1-and-2
+hosted_validation: passed-four-configurations
+implementation_commit: 75d712f1931b375a7803a19800539b49fbe84732
+formal_acceptance_recorded_at: "2026-10-21T09:06:46.513877+00:00"
 requirements_completed: []
 ---
+
+# Phase 4 Plan 02 — Formal conformance closeout
+
+## Formal acceptance and publication checkpoint
+
+The owner approved formal Plan 04-02 acceptance and the exact four-file
+closeout commit/publication. The actual formal reconciliation was recorded at
+2026-10-21T09:06:46.513877+00:00. Reviewed preparation bytes and receipts remain
+immutable outside discovery; the canonical summary was promoted last in this
+controlled operation. Formal acceptance is distinct from earlier task, local
+review, implementation publication and hosted completion timestamps.
+
+The owner accepted both local tasks after the independent implementation/evidence
+review passed without blocking findings. The accepted test-only packet was
+published in 75d712f1931b375a7803a19800539b49fbe84732. Fresh read-only inspection
+confirmed run 39493376090 completed/success at that exact commit in all four
+Ubuntu/Windows Debug/Release configurations.
+
+Every job executed the exact 529-name suite in native test, strict verify and
+prepared acceptance: 110 parser cases, including all 97 additions and 13 original
+baselines. Verify/prepared reported fifteen selected C++23 entries; include-policy
+passed. The controlled isolated empty-cache rejection occurred exactly once per
+job with --no-remote --build=never and without acquisition/retry. Optional warm
+snapshot publication skips did not skip native gates. Existing generated-toolchain
+quotation and action-runtime deprecation warnings are non-blocking. No unexpected
+error or meaningful conformance regression was identified.
+
+The accepted Linux evidence remains unchanged: Debug/Release each doctor 22/22,
+parser 110/110, new cases 97/97, selected regressions 93/93, full test/verify 529/529,
+fifteen selected C++23 entries and direct includes PASS. Original local manifests,
+27 command receipts and earlier prerequisite stops retain their original bytes.
+Current closeout evidence is under ignored
+.veyr-dev/execution/04-02/closeout-preparation/; the lifetime mapping preserves
+this execution document's accepted pre-closeout bytes before later promotion.
+
+The formal result is Phase 4 2/3, seventeen completed plans and 04-03
+unstarted. PARSE-01/02/03 remain Pending and global counts remain 27 accepted /
+22 pending under the explicit cross-plan exception. Do not run generic requirement
+completion, phase.complete or next-wave helpers. Summary promotion and actual
+completion timestamp are now recorded under explicit formal owner approval.
+Dedicated publication is also approved; actual commit/remote proof is retained
+separately. No fresh 04-03 execution authorization is implied.
+
+04-03 integration, final phase-goal verification and final Phase 4 acceptance are
+not credited here. The accepted experimental M1 profile, implementation/public APIs,
+tests, CMake, all four locks and native acceptance procedures remain unchanged.
+The repository is public; the owner abandoned the unpublished phase-end CI trigger
+candidate. Published push/PR CI remains unchanged. Stage 1 and Stage 2 candidates
+are preserved and excluded; deferred performance remediation does not block language work.
+
+Platform impact:
+- Windows: Hosted Debug/Release conformance passed; independent developer-host inspection remains pending/non-blocking.
+- Linux: Accepted local and independent Ubuntu Debug/Release evidence preserved.
+- macOS future: Deferred; no platform change.
+
+## Preserved published checkpoint history
+
+The following original checkpoint body is retained verbatim. Its earlier pending
+review/publication/hosted wording describes those historical stops, not current
+technical acceptance. The actual pre-closeout file, including original frontmatter,
+is separately archived by the new lifetime receipt.
 
 # Phase 4 Plan 02 — Local execution owner checkpoint
 

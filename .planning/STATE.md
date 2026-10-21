@@ -4,16 +4,16 @@ milestone: M1
 milestone_name: Compiler Walking Skeleton
 current_phase: 4
 current_phase_name: Smoke Profile Parser
-status: awaiting-closeout-publication-and-wave2-authorization
-stopped_at: Formal 04-01 local closeout complete; Phase 4 is 1/3. Awaiting final lifecycle review and separate publication approval. Wave 2/3 unstarted and unauthorized; PARSE requirements remain pending by explicit owner exception.
-last_updated: "2026-10-20T15:50:37.879175+00:00"
-last_activity: 2026-10-20
-last_activity_desc: Owner-authorized formal 04-01 local closeout; 1/3 plans complete with no requirement acceptance or next-wave execution
+status: 04-02-complete-awaiting-wave3-authorization
+stopped_at: Formal 04-02 closeout; Phase 4 2/3 and 17 completed plans. Implementation/local review/four-job hosted acceptance passed. Dedicated closeout publication is owner-approved; fresh Wave 3 authorization remains required; PARSE requirements remain Pending.
+last_updated: "2026-10-21T09:06:46.513877+00:00"
+last_activity: 2026-10-21
+last_activity_desc: Formal 04-02 closeout after accepted local review and exact four-job hosted evidence; requirements unchanged; 04-03 unstarted
 progress:
   total_phases: 10
   completed_phases: 3
   total_plans: 18
-  completed_plans: 16
+  completed_plans: 17
   percent: 30
 ---
 
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (accepted Phase 1/2/3 capabilities and remaining M1 wo
 
 ## Current Position
 
-Phase: 4 (Smoke Profile Parser) — 1/3 FORMALLY COMPLETE; closeout publication/Wave 2 authorization pending
-Plan: 2 of 3 — next planned unit 04-02, unstarted and unauthorized
+Phase: 4 (Smoke Profile Parser) — 2/3 FORMALLY COMPLETE; fresh Wave 3 authorization pending
+Plan: 3 of 3 — next planned unit 04-03, unstarted and unauthorized
 Total Plans in Phase: 3
-Status: 04-01 formally complete with local/hosted acceptance; 04-02/03 unstarted; PARSE acceptance deferred by owner exception
-Last activity: 2026-10-20 — Reconciled formal 04-01 closeout in phase4/parser-closeout; no native rerun, publication or Wave 2 execution
+Status: 04-01/04-02 complete with local/hosted acceptance; 04-03 unstarted; all PARSE requirements Pending by explicit cross-plan exception
+Last activity: 2026-10-21 — Formal 04-02 closeout; no native rerun, requirement acceptance or Wave 3 execution
 
 Phase 3 progress: [██████████] 3/3 complete and owner-accepted.
 Phase 2 progress: [██████████] 4/4 complete and owner-accepted.
@@ -82,7 +82,7 @@ or acquire dependencies. Earlier evidence/metrics remain in accepted summaries.
 - [Phase 03]: Recovered token vectors do not imply compilation success; persistent Error state remains authoritative — Exact Invalid/Error and shared-engine/renderer integration tests preserve the accepted handoff contract.
 - [Phase 03]: Owner accepted Phase 3 after four-job hosted success and canonical verification; Phase 4 remains unauthorized — Closeout uses only bounded installed helpers and separately reviewed publication gates.
 
-The owner explicitly excepted PARSE-01–03 from generic 04-01 requirement completion: full acceptance spans later plans; all remain pending. Formal plan completion does not authorize Wave 2.
+The owner explicitly excepted PARSE-01–03 from generic 04-01/04-02 requirement completion: full acceptance spans 04-03 integration and phase verification; all remain Pending. Formal plan completion never authorizes the next wave.
 
 ### Accepted evidence and limits
 
@@ -98,6 +98,8 @@ The owner explicitly excepted PARSE-01–03 from generic 04-01 requirement compl
 - Phase 3 final acceptance: [run 39107885454](https://github.com/m4rkens/VeyrLang/actions/runs/39107885454), commit be84bb9702afa75ad07803a678e7fd5a4e6358d7, completed/success across Ubuntu/Windows Debug/Release. Every job passed 419/419 native test, verify and prepared acceptance, including 323 focused, all 256 byte values and 35 normative examples; verify reports 13 selected C++23 entries. Include-policy and expected isolated empty-cache rejection passed without acquisition/retry. Independent local Debug/Release evidence matches; all 268 new cases ran.
 - Canonical Phase 3 verification actually ran: five roadmap criteria, 21 source plan truths, 22/22 deduplicated scored truths, 12/12 artifact entries, 11/11 directly inspected key links, six requirements and 14/14 decisions. verification.status returned passed; the owner ACCEPTED Phase 3. See 03-03-EXECUTION.md, 03-03-SUMMARY.md and 03-VERIFICATION.md. Original helper key-link misses remain retained; report/query existence alone was not used as proof.
 
+- Plan 04-02: accepted Linux Tasks 1–2 and publication 75d712f1931b375a7803a19800539b49fbe84732; run 39493376090 completed/success across all four Ubuntu/Windows configurations. Each native test/verify/prepared suite passed 529/529, including 110 parser/97 new/13 baseline identities; fifteen C++23 entries, includes and controlled isolated empty-cache rejection passed. Original local 70-entry evidence, 27 logs, accepted 04-01 and historical mappings remain intact.
+
 ### Non-blocking follow-up candidates
 
 - Enforce explicit Diagnostic::severity initialization before widespread construction; current callers initialize before reading. No arbitrary default is introduced.
@@ -110,17 +112,17 @@ syntax/types/encoding and broader project/package semantics remain unaccepted.
 
 ## Session Continuity
 
-Last session: 2026-10-20T15:50:37.879175+00:00
-Stopped at: Formal Plan 04-01 local closeout complete; Phase 4 1/3, requirements 27 accepted/22 pending. Awaiting independent final review and separate commit/publication approval. Wave 2/3 are unstarted and unauthorized.
-Resume file: .planning/phases/04-smoke-profile-parser/04-01-SUMMARY.md
-Completed summaries: 01-01 through 01-08, 02-01 through 02-04, 03-01 through 03-03 and 04-01; 16 completed plans across 18 written plans. Only three whole phases are complete (30%).
-Last completed technical step: Parser publication 425e5ff456a59cafc04a2fa46ddbaa0f2318e792 and successful four-job run 39222510470, with accepted Linux doctor 22/22, focused 13/13, regressions 93/93, full CTest 432/432, fifteen C++23 entries and includes PASS per configuration. No new native evidence is claimed.
-Last completed lifecycle step: Owner-authorized formal 04-01 local closeout; summary/execution completion fields, Phase 4 1/3, completed-plan count 16 and ROADMAP checkbox agree. The PARSE exception leaves every requirement unchanged.
-Next owner gate: Independent final lifecycle review, separate closeout commit/publication approval, then fresh explicit Wave 2 command. 04-02 is the next planned unit, not active execution; 04-03 remains dependent on 04-02.
-Current outputs: Four closeout files only: STATE, ROADMAP, 04-01-EXECUTION and 04-01-SUMMARY, on phase4/parser-closeout at baseline b466763b77f8dbf39b4ec8b8ad5efdd0e45332d9. Nothing staged or committed. Original main/Stage 1 and the separate Stage 2 correction are preserved.
-Preserved artifacts: Published compiler APIs, implementation/tests/CMake, M1 profile, locks, toolchain/CI policies, Phase 1–3 artifacts and Phase 4 plans are unchanged. The deferred Stage 2 performance objective does not block compiler work.
-Evidence integrity: Original 75-entry parser evidence, 31 logs, five implementation freeze hashes and 201 historical references retain their archive mappings. Reviewed preparation bytes/receipts are separately archived under formal-closeout; original receipts are not rewritten. Final-state queries and manifest are separate ignored evidence.
-GSD bookkeeping: Installed summary/template, worktree single-writer reconciliation and read-only validation/index conventions applied. No requirements.mark-complete, phase.complete, auto-execution, automatic commit or installed-system modification. Final summary discovery agrees with actual owner acceptance; execution still requires explicit authorization.
+Last session: 2026-10-21T09:06:46.513877+00:00
+Stopped at: Formal 04-02 closeout; Phase 4 2/3. Dedicated closeout publication is approved; await fresh 04-03 execution authorization. No phase-wide acceptance.
+Resume file: .planning/phases/04-smoke-profile-parser/04-02-SUMMARY.md
+Completed summaries: 01-01 through 01-08, 02-01 through 02-04, 03-01 through 03-03 and 04-01/04-02; 17 completed plans across 18 written plans. Only three whole phases are complete (30%).
+Last completed technical step: Published conformance tests and successful four-job run 39493376090; exact 529/110/97/13 test identity reconciliation, fifteen C++23 entries, include/prepared/offline acceptance. No native evidence was regenerated for closeout.
+Last completed lifecycle step: Formal 04-02 plan closeout with the explicit PARSE exception; REQUIREMENTS.md stays unchanged at 27 accepted/22 pending.
+Next owner gate: Fresh explicit 04-03/Wave 3 execution after verifying actual closeout publication. 04-03 supplies real lexer/parser/renderer/lifetime integration before phase verification and final acceptance.
+Current outputs: Four-file 04-02 closeout only: STATE, ROADMAP, EXECUTION and SUMMARY. The preparation projection remained outside canonical discovery until formal owner approval; actual event timestamps are recorded only then.
+Preserved history: Formal 04-01 acceptance/publication in e35b9e24c23709c9f9e4b2c0e5f1d6af229311b8 and its summary/execution remain unchanged. Original 04-02 prerequisite/implementation checkpoints are retained in its execution record and immutable evidence archives.
+Preserved artifacts: Parser/lexer/source/diagnostic APIs, implementation/tests/CMake, M1 profile, four locks, CI/toolchain policies and Phase 1–3 evidence unchanged. Stage 1, Stage 2 correction and abandoned phase-end CI candidate remain excluded; performance remediation does not block compiler work.
+GSD bookkeeping: Installed summary/coverage and single-writer worktree conventions; no generic requirement completion, unrestricted phase.complete, auto-commit or next-plan execution.
 
 Platform impact:
 
