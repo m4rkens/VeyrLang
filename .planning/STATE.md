@@ -4,9 +4,9 @@ milestone: M1
 milestone_name: Compiler Walking Skeleton
 current_phase: 5
 current_phase_name: Minimal AST and Semantic Smoke
-status: phase5-05-01-complete-awaiting-wave2-authorization
-stopped_at: 05-01 formally complete; fresh Wave 2 execution authorization pending
-last_updated: "2026-10-22T09:48:24.303525+00:00"
+status: phase5-05-02-local-validation-awaiting-owner-review
+stopped_at: 05-02 local Tasks 1–2 complete; owner checkpoint pending; formal Phase 5 1/3
+last_updated: "2026-10-22T10:09:51.922421+00:00"
 last_activity: 2026-10-22
 progress:
   total_phases: 10
@@ -14,7 +14,7 @@ progress:
   total_plans: 21
   completed_plans: 19
   percent: 40
-last_activity_desc: 05-01 formal closeout; local/four-job hosted acceptance passed; Phase 5 1/3
+last_activity_desc: 05-02 conformance passed local Debug/Release; owner review pending
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (accepted Phase 1–4 capabilities and remaining M1 wo
 
 ## Current Position
 
-Phase: 5 (Minimal AST and Semantic Smoke) — 1/3 FORMALLY COMPLETE; 05-02 UNSTARTED
-Plan: 2 of 3 is the next pending plan; no Wave 2 execution authorized
+Phase: 5 (Minimal AST and Semantic Smoke) — 05-02 LOCAL VALIDATION COMPLETE; OWNER REVIEW PENDING
+Plan: 2 of 3; Phase 5 remains 1/3 formally complete
 Total Plans in Phase: 3
-Status: 05-01 formally complete; publication authorized; fresh 05-02 execution command remains gated
-Last activity: 2026-10-22T09:48:24.303525+00:00 — formal 05-01 closeout after accepted local and four-job hosted validation
+Status: 05-02 Tasks 1–2 locally validated; formal Phase 5 1/3; owner implementation/evidence checkpoint pending
+Last activity: 2026-10-22T10:09:51.922421+00:00 — 49 conformance rows and retained suites passed Debug/Release; owner checkpoint pending
 Historical publication boundary: Implementation baseline 08e50520afdab9e46da39182a8dcc4b56be66801 recorded 2/3 and 17/18; this owner-accepted closeout supersedes it with 3/3 and 18/18. Exact publication proof is retained separately.
 
 Phase 3 progress: [██████████] 3/3 complete and owner-accepted.
@@ -113,18 +113,18 @@ syntax/types/encoding and broader project/package semantics remain unaccepted.
 
 ## Session Continuity
 
-Last session: 2026-10-22T09:48:24.303525+00:00
-Stopped at: 05-01 formal closeout recorded; 05-02/03 unstarted; no next-wave execution
-Resume file: .planning/phases/05-minimal-ast-and-semantic-smoke/05-02-PLAN.md
-Completed summaries: Nineteen written plans complete (19/21); Phase 5 1/3, with 05-02/03 unstarted. Phases 1–4 accepted (4/10;40%); whole Phase 5 acceptance pending.
+Last session: 2026-10-22T10:09:52.119Z
+Stopped at: 05-02 Tasks 1–2 locally validated; blocking owner review pending; no publication/formal completion
+Resume file: .planning/phases/05-minimal-ast-and-semantic-smoke/05-02-EXECUTION.md
+Completed summaries: Nineteen written plans complete (19/21); Phase 5 1/3. 05-02 Tasks 1–2 are locally validated but formally incomplete; 05-03 is unstarted. Phases 1–4 accepted (4/10; 40%); whole Phase 5 acceptance pending.
 Technical evidence: Actual canonical verification passed 4 roadmap criteria, 18 original truths, 20 deduplicated truths, 12 artifact entries, 11 manual links, 16 decisions and 3 requirements; four fresh named tests passed. Run 39580960005 passed all four hosted jobs at 08e50520 with 142 parser/561 full/16 C++23 per job.
 05-01 evidence: Local Debug/Release each doctor22,new20,selected235,full/strict581,C++23 entries19,includesPASS; hosted Ubuntu/Windows Debug/Release each20 new,142 parser,581 test/verify/prepared,19 C++23,includes/offlinePASS. No implementation review/native validation repeated.
 Requirement ledger: Only PARSE-01/02/03 accepted after explicit owner decision; global 30 accepted/19 pending. Earlier cross-plan deferral preserved in history.
-Next owner gate: Explicitly authorize $gsd-execute-phase 5 --wave 2 after verified closeout publication. Mechanical readiness grants no execution authority.
-Publication: Implementation aab44db8fc63749d5186d79b516412438b8bd1a1 verified on main; run 39678721428 passed all four configurations. Formal documentation publication is owner-authorized; actual remote confirmation is retained under ignored 05-01/formal-closeout/ evidence.
-Preserved history: Original planning and implementation checkpoints, 74-entry local manifest/29 logs and historical mappings retained unchanged; superseded STATE/ROADMAP/execution bytes archived before proposed closeout.
-Preserved isolation: Original main and held Stage 1/Stage 2/abandoned CI-policy candidates unchanged; no production, tests, CMake, profile, lock or workflow change.
-GSD bookkeeping: Installed summary/coverage and bounded lifecycle conventions; 05-01 alone closes under explicit approval. All AST/SEMA requirements remain Pending; no generic completion helper, phase transition or next-wave execution.
+Next owner gate: Independent implementation/evidence review of 05-02 Tasks 1–2, then separate acceptance/publication/formal closeout authorization. No 05-03 execution or requirement acceptance.
+Publication: 05-01 formal closeout e4c9d481970ae63066d3c843df9f45da06c68850 verified on main. Current 05-02 test/checkpoint candidate is uncommitted/unpublished.
+Preserved history: Accepted 05-01 test and STATE bytes archived under ignored 05-02/baseline; prior 74/29, 280, 23 and historical manifests remain unchanged with archive-aware mappings.
+Preserved isolation: Original main, held Stage 1/Stage 2/abandoned CI-policy candidates unchanged; no production, AST/parser API, CMake, lock, profile, recipe or workflow modification.
+GSD bookkeeping: Installed 1.6.1 execute-phase --wave 2 selected only 05-02 after 05-01 summary; inline Tasks 1–2 and canonical execution/session checkpoint updates. Formal progress remains 1/3 and 19/21; no summary, commit, requirement, phase-complete or next-wave helper.
 
 Platform impact:
 
