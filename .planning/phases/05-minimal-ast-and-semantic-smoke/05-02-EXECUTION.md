@@ -2,15 +2,56 @@
 phase: 05-minimal-ast-and-semantic-smoke
 plan: "02"
 wave: 2
-status: local_validation_complete_awaiting_owner_review
-plan_completion: pending
+status: complete_plan_scope_hosted_validated
+plan_completion: complete
 requirements: [AST-01, AST-02, SEMA-01, SEMA-02]
 requirements_completed: []
-owner_acceptance: pending
-publication: uncommitted_unpublished
-hosted_acceptance: pending_for_new_conformance_tests
+owner_acceptance: Tasks 1-2 and independent review accepted; formal completion recorded at separately authorized closeout
+publication: implementation_244a2eec0c73005e2ad09fcd513d37c3d8895957_formal_closeout_owner_authorized_in_this_commit
+hosted_acceptance: four_configurations_success_39775049283
 recorded_at: "2026-10-22T10:12:17.935688+00:00"
+formal_completion_recorded_at: "2026-10-22T12:44:37.808730+00:00"
+requirements_completion_exception: All four AST/SEMA requirements remain Pending through remaining 05-03 integration and canonical phase acceptance
 ---
+
+# Plan 05-02 — Formal closeout reconciliation
+
+Tasks 1–2 passed independent implementation/evidence review and were explicitly
+owner-accepted. The exact three-file test/checkpoint packet was published in
+244a2eec0c73005e2ad09fcd513d37c3d8895957. The owner-authorized formal closeout records
+actual completion at 2026-10-22T12:44:37.808730+00:00; do not backdate this event to implementation or CI.
+
+[Run 39775049283](https://github.com/m4rkens/VeyrLang/actions/runs/39775049283)
+completed/success in Ubuntu/Windows Debug/Release on the exact implementation SHA.
+Each job executed 69 AST/semantic cases (49 new and 20 retained), all 142 parser and
+630/630 full native, strict and prepared-acceptance identities. All 19 expected
+C++23 entries, include-policy and foundation checks passed. Isolated empty-cache
+rejection occurred exactly once per job with no acquisition/retry. Final hosted
+completion was 2026-10-22T12:25:38Z, distinct from formal lifecycle completion.
+Raw logs/artifacts and exact per-stage sets are retained under ignored
+`.veyr-dev/execution/05-02/closeout-preparation/hosted-acceptance.json`.
+
+Only 05-02 is newly formally complete: 05-01 stays complete; 05-03 stays unstarted.
+Phase 5 becomes 2/3; written execution plans 20/21; four whole phases remain accepted.
+AST-01/02 and SEMA-01/02 remain Pending at 30 accepted / 19 pending. The explicit
+cross-plan requirement-completion exception preserves remaining real-component
+integration and canonical whole-phase verification/owner acceptance. No generic
+requirement or phase-completion helper, next-wave execution or native rerun occurs.
+
+No production/API/test/CMake/dependency/profile/lock/workflow change accompanies
+this four-file documentation closeout. Original 72-entry evidence, 22 command logs
+and all historical sources/mappings remain unchanged. Superseded STATE/ROADMAP/
+execution bytes are archived before promotion. Generated-toolchain/runtime warnings
+and exact Windows CRLF input hashes remain documented; no acceptance blocker.
+
+The original execution checkpoint body follows verbatim. Its earlier pending
+review/publication/CI statements describe that historical observation; the current
+reconciliation supersedes them. The previous complete file bytes remain archived.
+See [05-02-SUMMARY.md](05-02-SUMMARY.md) for delivered scope and pending owner gates.
+
+## Preserved implementation checkpoint history
+
+
 
 # Plan 05-02 — Semantic conformance local execution checkpoint
 
