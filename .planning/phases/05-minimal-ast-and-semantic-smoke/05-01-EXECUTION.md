@@ -2,15 +2,53 @@
 phase: 05-minimal-ast-and-semantic-smoke
 plan: "01"
 wave: 1
-status: local_validation_complete_awaiting_owner_review
-plan_completion: pending
+status: complete_plan_scope_hosted_validated
+plan_completion: complete
 requirements: [AST-01, AST-02, SEMA-01, SEMA-02]
 requirements_completed: []
-owner_acceptance: pending
-publication: uncommitted_unpublished
-hosted_acceptance: pending_for_new_implementation
+owner_acceptance: Tasks 1-2 accepted by explicit owner decision; formal plan completion authorized at recorded event
+publication: implementation_aab44db8fc63749d5186d79b516412438b8bd1a1_formal_closeout_owner_authorized_in_this_commit
+hosted_acceptance: four_configurations_success_39678721428
 recorded_at: "2026-10-21T21:08:31.812233+00:00"
+formal_completion_recorded_at: "2026-10-22T09:48:24.303525+00:00"
+requirements_completion_exception: All four AST/SEMA requirements remain Pending across remaining Phase 5 work
 ---
+
+# Plan 05-01 — Formal closeout reconciliation
+
+The owner explicitly authorized formal Plan 05-01 completion and four-file
+publication. Actual formal completion: 2026-10-22T09:48:24.303525+00:00. No timestamp is
+backdated; implementation and CI events below are historical facts.
+
+Tasks 1–2, the independent implementation/evidence review and publication were
+owner-accepted. Implementation aab44db8fc63749d5186d79b516412438b8bd1a1 is on remote
+main. Run [39678721428](https://github.com/m4rkens/VeyrLang/actions/runs/39678721428)
+is completed/success on that SHA across Ubuntu/Windows Debug/Release. Every job
+executed the exact 20 AST/semantic, 142 retained parser and 581 full identities in
+native test, verify and prepared acceptance; 19 C++23 entries, include policy and
+controlled isolated empty-cache rejection passed. Detailed raw logs/artifacts and
+hosted-acceptance.json live under `.veyr-dev/execution/05-01/closeout-preparation/`.
+Optional cache-save skips did not skip native acceptance. Existing generated-toolchain
+and action-runtime warnings are non-blocking. Only the four expected empty-cache
+negative error lines occurred; no unexpected native failure.
+
+This owner-authorized operation makes 05-01 alone formally complete;
+Phase 5 is 1/3 and written completed plans are 19/21. 05-02/03 remain unstarted.
+AST-01/02 and SEMA-01/02 remain Pending at 30 accepted / 19 pending. This explicit
+cross-plan exception overrides generic requirement-completion behavior: remaining
+49-case conformance, 16-case integration and canonical phase verification are
+required before final requirement acceptance. No requirements.mark-complete,
+phase.complete, next-wave command, production/test/dependency/workflow change or
+native validation rerun accompanies this documentation closeout.
+
+The original implementation checkpoint body follows verbatim. Its earlier pending
+owner-review/publication statements describe that historical event; this current
+reconciliation supersedes them under explicit owner authorization. Original complete bytes
+and all 74/29 receipts remain immutable in baseline archives. See
+[05-01-SUMMARY.md](05-01-SUMMARY.md) for scope, results and remaining gates.
+
+## Preserved implementation checkpoint history
+
 
 # Plan 05-01 — Local implementation and evidence checkpoint
 
