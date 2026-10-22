@@ -42,7 +42,9 @@ veyr_target_policy(ast_tests)
 target_link_libraries(ast_tests PRIVATE veyrcore GTest::gtest_main GTest::gmock)
 gtest_discover_tests(ast_tests DISCOVERY_MODE PRE_TEST)
 
-add_executable(semantic_tests semantics/smoke_validator_test.cpp)
+add_executable(semantic_tests
+    semantics/smoke_validator_test.cpp
+    semantics/smoke_validator_integration_test.cpp)
 veyr_target_policy(semantic_tests)
 target_link_libraries(semantic_tests PRIVATE veyrcore GTest::gtest_main GTest::gmock)
 gtest_discover_tests(semantic_tests DISCOVERY_MODE PRE_TEST)
